@@ -20,4 +20,15 @@ fn main() {
 	println!("{:?}", arit("-/"));
 	println!("{:?}", arit("-+"));
 	println!("{:?}", arit("+/ada"));
+	println!("{:?}", op_relacional_parser("<=<"));
+	println!("{:?}", op_relacional_parser(">=<"));
+	println!("{:?}", op_relacional_parser("=!==")); //Expected to fail
+	println!("{:?}", op_relacional_parser("==!="));
+	println!("{:?}", op_logica_parser("&|"));
+	println!("{:?}", op_logica_parser("|&"));
+	println!("{:?}", op_logica_parser("|&"));
+	println!("{:?}", leer_parser("lee(id)"));
+	println!("{:?}", leer_parser("lee(id,id,id,id,id)"));
+	println!("{:?}", leer_parser("lee(id,id,id,id,)"));
+
 }
