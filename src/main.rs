@@ -1,5 +1,4 @@
 extern crate compilador;
-// #[macro_use]
 extern crate nom;
 
 // use nom::*;
@@ -20,4 +19,9 @@ fn main() {
 	println!("{:?}", arit("-/"));
 	println!("{:?}", arit("-+"));
 	println!("{:?}", arit("+/ada"));
+
+	println!("{:?}", id("ada"));
+	println!("{:?}", id("123"));
+	println!("{:?}", id("+123"));
+
 }
