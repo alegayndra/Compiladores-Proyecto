@@ -7,21 +7,9 @@ use nom::{
     sequence::tuple,
 };
 
-pub fn sumsub_parser(input: &str) -> IResult<&str, &str> {
-    alt((tag("+"), tag("-")))(input)
-}
+pub mod operadores;
 
-pub fn multdiv_parser(input: &str) -> IResult<&str, &str> {
-    alt((tag("/"), tag("*")))(input)
-}
-
-pub fn op_relacional_parser(input: &str) -> IResult<&str, &str> {
-    alt((tag("<="), tag("=="), tag(">="), tag("!="), tag("<"), tag(">")))(input)
-}
-
-pub fn op_logica_parser(input: &str) -> IResult<&str, &str> {
-    alt((tag("&"), tag("|")))(input)
-}
+use crate::lexer::operadores::*;
 
 pub fn tipo_parser(input: &str) -> IResult<&str, &str> {
     alt((tag("entero"), tag("flotante"), tag("char")))(input)
@@ -42,8 +30,6 @@ pub fn ws(input: &str) -> IResult<&str, &str> {
 pub fn necessary_ws(input: &str) -> IResult<&str, &str> {
     take_while1(|c: char| c == ' ')(input)
 }
-
-
 
 #[cfg(test)]
 mod tests {
