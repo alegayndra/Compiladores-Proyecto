@@ -2,7 +2,8 @@ extern crate compilador;
 extern crate nom;
 
 // use nom::*;
-use compilador::lexer::*;
+// use compilador::parser::*;
+use compilador::parser::func_esp::*;
 
 fn main() {
 	// println!("{:?}", hello_parser("hello"));

@@ -7,13 +7,23 @@ Para correr el programa, se necesita tener instalado el ambiente de desarrollo r
 
 ## Avances
 
-### Documentos 
+### Avance 2
+
+#### **Documentos**
+
+
+#### **Código**
+- Analizador léxico de _white space_.
+
+### Avance 1
+
+#### **Documentos**
 - Tabla de tokens
 - Tabla de expresiones regulares
 - Diagramas de la sintaxis del lenguaje
 - Gramatica del lenguaje
 
-### Código
+#### **Código**
 - Analizadores léxicos de operadores aritmeticos, logicos y de relación.
 - Analizador léxico de palabras reservadas de tipos básicos de variables.
 - Avance de analizadores léxicos de `id`s y espacios en blanco.
