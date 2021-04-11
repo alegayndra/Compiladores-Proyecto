@@ -1,3 +1,3 @@
 extern crate nom;
-pub mod lexer;
+pub mod scanners;
 pub mod parser;
