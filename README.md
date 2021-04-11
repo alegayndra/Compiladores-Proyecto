@@ -14,6 +14,7 @@ Para correr el programa, se necesita tener instalado el ambiente de desarrollo r
 
 #### **Código**
 - Analizador léxico de _white space_.
+- Analizador léxico de tipos.
 
 ### Avance 1
 

@@ -1,18 +1,10 @@
 use nom::{
-    branch::alt,
-    bytes::complete::{tag, take_while1, take_while},
+    bytes::complete::{take_while1, take_while},
     IResult,
-    sequence::tuple,
 };
 
 pub mod operadores;
 pub mod tipos;
-
-use crate::lexer::operadores::*;
-
-pub fn arit(input: &str) -> IResult<&str, (&str, &str)> {
-    tuple((sumsub_parser, multdiv_parser))(input)
-}
 
 pub fn id(input: &str) -> IResult<&str, &str> {
     take_while1(|c: char| c.is_alphanumeric())(input)
@@ -29,10 +21,10 @@ pub fn necessary_ws(input: &str) -> IResult<&str, &str> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use nom::{
-        error::{ErrorKind, VerboseError, VerboseErrorKind},
-        Err,
-    };
+    // use nom::{
+    //     error::{ErrorKind, VerboseError, VerboseErrorKind},
+    //     Err,
+    // };
 
     #[test]
     fn test_ws() {
@@ -46,6 +38,5 @@ mod tests {
         assert_eq!(necessary_ws("  "), Ok(("", "  ")));
         assert_eq!(necessary_ws(" "), Ok(("", " ")));
         assert_eq!(necessary_ws(" a"), Ok(("a", " ")));
-
     }
 }
