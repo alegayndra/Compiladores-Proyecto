@@ -5,7 +5,7 @@ use nom::{
   sequence::tuple,
 };
 
-use crate::scanners::*;
+use crate::scanners::ws::*;
 
 pub fn leer_parser(input: &str) -> IResult<&str, (&str, &str, &str, Vec<(&str, &str)>, &str)> {
   tuple((tag("lee"), necessary_ws, tag("("), ws, tag("id"),
