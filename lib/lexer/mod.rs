@@ -6,12 +6,9 @@ use nom::{
 };
 
 pub mod operadores;
+pub mod tipos;
 
 use crate::lexer::operadores::*;
-
-pub fn tipo_parser(input: &str) -> IResult<&str, &str> {
-    alt((tag("entero"), tag("flotante"), tag("char")))(input)
-}
 
 pub fn arit(input: &str) -> IResult<&str, (&str, &str)> {
     tuple((sumsub_parser, multdiv_parser))(input)
