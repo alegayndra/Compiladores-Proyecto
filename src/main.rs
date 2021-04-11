@@ -4,6 +4,7 @@ extern crate nom;
 // use nom::*;
 // use compilador::parser::*;
 use compilador::parser::func_esp::*;
+use compilador::lexer::*;
 
 fn main() {
 	// println!("{:?}", hello_parser("hello"));
@@ -37,6 +38,7 @@ fn main() {
 	println!("{:?}", leer_parser("lee ( id )"));
 	println!("{:?}", leer_parser("lee (id)"));
 	println!("{:?}", leer_parser("lee(id)"));
+	println!("{:?}", necessary_ws("	"));
 	// println!("{:?}", leer_parser("lee ( id , id , id , id , id )"));
 	// println!("{:?}", leer_parser("lee ( id , id , id , id , )"));
 
