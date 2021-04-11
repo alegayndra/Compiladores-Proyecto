@@ -1,8 +1,6 @@
 use nom::{
     branch::alt,
     bytes::complete::{tag, take_while1, take_while},
-    combinator::value,
-    multi::many0,
     IResult,
     sequence::tuple,
 };
