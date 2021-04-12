@@ -1,7 +1,6 @@
 use nom::{
   branch::alt,
   bytes::complete::tag,
-  multi::many0,
   IResult,
   sequence::tuple,
 };
@@ -35,7 +34,7 @@ pub fn variables(input: &str) -> IResult<&str, (&str, Vec<&str>)> {
   alt((variable_compuesta, variable_normal))
   (input)
   .map(|(next_input, res)| {
-    let (tipo, _, lista_ids, _, dimensiones, _, _) = res;
+    let (tipo, _, lista_ids, _, _dimensiones, _, _) = res;
     (next_input, (tipo, lista_ids))
   })
 }

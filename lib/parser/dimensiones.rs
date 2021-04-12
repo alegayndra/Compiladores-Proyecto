@@ -1,14 +1,12 @@
 use nom::{
   branch::alt,
   bytes::complete::tag,
-  multi::many0,
   IResult,
   sequence::tuple,
 };
 
 use crate::scanners::ws::*;
-use crate::scanners::tipos::*;
-use crate::scanners::id::*;
+// use crate::scanners::id::*;
 
 fn dimension(input: &str) -> IResult<&str, Vec<&str>> {
   tuple((tag("["), ws, tag("id"), ws, tag("]")))
@@ -35,7 +33,7 @@ fn dos_dimensiones(input: &str) -> IResult<&str, Vec<&str>> {
 
 pub fn ws_vec(input: &str) -> IResult<&str, Vec<&str>> {
   ws(input)
-  .map(|(next_input, res)| {
+  .map(|(next_input, _res)| {
     let mut vector = Vec::new();
     vector.push("");
     (next_input, vector)
@@ -45,4 +43,34 @@ pub fn ws_vec(input: &str) -> IResult<&str, Vec<&str>> {
 pub fn con_dim(input: &str) -> IResult<&str, Vec<&str>> {
   alt((dos_dimensiones, dimension, ws_vec))
   (input)
+}
+
+#[cfg(test)]
+mod tests {
+  use super::*;
+  // use nom::{
+  //     error::{ErrorKind, VerboseError, VerboseErrorKind},
+  //     Err,
+  // };
+
+  #[test]
+  fn test_dimension() {
+    assert_eq!(dimension("[id]"), Ok(("", vec!["id"])));
+    assert_eq!(dimension("[ id ]"), Ok(("", vec!["id"])));
+    assert_eq!(dimension("[  id  ]"), Ok(("", vec!["id"])));
+  }
+
+  #[test]
+  fn test_dos_dimensiones() {
+    assert_eq!(dos_dimensiones("[id][id]"), Ok(("", vec!["id", "id"])));
+    assert_eq!(dos_dimensiones("[ id ][ id ]"), Ok(("", vec!["id", "id"])));
+    assert_eq!(dos_dimensiones("[  id  ][  id  ]"), Ok(("", vec!["id", "id"])));
+  }
+
+  #[test]
+  fn test_es_vec() {
+    assert_eq!(ws_vec("aaaa"), Ok(("aaaa", vec![""])));
+    assert_eq!(ws_vec("bbbb"), Ok(("bbbb", vec![""])));
+    assert_eq!(ws_vec("cccc"), Ok(("cccc", vec![""])));
+  }
 }

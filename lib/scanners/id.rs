@@ -1,5 +1,4 @@
 use nom::{
-  branch::alt,
   bytes::complete::{tag, take_while1},
   multi::many0,
   IResult,
@@ -7,7 +6,6 @@ use nom::{
 };
 
 use crate::scanners::ws::*;
-use crate::scanners::tipos::*;
 
 pub fn id(input: &str) -> IResult<&str, &str> {
   take_while1(|c: char| c.is_alphanumeric())(input)
