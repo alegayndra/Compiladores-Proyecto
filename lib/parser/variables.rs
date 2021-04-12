@@ -10,19 +10,59 @@ use crate::scanners::ws::*;
 use crate::scanners::tipos::*;
 // use crate::scanners::id::*;
 
-pub fn variables(input: &str) -> IResult<&str, (&str, Vec<&str>, Vec<&str>, &str)> {
+fn dimension(input: &str) -> IResult<&str, Vec<&str>> {
   tuple((
-    tipo_compuesto, necessary_ws
+    tag("["), ws,
+    tag("id"), ws,
+    tag("}")
+  ))
+  (input)
+  .map(|(next_input, res)| {
+    let (_, _, dimension, _, _,) = res;
+    let mut lista_dimensiones = Vec::new();
+    lista_dimensiones.push(dimension);
+    (
+      next_input,
+      lista_dimensiones
+    )
+  })
+}
+
+fn dos_dimensiones(input: &str) -> IResult<&str, Vec<&str>> {
+  tuple((dimension, dimension))
+  (input)
+  .map(|(next_input, res)| {
+    let (dimension_1, dimension_2) = res;
+    let mut lista_dimensiones = Vec::new();
+    lista_dimensiones.push(dimension_1[0]);
+    lista_dimensiones.push(dimension_2[0]);
+    (
+      next_input,
+      lista_dimensiones
+    )
+  })
+}
+
+fn con_dim(input: &str) -> IResult<&str, Vec<&str>> {
+  alt((dimension, dos_dimensiones))
+  (input)
+}
+
+pub fn variables(input: &str) -> IResult<&str, (&str, Vec<&str>)> {
+  tuple((
+    tipo_compuesto, necessary_ws,
+    tag("id"),
     many0(tuple((
       ws, tag(","), 
       ws, tag("id")
-    ))),
-    con_dim,
+    ))), ws,
+    // con_dim, ws,
     tag(";")
   ))
   (input)
   .map(|(next_input, res)| {
-    let (id, ids) = res;
+    // let (tipo, _, id, ids, _, dimensiones, _, semicolon) = res;
+    let (tipo, _, id, ids, _, _) = res;
     let mut lista_ids = Vec::new();
     lista_ids.push(id);
     for sid in ids {
@@ -31,10 +71,39 @@ pub fn variables(input: &str) -> IResult<&str, (&str, Vec<&str>, Vec<&str>, &str
     }
     (
       next_input,
-      lista_ids
+      (
+        tipo,
+        lista_ids
+      )
     )
   })
 }
+
+// pub fn variables(input: &str) -> IResult<&str, (&str, Vec<&str>, Vec<&str>, &str)> {
+//   tuple((
+//     tipo_compuesto, necessary_ws
+//     many0(tuple((
+//       ws, tag(","), 
+//       ws, tag("id")
+//     ))),
+//     tag((dos_dimensiones, dimension, ws)),
+//     tag(";")
+//   ))
+//   (input)
+//   .map(|(next_input, res)| {
+//     let (id, ids) = res;
+//     let mut lista_ids = Vec::new();
+//     lista_ids.push(id);
+//     for sid in ids {
+//         let (_, _, _, sid2) = sid;
+//         lista_ids.push(sid2);
+//     }
+//     (
+//       next_input,
+//       lista_ids
+//     )
+//   })
+// }
 
 #[cfg(test)]
 mod tests {
