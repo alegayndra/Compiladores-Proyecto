@@ -1,7 +1,6 @@
 use nom::{
   branch::alt,
   bytes::complete::tag,
-  multi::many0,
   IResult,
   sequence::tuple,
 };
@@ -9,48 +8,12 @@ use nom::{
 use crate::scanners::ws::*;
 use crate::scanners::tipos::*;
 use crate::scanners::id::*;
-
-fn dimension(input: &str) -> IResult<&str, Vec<&str>> {
-  tuple((tag("["), ws, tag("id"), ws, tag("]")))
-  (input)
-  .map(|(next_input, res)| {
-    let (_, _, dimension, _, _,) = res;
-    let mut lista_dimensiones = Vec::new();
-    lista_dimensiones.push(dimension);
-    (next_input, lista_dimensiones)
-  })
-}
-
-fn dos_dimensiones(input: &str) -> IResult<&str, Vec<&str>> {
-  tuple((dimension, dimension))
-  (input)
-  .map(|(next_input, res)| {
-    let (dimension_1, dimension_2) = res;
-    let mut lista_dimensiones = Vec::new();
-    lista_dimensiones.push(dimension_1[0]);
-    lista_dimensiones.push(dimension_2[0]);
-    (next_input, lista_dimensiones)
-  })
-}
-
-fn ws_vec(input: &str) -> IResult<&str, Vec<&str>> {
-  ws(input)
-  .map(|(next_input, res)| {
-    let mut vector = Vec::new();
-    vector.push("");
-    (next_input, vector)
-  })
-}
-
-fn con_dim(input: &str) -> IResult<&str, Vec<&str>> {
-  alt((dos_dimensiones, dimension, ws_vec))
-  (input)
-}
+use crate::parser::dimensiones::*;
 
 fn variable_compuesta(input: &str) -> IResult<&str, (&str, &str, Vec<&str>, &str, Vec<&str>, &str, &str)> {
   tuple((
-    tag("id"), ws,
-    list_ids, ws,
+    id, ws,
+    lista_ids, ws,
     ws_vec, ws,
     tag(";")
   ))
@@ -60,7 +23,7 @@ fn variable_compuesta(input: &str) -> IResult<&str, (&str, &str, Vec<&str>, &str
 fn variable_normal(input: &str) -> IResult<&str, (&str, &str, Vec<&str>, &str, Vec<&str>, &str, &str)> {
   tuple((
     tipo, ws,
-    list_ids, ws,
+    lista_ids, ws,
     con_dim, ws,
     tag(";")
   ))
@@ -71,7 +34,7 @@ pub fn variables(input: &str) -> IResult<&str, (&str, Vec<&str>)> {
   alt((variable_compuesta, variable_normal))
   (input)
   .map(|(next_input, res)| {
-    let (tipo, _, lista_ids, _, dimensiones, _, _) = res;
+    let (tipo, _, lista_ids, _, _dimensiones, _, _) = res;
     (next_input, (tipo, lista_ids))
   })
 }
@@ -84,9 +47,19 @@ mod tests {
   //     Err,
   // };
 
+  // #[test]
+  // fn test_variable_compuesta() {
+  //   assert_eq!(variable_compuesta("id id;"), Ok(("", ("id", vec!["id"]))));
+  //   assert_eq!(variable_compuesta("id id, id;"), Ok(("", ("id", vec!["id", "id"]))));
+  // }
+
   #[test]
-  fn test_con_coma() {
-    assert_eq!(con_coma("id"), Ok(("", vec!["id"])));
-    assert_eq!(con_coma("id, id"), Ok(("", vec!["id", "id"])));
+  fn test_variables() {
+    assert_eq!(variables("Persona id;"), Ok(("",        ("Persona", vec!["id"]))));
+    assert_eq!(variables("Persona id, id;"), Ok(("",    ("Persona", vec!["id", "id"]))));
+    assert_eq!(variables("entero id;"), Ok(("",         ("entero",  vec!["id"]))));
+    assert_eq!(variables("entero id[id];"), Ok(("",     ("entero",  vec!["id"]))));
+    assert_eq!(variables("entero id[id][id];"), Ok(("", ("entero",  vec!["id"]))));
+    assert_eq!(variables("entero id, id;"), Ok(("",     ("entero",  vec!["id", "id"]))));
   }
 }
