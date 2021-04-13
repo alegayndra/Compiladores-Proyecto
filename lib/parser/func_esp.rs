@@ -9,23 +9,41 @@ use nom::{
 use crate::scanners::ws::*;
 use crate::scanners::id::*;
 use crate::scanners::texto::*;
-use crate::parser::dimensiones::*;
 
-pub fn leer(input: &str) -> IResult<&str, Vec<&str>> {
-  tuple((tag("lee"), ws, tag("("), ws, alt((lista_ids, ws_vec)), ws, tag(")")))
+pub fn leer(input: &str) -> IResult<&str, Vec<(&str, Vec<&str>)>> {
+  tuple((tag("lee"), ws, tag("("), ws, lista_ids_con_dim, ws, tag(")")))
   (input)
   .map(|(next_input, res)| {
-    let (_, _, _, _, lista_ids, _, _) = res;
-    (next_input, lista_ids)
+    let (_, _, _, _, list_ids, _, _) = res;
+    (next_input, list_ids)
+  })
+}
+
+fn valor(input: &str) -> IResult<&str, &str> {
+  alt((id, texto))(input)
+}
+
+fn lista_valores(input: &str) -> IResult<&str, Vec<&str>> {
+  tuple((valor, many0(tuple((ws, tag(","), ws, valor)))))
+  (input)
+  .map(|(next_input, res)| {
+    let (valor, lista_val) = res;
+    let mut lista = Vec::new();
+    lista.push(valor);
+    for val in lista_val {
+      let (_, _, _, value) = val;
+      lista.push(value);
+    }
+    (next_input, lista)
   })
 }
 
 pub fn escribir(input: &str) -> IResult<&str, Vec<&str>> {
-  tuple((tag("escribe"), ws, tag("("), ws, many0(alt((id, texto))), ws, tag(")")))
+  tuple((tag("escribe"), ws, tag("("), ws, lista_valores, ws, tag(")")))
   (input)
   .map(|(next_input, res)| {
-    let (_, _, _, _, lista_valores, _, _) = res;
-    (next_input, lista_valores)
+    let (_, _, _, _, lista, _, _) = res;
+    (next_input, lista)
   })
 }
 
@@ -39,16 +57,18 @@ mod tests {
 
   #[test]
   fn test_leer() {
-    assert_eq!(leer("lee()"), Ok(("", vec![])));
-    assert_eq!(leer("lee(id)"), Ok(("", vec!["id"])));
-    assert_eq!(leer("lee ( id )"), Ok(("", vec!["id"])));
-    assert_eq!(leer("lee ( id, id )"), Ok(("", vec!["id", "id"])));
+    assert_eq!(leer("lee(id)"), Ok(("", vec![("id", vec![])])));
+    assert_eq!(leer("lee ( id )"), Ok(("", vec![("id", vec![])])));
+    assert_eq!(leer("lee ( id, id )"), Ok(("", vec![("id", vec![]), ("id", vec![])])));
+    // assert_eq!(leer("lee()"), Ok(("", vec![])));
   }
 
   #[test]
   fn test_escribir() {
-    assert_eq!(escribir("escribe()"), Ok(("", vec![])));
     assert_eq!(escribir("escribe(id)"), Ok(("", vec!["id"])));
+    assert_eq!(escribir("escribe(\"abr\")"), Ok(("", vec!["abr"])));
     assert_eq!(escribir("escribe ( id )"), Ok(("", vec!["id"])));
+    assert_eq!(escribir("escribe(\"abr\", id, id, \"abr\")"), Ok(("", vec!["abr", "id", "id", "abr"])));
+    // assert_eq!(escribir("escribe()"), Ok(("", vec![])));
   }
 }
