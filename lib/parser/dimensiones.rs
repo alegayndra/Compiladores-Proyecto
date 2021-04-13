@@ -24,17 +24,13 @@ fn dos_dimensiones(input: &str) -> IResult<&str, Vec<&str>> {
   (input)
   .map(|(next_input, res)| {
     let (dimension_1, dimension_2) = res;
-    let mut lista_dimensiones = Vec::new();
-    lista_dimensiones.push(dimension_1[0]);
-    lista_dimensiones.push(dimension_2[0]);
-    (next_input, lista_dimensiones)
+    (next_input, vec![dimension_1[0], dimension_2[0]])
   })
 }
 
 pub fn ws_vec(input: &str) -> IResult<&str, Vec<&str>> {
   ws(input)
   .map(|(next_input, _res)| {
-    // let mut vector = Vec::new();
     (next_input, vec![])
   })
 }
