@@ -6,10 +6,10 @@ use nom::{
 };
 
 use crate::scanners::ws::*;
-// use crate::scanners::id::*;
+use crate::scanners::id::*;
 
 fn dimension(input: &str) -> IResult<&str, Vec<&str>> {
-  tuple((tag("["), ws, tag("id"), ws, tag("]")))
+  tuple((tag("["), ws, id, ws, tag("]")))
   (input)
   .map(|(next_input, res)| {
     let (_, _, dimension, _, _,) = res;
