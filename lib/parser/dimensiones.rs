@@ -34,9 +34,8 @@ fn dos_dimensiones(input: &str) -> IResult<&str, Vec<&str>> {
 pub fn ws_vec(input: &str) -> IResult<&str, Vec<&str>> {
   ws(input)
   .map(|(next_input, _res)| {
-    let mut vector = Vec::new();
-    vector.push("");
-    (next_input, vector)
+    // let mut vector = Vec::new();
+    (next_input, vec![])
   })
 }
 
@@ -68,9 +67,9 @@ mod tests {
   }
 
   #[test]
-  fn test_es_vec() {
-    assert_eq!(ws_vec("aaaa"), Ok(("aaaa", vec![""])));
-    assert_eq!(ws_vec("bbbb"), Ok(("bbbb", vec![""])));
-    assert_eq!(ws_vec("cccc"), Ok(("cccc", vec![""])));
+  fn test_ws_vec() {
+    assert_eq!(ws_vec("aaaa"), Ok(("aaaa", vec![])));
+    assert_eq!(ws_vec("bbbb"), Ok(("bbbb", vec![])));
+    assert_eq!(ws_vec("cccc"), Ok(("cccc", vec![])));
   }
 }
