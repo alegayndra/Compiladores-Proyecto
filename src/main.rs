@@ -5,9 +5,9 @@ use compilador::parser::func_esp::*;
 use compilador::parser::variables::*;
 
 fn main() {
-	println!("{:?}", leer_parser("lee ( id )"));
-	println!("{:?}", leer_parser("lee (id)"));
-	println!("{:?}", leer_parser("lee(id)"));
+	println!("{:?}", leer("lee ( id )"));
+	println!("{:?}", leer("lee (id)"));
+	println!("{:?}", leer("lee(id)"));
 
 	println!("{:?}", variables("entero id;"));
 	println!("{:?}", variables("entero id[id];"));

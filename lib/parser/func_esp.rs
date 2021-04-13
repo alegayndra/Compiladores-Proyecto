@@ -1,4 +1,5 @@
 use nom::{
+  branch::alt,
   bytes::complete::tag,
   multi::many0,
   IResult,
@@ -9,20 +10,44 @@ use crate::scanners::ws::*;
 use crate::scanners::id::*;
 use crate::scanners::texto::*;
 
-pub fn leer_parser(input: &str) -> IResult<&str, Vec<&str>> {
-  tuple((tag("lee"), necessary_ws, tag("("), ws, lista_ids, ws, tag(")")))
+pub fn leer(input: &str) -> IResult<&str, Vec<&str>> {
+  tuple((tag("lee"), ws, tag("("), ws, lista_ids, ws, tag(")")))
   (input)
   .map(|(next_input, res)| {
-    let (lee, _, lp, _, lista_ids, _, rp) = res;
+    let (_, _, _, _, lista_ids, _, _) = res;
     (next_input, lista_ids)
   })
 }
 
-pub fn leer_parser(input: &str) -> IResult<&str, Vec<&str>> {
-  tuple((tag("lee"), necessary_ws, tag("("), ws, lista_ids, ws, tag(")")))
+pub fn escribir(input: &str) -> IResult<&str, Vec<&str>> {
+  tuple((tag("escribe"), ws, tag("("), ws, many0(alt((id, texto))), ws, tag(")")))
   (input)
   .map(|(next_input, res)| {
-    let (lee, _, lp, _, lista_ids, _, rp) = res;
-    (next_input, lista_ids)
+    let (_, _, _, _, lista_valores, _, _) = res;
+    (next_input, lista_valores)
   })
+}
+
+#[cfg(test)]
+mod tests {
+  use super::*;
+  // use nom::{
+  //     error::{ErrorKind, VerboseError, VerboseErrorKind},
+  //     Err,
+  // };
+
+  #[test]
+  fn test_leer() {
+    // assert_eq!(leer("lee()"), Ok(("", vec![])));
+    assert_eq!(leer("lee(id)"), Ok(("", vec!["id"])));
+    assert_eq!(leer("lee ( id )"), Ok(("", vec!["id"])));
+    assert_eq!(leer("lee ( id, id )"), Ok(("", vec!["id", "id"])));
+  }
+
+  #[test]
+  fn test_escribir() {
+    assert_eq!(escribir("escribe()"), Ok(("", vec![])));
+    assert_eq!(escribir("escribe(id)"), Ok(("", vec!["id"])));
+    assert_eq!(escribir("escribe ( id )"), Ok(("", vec!["id"])));
+  }
 }
