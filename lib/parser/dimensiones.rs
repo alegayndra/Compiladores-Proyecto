@@ -68,4 +68,11 @@ mod tests {
     assert_eq!(ws_vec("bbbb"), Ok(("bbbb", vec![])));
     assert_eq!(ws_vec("cccc"), Ok(("cccc", vec![])));
   }
+
+  #[test]
+  fn test_con_dim() {
+    assert_eq!(con_dim("[id]"), Ok(("", vec!["id"])));
+    assert_eq!(con_dim("[id][id]"), Ok(("", vec!["id", "id"])));
+    assert_eq!(con_dim("aaaa"), Ok(("aaaa", vec![])));
+  }
 }
