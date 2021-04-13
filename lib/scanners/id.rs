@@ -99,6 +99,14 @@ mod tests {
   }
 
   #[test]
+  fn test_id_parser() {
+    assert_eq!(id_parser("id"), Ok(("", ("id", vec![]))));
+    assert_eq!(id_parser("aaa123"), Ok(("", ("aaa123", vec![]))));
+    assert_eq!(id_parser("1aa123"), Ok(("", ("1aa123", vec![]))));
+    assert_eq!(id_parser("id[id]"), Ok(("", ("id", vec!["id"]))));
+  }
+
+  #[test]
   fn test_lista_ids() {
     assert_eq!(lista_ids("id"), Ok(("", vec!["id"])));
     assert_eq!(lista_ids("id, aa"), Ok(("", vec!["id", "aa"])));
