@@ -57,7 +57,7 @@ pub fn lista_ids_sin_dim(input: &str) -> IResult<&str, Vec<(&str, Vec<&str>)>> {
 }
 
 pub fn lista_ids_con_dim(input: &str) -> IResult<&str, Vec<(&str, Vec<&str>)>> {
-  tuple((id_con_dim, many0(tuple((ws, tag(","), ws, id_con_dim)))))(input)
+  tuple((id_parser, many0(tuple((ws, tag(","), ws, id_parser)))))(input)
   .map(|(next_input, res)| {
     let (id, ids) = res;
     let mut lista_ids = Vec::new();
