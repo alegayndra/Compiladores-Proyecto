@@ -12,8 +12,8 @@ use crate::parser::dimensiones::*;
 
 fn variable_compuesta(input: &str) -> IResult<&str, (&str, &str, Vec<&str>, &str, Vec<&str>, &str, &str)> {
   tuple((
-    tag("id"), ws,
-    list_ids, ws,
+    id, ws,
+    lista_ids, ws,
     ws_vec, ws,
     tag(";")
   ))
@@ -23,7 +23,7 @@ fn variable_compuesta(input: &str) -> IResult<&str, (&str, &str, Vec<&str>, &str
 fn variable_normal(input: &str) -> IResult<&str, (&str, &str, Vec<&str>, &str, Vec<&str>, &str, &str)> {
   tuple((
     tipo, ws,
-    list_ids, ws,
+    lista_ids, ws,
     con_dim, ws,
     tag(";")
   ))
@@ -55,11 +55,11 @@ mod tests {
 
   #[test]
   fn test_variables() {
-    assert_eq!(variables("id id;"), Ok(("",             ("id",     vec!["id"]))));
-    assert_eq!(variables("id id, id;"), Ok(("",         ("id",     vec!["id", "id"]))));
-    assert_eq!(variables("entero id;"), Ok(("",         ("entero", vec!["id"]))));
-    assert_eq!(variables("entero id[id];"), Ok(("",     ("entero", vec!["id"]))));
-    assert_eq!(variables("entero id[id][id];"), Ok(("", ("entero", vec!["id"]))));
-    assert_eq!(variables("entero id, id;"), Ok(("",     ("entero", vec!["id", "id"]))));
+    assert_eq!(variables("Persona id;"), Ok(("",        ("Persona", vec!["id"]))));
+    assert_eq!(variables("Persona id, id;"), Ok(("",    ("Persona", vec!["id", "id"]))));
+    assert_eq!(variables("entero id;"), Ok(("",         ("entero",  vec!["id"]))));
+    assert_eq!(variables("entero id[id];"), Ok(("",     ("entero",  vec!["id"]))));
+    assert_eq!(variables("entero id[id][id];"), Ok(("", ("entero",  vec!["id"]))));
+    assert_eq!(variables("entero id, id;"), Ok(("",     ("entero",  vec!["id", "id"]))));
   }
 }
