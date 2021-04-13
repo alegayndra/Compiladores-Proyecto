@@ -19,17 +19,24 @@ pub fn leer(input: &str) -> IResult<&str, Vec<(&str, Vec<&str>)>> {
   })
 }
 
-fn valor(input: &str) -> IResult<&str, &str> {
-  alt((id, texto))(input)
+fn cte_texto(input: &str) -> IResult<&str, (&str, Vec<&str>)> {
+  texto(input)
+  .map(|(next_input, res)| {
+    (next_input, (res, vec![]))
+  })
 }
 
-fn lista_valores(input: &str) -> IResult<&str, Vec<&str>> {
-  tuple((valor, many0(tuple((ws, tag(","), ws, valor)))))
+fn expresion_escribe(input: &str) -> IResult<&str, (&str, Vec<&str>)> {
+  alt((id_parser, cte_texto))(input)
+}
+
+fn lista_textos(input: &str) -> IResult<&str, Vec<(&str, Vec<&str>)>> {
+  tuple((expresion_escribe, many0(tuple((ws, tag(","), ws, expresion_escribe)))))
   (input)
   .map(|(next_input, res)| {
-    let (valor, lista_val) = res;
+    let (expresion_escribe, lista_val) = res;
     let mut lista = Vec::new();
-    lista.push(valor);
+    lista.push(expresion_escribe);
     for val in lista_val {
       let (_, _, _, value) = val;
       lista.push(value);
@@ -38,13 +45,18 @@ fn lista_valores(input: &str) -> IResult<&str, Vec<&str>> {
   })
 }
 
-pub fn escribir(input: &str) -> IResult<&str, Vec<&str>> {
-  tuple((tag("escribe"), ws, tag("("), ws, lista_valores, ws, tag(")")))
+pub fn escribir(input: &str) -> IResult<&str, Vec<(&str, Vec<&str>)>> {
+  tuple((tag("escribe"), ws, tag("("), ws, lista_textos, ws, tag(")")))
   (input)
   .map(|(next_input, res)| {
     let (_, _, _, _, lista, _, _) = res;
     (next_input, lista)
   })
+}
+
+
+pub fn funcion_esp(input: &str) -> IResult<&str, Vec<(&str, Vec<&str>)>> {
+    alt((leer,escribir))(input)
 }
 
 #[cfg(test)]
@@ -65,10 +77,10 @@ mod tests {
 
   #[test]
   fn test_escribir() {
-    assert_eq!(escribir("escribe(id)"), Ok(("", vec!["id"])));
-    assert_eq!(escribir("escribe(\"abr\")"), Ok(("", vec!["abr"])));
-    assert_eq!(escribir("escribe ( id )"), Ok(("", vec!["id"])));
-    assert_eq!(escribir("escribe(\"abr\", id, id, \"abr\")"), Ok(("", vec!["abr", "id", "id", "abr"])));
+    assert_eq!(escribir("escribe(id)"), Ok(("", vec![("id", vec![])])));
+    assert_eq!(escribir("escribe(\"abr\")"), Ok(("", vec![("abr", vec![])])));
+    assert_eq!(escribir("escribe ( id )"), Ok(("", vec![("id", vec![])])));
+    assert_eq!(escribir("escribe(\"abr\", id, id, \"abr\")"), Ok(("", vec![("abr", vec![]),("id", vec![]),("id", vec![]),("abr", vec![])])));
     // assert_eq!(escribir("escribe()"), Ok(("", vec![])));
   }
 }
