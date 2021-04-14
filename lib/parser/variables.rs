@@ -10,27 +10,27 @@ use crate::scanners::tipos::*;
 use crate::scanners::id::*;
 use crate::parser::dimensiones::*;
 
-fn variable_compuesta(input: &str) -> IResult<&str, (&str, &str, Vec<&str>, &str, Vec<&str>, &str, &str)> {
+fn variable_compuesta(input: &str) -> IResult<&str, (&str, &str, Vec<(&str, Vec<&str>)>, &str, Vec<&str>, &str, &str)> {
   tuple((
     id, ws,
-    lista_ids, ws,
+    lista_ids_sin_dim, ws,
     ws_vec, ws,
     tag(";")
   ))
   (input)
 }
 
-fn variable_normal(input: &str) -> IResult<&str, (&str, &str, Vec<&str>, &str, Vec<&str>, &str, &str)> {
+fn variable_normal(input: &str) -> IResult<&str, (&str, &str, Vec<(&str, Vec<&str>)>, &str, Vec<&str>, &str, &str)> {
   tuple((
     tipo, ws,
-    lista_ids, ws,
+    lista_ids_con_dim, ws,
     con_dim, ws,
     tag(";")
   ))
   (input)
 }
 
-pub fn variables(input: &str) -> IResult<&str, (&str, Vec<&str>)> {
+pub fn variables(input: &str) -> IResult<&str, (&str, Vec<(&str, Vec<&str>)>)> {
   alt((variable_compuesta, variable_normal))
   (input)
   .map(|(next_input, res)| {
@@ -55,11 +55,11 @@ mod tests {
 
   #[test]
   fn test_variables() {
-    assert_eq!(variables("Persona id;"), Ok(("",        ("Persona", vec!["id"]))));
-    assert_eq!(variables("Persona id, id;"), Ok(("",    ("Persona", vec!["id", "id"]))));
-    assert_eq!(variables("entero id;"), Ok(("",         ("entero",  vec!["id"]))));
-    assert_eq!(variables("entero id[id];"), Ok(("",     ("entero",  vec!["id"]))));
-    assert_eq!(variables("entero id[id][id];"), Ok(("", ("entero",  vec!["id"]))));
-    assert_eq!(variables("entero id, id;"), Ok(("",     ("entero",  vec!["id", "id"]))));
+    assert_eq!(variables("Persona id;"), Ok(("",        ("Persona", vec![("id", vec![])]))));
+    assert_eq!(variables("Persona id, id;"), Ok(("",    ("Persona", vec![("id", vec![]), ("id", vec![])]))));
+    assert_eq!(variables("entero id;"), Ok(("",         ("entero",  vec![("id", vec![])]))));
+    assert_eq!(variables("entero id[id];"), Ok(("",     ("entero",  vec![("id", vec!["id"])]))));
+    assert_eq!(variables("entero id[id][id];"), Ok(("", ("entero",  vec![("id", vec!["id","id"])]))));
+    assert_eq!(variables("entero id, id;"), Ok(("",     ("entero",  vec![("id", vec![]), ("id", vec![])]))));
   }
 }
