@@ -11,19 +11,15 @@ use crate::scanners::id::*;
 use crate::scanners::texto::*;
 use crate::parser::dimensiones::*;
 
-fn valor_cte(input: &str) -> IResult<&str, (&str,&str)> {
+fn valor_cte(input: &str) -> IResult<&str, (&str, &str)> {
   alt((tag("num_entero"), tag("num_float"), texto))(input)
   .map(|(next_input, res)| {
     (next_input, (res, "constante"))
   })
 }
 
-
 fn func_params(input: &str) -> IResult<&str, (&str, Vec<&str>)> {
-  tuple((
-    ws, tag("("), ws, tag("expresion"), many0(tuple((ws, tag(","), ws, tag("expresion")))), ws, tag(")")
-  ))(input)
-  //Llama al no terminal expresion
+  tuple((ws, tag("("), ws, tag("expresion"), many0(tuple((ws, tag(","), ws, tag("expresion")))), ws, tag(")")))(input)
   .map(|(next_input, res)| {
     let (_, _, _, exp, expresiones, _, _) = res;
     let mut lista_expresiones = Vec::new();
@@ -37,13 +33,12 @@ fn func_params(input: &str) -> IResult<&str, (&str, Vec<&str>)> {
 }
 fn dim_normalizado(input: &str) -> IResult<&str, (&str, Vec<&str>)> {
   con_dim(input)
-  //Llama al no terminal expresion
   .map(|(next_input, res)| {
     (next_input, ("dimensiones", res))
   })
 }
 
-fn valor_id(input: &str) -> IResult<&str, (&str,&str)> {
+fn valor_id(input: &str) -> IResult<&str, (&str, &str)> {
   tuple((
     id, 
     many0(tuple((ws, tag("."), ws, id))), 
@@ -52,7 +47,7 @@ fn valor_id(input: &str) -> IResult<&str, (&str,&str)> {
   (input)
   .map(|(next_input, res)| {
     let (id, atributos, dim_func) = res;
-    (next_input,(id,"variable"))
+    (next_input,(id, "variable"))
   })
 }
 
