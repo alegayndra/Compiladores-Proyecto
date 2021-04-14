@@ -14,12 +14,12 @@ pub fn id(input: &str) -> IResult<&str, &str> {
   (input)
 }
 
-fn id_sin_dim(input: &str) -> IResult<&str, (&str, Vec<&str>)> {
+pub fn id_sin_dim(input: &str) -> IResult<&str, (&str, Vec<&str>)> {
   tuple((id, ws_vec))
   (input)
 }
 
-fn id_con_dim(input: &str) -> IResult<&str, (&str, Vec<&str>)> {
+pub fn id_con_dim(input: &str) -> IResult<&str, (&str, Vec<&str>)> {
   tuple((id, con_dim))
   (input)
 }
@@ -69,6 +69,7 @@ mod tests {
   #[test]
   fn test_id() {
     assert_eq!(id("id"), Ok(("", "id")));
+    assert_eq!(id("id["), Ok(("[", "id")));
     assert_eq!(id("aaa123"), Ok(("", "aaa123")));
     assert_eq!(id("1aa123"), Ok(("", "1aa123")));
   }
