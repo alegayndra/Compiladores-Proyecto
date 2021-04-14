@@ -6,3 +6,5 @@ pub mod valor;
 pub mod funcion;
 pub mod clase;
 pub mod decision;
+pub mod llama_func;
+pub mod func_params;
