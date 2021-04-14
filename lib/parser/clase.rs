@@ -47,9 +47,17 @@ fn metodos(input: &str) -> IResult<&str, (&str, &str, &str)> {
   })
 }
 
+// fn variable_funcion_vacio(input: &str) -> IResult<&str, (&str, &str, Vec<(&str, (&str, Vec<&str>))>)> {
+fn variable_funcion_vacio(input: &str) -> IResult<&str, (&str, &str, &str)> {
+  ws(input)
+  .map(|(next_input, res)| {
+    (next_input, ("null", "vacio", "vacio"))
+  })
+}
+
 // fn variable_funcion(input: &str) -> IResult<&str, (&str, &str, Vec<(&str, (&str, Vec<&str>))>)> {
 fn variable_funcion(input: &str) -> IResult<&str, (&str, &str, &str)> {
-  alt((atributos, metodos))(input)
+  alt((atributos, metodos, variable_funcion_vacio))(input)
 }
 
 // pub fn clase(input: &str) -> IResult<&str, (&str, &str, (&str, &str, Vec<(&str, (&str, Vec<&str>))>))> {
