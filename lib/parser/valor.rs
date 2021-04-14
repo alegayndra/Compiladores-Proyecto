@@ -51,7 +51,7 @@ fn valor_id(input: &str) -> IResult<&str, (&str,&str)> {
   ))
   (input)
   .map(|(next_input, res)| {
-    let (id, atributos, dimOfunc) = res;
+    let (id, atributos, dim_func) = res;
     (next_input,(id,"variable"))
   })
 }
