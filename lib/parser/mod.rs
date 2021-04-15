@@ -9,3 +9,5 @@ pub mod decision;
 pub mod llama_func;
 pub mod func_params;
 pub mod repeticion;
+pub mod asignacion;
+pub mod factor;
