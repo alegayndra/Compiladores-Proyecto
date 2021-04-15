@@ -12,9 +12,8 @@ pub fn num_entero(input: &str) -> IResult<&str, &str> {
 //   tuple((num_entero, tag("."), num_entero))(input)
 //   .map(|(next_input, res)| {
 //     let (matisa, _, decimal) = res;
-//     let numero = format!("{}{}", matisa, decimal);
-//     let numero_f = &numero[0..];
-//     (next_input, numero_f)
+//     let numero = format!("{}.{}", matisa, decimal);
+//     (next_input, &numero)
 //   })
 // }
 
@@ -32,4 +31,11 @@ mod tests {
     assert_eq!(num_entero("11"), Ok(("", "11")));
     assert_eq!(num_entero("1123131"), Ok(("", "1123131")));
   }
+
+  // #[test]
+  // fn test_num_flotante() {
+  //   assert_eq!(num_flotante("1.1"), Ok(("", "1.1")));
+  //   assert_eq!(num_flotante("11.23"), Ok(("", "11.23")));
+  //   assert_eq!(num_flotante("112.3131"), Ok(("", "112.3131")));
+  // }
 }
