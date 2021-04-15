@@ -107,9 +107,9 @@ mod tests {
   fn test_valor_id() {
     assert_eq!(valor_id("SoyUnString.arreglo[id]"), Ok(("", ("SoyUnString", "variable"))));
     assert_eq!(valor_id("Objeto.metodo.arreglo[id][id]"), Ok(("", ("Objeto", "variable"))));
-    assert_eq!(valor_id("Variable  .metodo. arreglo[  id][id ]"), Ok(("", ("Variable", "variable"))));
-    assert_eq!(valor_id("Variable.metodo(expresion)"), Ok(("", ("Variable", "variable"))));
-    assert_eq!(valor_id("Variable.metodo(expresion)"), Ok(("", ("Variable", "variable"))));
-    assert_eq!(valor_id("Variable.metodo ()"), Ok(("", ("Variable", "variable"))));
+    assert_eq!(valor_id("Nombre  .metodo. arreglo[  id][id ]"), Ok(("", ("Nombre", "variable"))));
+    assert_eq!(valor_id("Nombre.metodo(expresion)"), Ok(("", ("Nombre", "variable"))));
+    assert_eq!(valor_id("Nombre.metodo(expresion)"), Ok(("", ("Nombre", "variable"))));
+    assert_eq!(valor_id("Nombre.metodo ()"), Ok(("", ("Nombre", "variable"))));
   }
 }

@@ -5,3 +5,4 @@ pub mod comentario;
 pub mod valor;
 pub mod funcion;
 pub mod asignacion;
+pub mod factor;
