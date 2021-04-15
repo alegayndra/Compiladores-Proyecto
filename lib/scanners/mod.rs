@@ -3,3 +3,4 @@ pub mod tipos;
 pub mod ws;
 pub mod id;
 pub mod texto;
+pub mod constantes;
