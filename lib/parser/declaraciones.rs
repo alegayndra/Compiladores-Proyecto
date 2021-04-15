@@ -7,7 +7,6 @@ use nom::{
 };
 
 use crate::scanners::ws::*;
-use crate::scanners::id::*;
 // use crate::parser::clase::*;
 // use crate::parser::funcion::*;
 // use crate::parser::variables::*;
