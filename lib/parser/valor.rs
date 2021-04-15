@@ -20,7 +20,7 @@ fn valor_cte(input: &str) -> IResult<&str, (&str, &str)> {
 
 fn expresiones_vacias(input: &str) -> IResult<&str, Vec<&str>> {
   ws(input)
-  .map(|(next_input, res)| {
+  .map(|(next_input, _)| {
     (next_input, vec![])
   })
 }
@@ -65,7 +65,7 @@ fn valor_id(input: &str) -> IResult<&str, (&str, &str)> {
   ))
   (input)
   .map(|(next_input, res)| {
-    let (id, atributos, _, dim_func) = res;
+    let (id, _atributos, _, _dim_func) = res;
     (next_input,(id, "variable"))
   })
 }
