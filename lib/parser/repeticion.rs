@@ -25,7 +25,7 @@ pub fn desde(input: &str) -> IResult<&str, &str> {
 }
 
 pub fn repeticion(input: &str) -> IResult<&str, (&str, &str)> {
-  tuple((alt((mientras, desde)), ws, tag("bloque")))(input)
+  tuple((alt((mientras, desde)), necessary_ws, tag("bloque")))(input)
   .map(|(next_input, res)| {
     let (repet, _, bloque) = res;
     (next_input, (repet, bloque))
@@ -51,5 +51,11 @@ mod tests {
     assert_eq!(desde("desde id = exp hasta exp"), Ok(("", "desde")));
     assert_eq!(desde("desde id[id] = exp hasta exp"), Ok(("", "desde")));
     assert_eq!(desde("desde id[id][id] = exp hasta exp"), Ok(("", "desde")));
+  }
+
+  #[test]
+  fn test_repeticion() {
+    assert_eq!(repeticion("mientras(expresion) bloque"), Ok(("", ("mientras", "bloque"))));
+    assert_eq!(repeticion("desde id = exp hasta exp bloque"), Ok(("", ("desde", "bloque"))));
   }
 }
