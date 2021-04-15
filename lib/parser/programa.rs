@@ -5,9 +5,10 @@ use nom::{
 
 use crate::scanners::ws::*;
 use crate::scanners::id::*;
+use crate::parser::declaraciones::*;
 
-pub fn programa(input: &str) -> IResult<&str, (&str, &str, &str)> {
-  tuple((tag("programa"), necessary_ws, id, ws, tag(";"), ws, tag("declaraciones"), ws, tag("principal()"), ws, tag("bloque")))
+pub fn programa(input: &str) -> IResult<&str, (&str, Vec<&str>, &str)> {
+  tuple((tag("programa"), necessary_ws, id, ws, tag(";"), ws, declaraciones, ws, tag("principal()"), ws, tag("bloque")))
   (input)
   .map(|(next_input, res)| {
     let (_, _, id, _, _, _, declaraciones, _, _, _, bloque) = res;
@@ -25,6 +26,8 @@ mod tests {
 
   #[test]
   fn test_programa() {
-    assert_eq!(programa("programa idPrograma; declaraciones principal() bloque"), Ok(("", ("", "declaraciones", "bloque"))));
+    assert_eq!(programa("programa idPrograma; clase principal() bloque"), Ok(("", ("", vec!["clase"], "bloque"))));
+    assert_eq!(programa("programa idPrograma; clase, variable principal() bloque"), Ok(("", ("", vec!["clase", "clase"], "bloque"))));
+    assert_eq!(programa("programa idPrograma; principal() bloque"), Ok(("", ("", vec![], "bloque"))));
   }
 }
