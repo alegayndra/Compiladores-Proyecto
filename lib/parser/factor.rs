@@ -8,7 +8,7 @@ use nom::{
 use crate::scanners::ws::*;
 use crate::parser::valor::*;
 
-fn retorna_expresion(input: &str) -> IResult<&str, (&str,&str)> {
+fn retorna_expresion(input: &str) -> IResult<&str, (&str, &str)> {
   tuple((tag("("), ws, tag("expresion"), ws, tag(")")))(input)
   .map(|(next_input, res)| {
     let (_, _, expresion, _, _) = res;
@@ -16,12 +16,11 @@ fn retorna_expresion(input: &str) -> IResult<&str, (&str,&str)> {
   })
 }
 
-
 fn signo_valor(input: &str) -> IResult<&str, &str> {
   alt((tag("+"),  tag("-"), ws))(input)
 }
 
-fn valor_factor(input: &str) -> IResult<&str, (&str,&str)> {
+fn valor_factor(input: &str) -> IResult<&str, (&str, &str)> {
   tuple((signo_valor, ws, valor))(input)
   .map(|(next_input, res)| {
    let (signo, _, valor) = res;
