@@ -50,7 +50,7 @@ fn metodos(input: &str) -> IResult<&str, (&str, &str, &str)> {
 // fn variable_funcion_vacio(input: &str) -> IResult<&str, (&str, &str, Vec<(&str, (&str, Vec<&str>))>)> {
 fn variable_funcion_vacio(input: &str) -> IResult<&str, (&str, &str, &str)> {
   ws(input)
-  .map(|(next_input, res)| {
+  .map(|(next_input, _res)| {
     (next_input, ("null", "vacio", "vacio"))
   })
 }
