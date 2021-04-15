@@ -1,5 +1,4 @@
 use nom::{
-    branch::alt,
     bytes::complete::tag,
     multi::many0,
     IResult,
@@ -8,9 +7,6 @@ use nom::{
 
   
 use crate::scanners::ws::*;
-use crate::scanners::id::*;
-use crate::parser::funcion::*;
-use crate::parser::variables::*;
 
 
 fn lista_estautos(input: &str) -> IResult<&str, Vec<&str>> {
@@ -25,7 +21,7 @@ fn lista_estautos(input: &str) -> IResult<&str, Vec<&str>> {
   })
 }
 
-fn bloque(input: &str) -> IResult<&str, Vec<&str>> {
+pub fn bloque(input: &str) -> IResult<&str, Vec<&str>> {
   tuple((tag("{"), ws, lista_estautos, ws, tag("}")))(input)
   .map(|(next_input, res)| {
     let (_, _, estatuto, _, _,) = res;
