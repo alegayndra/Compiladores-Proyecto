@@ -1,5 +1,6 @@
 use nom::{
   IResult,
+  bytes::complete::tag,
   sequence::tuple,
   branch::alt,
   multi::many0
@@ -11,14 +12,14 @@ use crate::scanners::id::*;
 // use crate::parser::funcion::*;
 // use crate::parser::variables::*;
 
-fn diferentes_declaraciones(input: &str) -> IResult<&str, Vec<&str>> {
+fn diferentes_declaraciones(input: &str) -> IResult<&str, &str> {
   alt((tag("variables"), tag("funcion"), tag("clase")))(input)
 }
 
 fn lista_declaraciones(input: &str) -> IResult<&str, Vec<&str>> {
   tuple((diferentes_declaraciones, many0(tuple((ws, tag(","), ws, diferentes_declaraciones)))))(input)
   .map(|(next_input, res)| {
-    let (decl, declaraciones) = res
+    let (decl, declaraciones) = res;
     let mut lista = Vec::new();
     lista.push(decl);
     for d in declaraciones {

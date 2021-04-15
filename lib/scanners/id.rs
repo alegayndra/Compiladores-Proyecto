@@ -29,7 +29,6 @@ pub fn id_parser(input: &str) -> IResult<&str, (&str, Vec<&str>)> {
   alt((id_con_dim, id_sin_dim))(input)
 }
 
-
 pub fn lista_ids_sin_dim(input: &str) -> IResult<&str, Vec<(&str, Vec<&str>)>> {
   tuple((id_sin_dim, many0(tuple((ws, tag(","), ws, id_sin_dim)))))(input)
   .map(|(next_input, res)| {

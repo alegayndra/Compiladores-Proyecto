@@ -6,7 +6,7 @@ use nom::{
 };
   
 use crate::scanners::ws::*;
-use crate::parser::valor::*;
+use crate::parser::reglas_expresion::valor::*;
 
 fn retorna_expresion(input: &str) -> IResult<&str, (&str, &str)> {
   tuple((tag("("), ws, tag("expresion"), ws, tag(")")))(input)

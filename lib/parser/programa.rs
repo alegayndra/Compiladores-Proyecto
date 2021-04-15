@@ -1,6 +1,7 @@
 use nom::{
   IResult,
   sequence::tuple,
+  bytes::complete::tag
 };
 
 use crate::scanners::ws::*;
@@ -26,8 +27,8 @@ mod tests {
 
   #[test]
   fn test_programa() {
-    assert_eq!(programa("programa idPrograma; clase principal() bloque"), Ok(("", ("", vec!["clase"], "bloque"))));
-    assert_eq!(programa("programa idPrograma; clase, variable principal() bloque"), Ok(("", ("", vec!["clase", "clase"], "bloque"))));
-    assert_eq!(programa("programa idPrograma; principal() bloque"), Ok(("", ("", vec![], "bloque"))));
+    assert_eq!(programa("programa idPrograma; clase principal() bloque"), Ok(("", ("idPrograma", vec!["clase"], "bloque"))));
+    assert_eq!(programa("programa idPrograma; principal() bloque"), Ok(("", ("idPrograma", vec![], "bloque"))));
+    assert_eq!(programa("programa idPrograma; clase, variables principal() bloque"), Ok(("", ("idPrograma", vec!["clase", "variables"], "bloque"))));
   }
 }
