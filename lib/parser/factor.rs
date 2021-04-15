@@ -1,13 +1,11 @@
 use nom::{
   branch::alt,
   bytes::complete::tag,
-  multi::many0,
   IResult,
   sequence::tuple,
 };
   
 use crate::scanners::ws::*;
-use crate::scanners::id::*;
 use crate::parser::valor::*;
 
 fn retorna_expresion(input: &str) -> IResult<&str, (&str,&str)> {
@@ -31,7 +29,7 @@ fn valor_factor(input: &str) -> IResult<&str, (&str,&str)> {
  })
 }
 
-fn factor(input: &str) -> IResult<&str, (&str, &str)> {
+pub fn factor(input: &str) -> IResult<&str, (&str, &str)> {
   alt((valor_factor,  retorna_expresion))(input)
 }
 
