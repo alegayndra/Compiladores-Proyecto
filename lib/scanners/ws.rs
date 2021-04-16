@@ -4,11 +4,11 @@ use nom::{
 };
 
 pub fn ws(input: &str) -> IResult<&str, &str> {
-  take_while(|c: char| c == ' ')(input)
+  take_while(|c: char| c == ' ' || c == '\n' || c == '\t')(input)
 }
 
 pub fn necessary_ws(input: &str) -> IResult<&str, &str> {
-  take_while1(|c: char| c == ' ')(input)
+  take_while1(|c: char| c == ' ' || c == '\n' || c == '\t')(input)
 }
 
 #[cfg(test)]
@@ -23,6 +23,8 @@ mod tests {
   fn test_ws() {
       assert_eq!(ws(""), Ok(("", "")));
       assert_eq!(ws("  "), Ok(("", "  ")));
+      assert_eq!(ws("\n"), Ok(("", "\n")));
+      assert_eq!(ws("\n   \t"), Ok(("", "\n   \t")));
       assert_eq!(ws("a"), Ok(("a", "")));
   }
 
@@ -30,6 +32,8 @@ mod tests {
   fn test_necessary_ws() {
       assert_eq!(necessary_ws("  "), Ok(("", "  ")));
       assert_eq!(necessary_ws(" "), Ok(("", " ")));
+      assert_eq!(necessary_ws("\n"), Ok(("", "\n")));
+      assert_eq!(necessary_ws("\n   \t"), Ok(("", "\n   \t")));
       assert_eq!(necessary_ws(" a"), Ok(("a", " ")));
   }
 }
