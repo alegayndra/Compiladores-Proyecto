@@ -1,7 +1,8 @@
 use nom::{
-  bytes::complete::{tag, take_while1},
+  // bytes::complete::{tag, take_while1},
+  bytes::complete::take_while1,
   IResult,
-  sequence::tuple,
+  // sequence::tuple,
 };
 
 pub fn num_entero(input: &str) -> IResult<&str, &str> {
