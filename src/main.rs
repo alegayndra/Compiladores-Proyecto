@@ -2,7 +2,7 @@ extern crate compilador;
 extern crate nom;
 
 use compilador::parser::func_esp::*;
-use compilador::parser::variables::*;
+use compilador::parser::declaraciones::variables::*;
 
 fn main() {
 	println!("{:?}", leer("lee ( id )"));

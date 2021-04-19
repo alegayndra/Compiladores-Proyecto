@@ -60,7 +60,8 @@ fn bloque_funcion(input: &str) -> IResult<&str, (&str, &str)> {
   })
 }
 
-pub fn funcion(input: &str) -> IResult<&str, (&str, &str, Vec<(&str, (&str, Vec<&str>))>)> {
+// pub fn funcion(input: &str) -> IResult<&str, (&str, &str, Vec<(&str, (&str, Vec<&str>))>)> {
+pub fn funcion(input: &str) -> IResult<&str, &str> {
   tuple((
     tipo_retorno, necessary_ws,
     tag("funcion"), necessary_ws,
@@ -71,7 +72,8 @@ pub fn funcion(input: &str) -> IResult<&str, (&str, &str, Vec<(&str, (&str, Vec<
   (input)
   .map(|(next_input, res)| {
     let (tipo, _, _, _, id, _, _, _, lista_params, _, _, _, _, _, _bloque) = res;
-    (next_input, (tipo, id, lista_params))
+    // (next_input, (tipo, id, lista_params))
+    (next_input, "funcion")
   })
 }
 
@@ -99,6 +101,7 @@ mod tests {
 
   #[test]
   fn test_funcion() {
-    assert_eq!(funcion("void funcion func (entero var): { estatuto; regresa expresion ; }"), Ok(("", ("void", "func", vec![("entero", ("var", vec![]))]))));
+    // assert_eq!(funcion("void funcion func (entero var): { estatuto; regresa expresion ; }"), Ok(("", ("void", "func", vec![("entero", ("var", vec![]))]))));
+    assert_eq!(funcion("void funcion func (entero var): { estatuto; regresa expresion ; }"), Ok(("", "funcion")));
   }
 }
