@@ -13,17 +13,17 @@ use crate::parser::declaraciones::variables::*;
 
 fn diferentes_declaraciones(input: &str) -> IResult<&str, &str> {
   // alt((tag("variables"), tag("funcion"), tag("clase")))(input)
-  alt((variables, funcion, clase))(input)
+  alt((clase, funcion, variables))(input)
 }
 
 fn lista_declaraciones(input: &str) -> IResult<&str, Vec<&str>> {
-  tuple((diferentes_declaraciones, many0(tuple((ws, tag(","), ws, diferentes_declaraciones)))))(input)
+  tuple((diferentes_declaraciones, many0(tuple((ws, diferentes_declaraciones)))))(input)
   .map(|(next_input, res)| {
     let (decl, declaraciones) = res;
     let mut lista = Vec::new();
     lista.push(decl);
     for d in declaraciones {
-      let (_, _, _, de) = d;
+      let (_, de) = d;
       lista.push(de);
     }
     (next_input, lista)
