@@ -1,14 +1,8 @@
 use nom::{
   branch::alt,
-  bytes::complete::tag,
-  multi::many0,
   IResult,
-  sequence::tuple,
 };
-  
-use crate::scanners::ws::*;
-use crate::scanners::id::*;
-use crate::scanners::texto::*;
+
 use crate::parser::asignacion::*;
 use crate::parser::func_esp::*;
 use crate::parser::llama_func::*;

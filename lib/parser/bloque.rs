@@ -28,7 +28,7 @@ fn lista_estatutos(input: &str) -> IResult<&str, &str> {
 pub fn bloque(input: &str) -> IResult<&str, &str> {
   tuple((tag("{"), ws, lista_estatutos, ws, tag("}")))(input)
   .map(|(next_input, res)| {
-    let (_, _, estatuto, _, _,) = res;
+    let (_, _, _estatuto, _, _,) = res;
     // (next_input, estatuto)
     (next_input, "bloque")
   })
