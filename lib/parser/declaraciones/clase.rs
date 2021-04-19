@@ -35,7 +35,7 @@ fn atributos(input: &str) -> IResult<&str, (&str, &str, &str)> {
 // fn metodos(input: &str) -> IResult<&str, (&str, &str, Vec<(&str, (&str, Vec<&str>))>)> {
 fn metodos(input: &str) -> IResult<&str, (&str, &str, &str)> {
   funcion(input)
-  .map(|(next_input, res)| {
+  .map(|(next_input, _res)| {
     // let (tipo, id, params) = res;
     // let mut lista_params = Vec::new();
     // for par in params {
@@ -75,8 +75,8 @@ pub fn clase(input: &str) -> IResult<&str, &str> {
     tag("{"), ws, lista_variable_funcion, ws, tag("}"), ws, tag(";") 
   ))
   (input)
-  .map(|(next_input, res)| {
-    let (_, _, id, _, padre, _, _, _, declaraciones, _, _, _, _) = res;
+  .map(|(next_input, _res)| {
+    // let (_, _, id, _, padre, _, _, _, declaraciones, _, _, _, _) = res;
     // (next_input, (id, padre, declaraciones))
     (next_input, "clase")
   })

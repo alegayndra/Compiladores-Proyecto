@@ -1,5 +1,4 @@
 use nom::{
-  bytes::complete::tag,
   IResult,
   sequence::tuple,
   branch::alt
@@ -30,9 +29,9 @@ fn exp_opcional(input: &str) -> IResult<&str, (&str, &str)> {
 // pub fn expresion(input: &str) -> IResult<&str, (&str, &str, &str)> {
   pub fn expresion(input: &str) -> IResult<&str, &str> {
   tuple((exp, exp_opcional))(input)
-  .map(|(next_input, res)| {
-    let (exp, exp_op) = res;
-    let (op, exp2) = exp_op;
+  .map(|(next_input, _res)| {
+    // let (exp, exp_op) = res;
+    // let (op, exp2) = exp_op;
     // (next_input, (exp, op, exp2))
     (next_input, "expresion")
   })

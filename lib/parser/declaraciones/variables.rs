@@ -34,8 +34,8 @@ fn variable_normal(input: &str) -> IResult<&str, (&str, &str, Vec<(&str, Vec<&st
 pub fn variables(input: &str) -> IResult<&str, &str> {
   alt((variable_compuesta, variable_normal))
   (input)
-  .map(|(next_input, res)| {
-    let (tipo, _, lista_ids, _, _dimensiones, _, _) = res;
+  .map(|(next_input, _res)| {
+    // let (tipo, _, lista_ids, _, _dimensiones, _, _) = res;
     // (next_input, (tipo, lista_ids))
     (next_input, "variables")
   })

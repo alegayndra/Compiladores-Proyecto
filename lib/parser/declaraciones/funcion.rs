@@ -70,8 +70,8 @@ pub fn funcion(input: &str) -> IResult<&str, &str> {
     bloque_funcion
   ))
   (input)
-  .map(|(next_input, res)| {
-    let (tipo, _, _, _, id, _, _, _, lista_params, _, _, _, _, _, _bloque) = res;
+  .map(|(next_input, _res)| {
+    // let (tipo, _, _, _, id, _, _, _, lista_params, _, _, _, _, _, _bloque) = res;
     // (next_input, (tipo, id, lista_params))
     (next_input, "funcion")
   })

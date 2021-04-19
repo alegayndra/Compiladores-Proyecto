@@ -1,6 +1,5 @@
 use nom::{
   IResult,
-  bytes::complete::tag,
   sequence::tuple,
   branch::alt,
   multi::many0
