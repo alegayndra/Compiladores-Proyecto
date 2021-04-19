@@ -11,12 +11,13 @@ use crate::scanners::id::*;
 use crate::scanners::texto::*;
 use crate::parser::asginacion::*;
 use crate::parser::funcion_esp::*;
+use crate::parser::llama_func::*;
+use crate::parser::repeticion::*;
+use crate::parser::decision::*;
+use crate::parser::comentario::*;
 
-fn estatuto_func_esp(input: &str) -> IResult<&str, Vec<(&str, Vec<&str>)>> {
-  
-}
 
-pub fn estatuto(input: &str) -> IResult<&str, Vec<(&str, Vec<&str>)>> {
-  alt((asginacion, funcion_esp))(input)
+pub fn estatuto(input: &str) -> IResult<&str, &str> {
+  alt((asginacion, funcion_esp, llama_func, repeticion, decision, comentario))(input)
 }
   

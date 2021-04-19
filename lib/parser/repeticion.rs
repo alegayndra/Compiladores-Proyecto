@@ -24,11 +24,13 @@ pub fn desde(input: &str) -> IResult<&str, &str> {
   })
 }
 
-pub fn repeticion(input: &str) -> IResult<&str, (&str, &str)> {
+// pub fn repeticion(input: &str) -> IResult<&str, (&str, &str)> {
+pub fn repeticion(input: &str) -> IResult<&str, &str> {
   tuple((alt((mientras, desde)), necessary_ws, tag("bloque")))(input)
-  .map(|(next_input, res)| {
-    let (repet, _, bloque) = res;
-    (next_input, (repet, bloque))
+  .map(|(next_input, __res)| {
+    // let (repet, _, bloque) = res;
+    // (next_input, (repet, bloque))
+    (next_input, "repeticion")
   })
 }
 
