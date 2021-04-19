@@ -4,12 +4,14 @@ use nom::{
   sequence::tuple,
 };
 
-pub fn comentario(input: &str) -> IResult<&str, &str> {
+// pub fn comentario(input: &str) -> IResult<&str, &str> {
+  pub fn comentario(input: &str) -> IResult<&str, &str> {
   tuple((tag("%%"), take_while(|c: char| c != '%'), tag("%%")))
   (input)
-  .map(|(next_input, res)| {
-    let (_, com, _,) = res;
-    (next_input, com)
+  .map(|(next_input, __res)| {
+    // let (_, com, _,) = res;
+    // (next_input, com)
+    (next_input, "comentario")
   })
 }
 

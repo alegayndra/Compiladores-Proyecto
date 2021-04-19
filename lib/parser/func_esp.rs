@@ -55,9 +55,14 @@ pub fn escribir(input: &str) -> IResult<&str, Vec<(&str, Vec<&str>)>> {
 }
 
 
-pub fn funcion_esp(input: &str) -> IResult<&str, Vec<(&str, Vec<&str>)>> {
-    alt((leer,escribir))(input)
+// pub fn funcion_esp(input: &str) -> IResult<&str, Vec<(&str, Vec<&str>)>> {
+pub fn funcion_esp(input: &str) -> IResult<&str, &str> {
+  alt((leer,escribir))(input)
+  .map(|(next_input, _res)| {
+    (next_input, "funcion_esp")
+  })
 }
+
 
 #[cfg(test)]
 mod tests {
