@@ -39,8 +39,10 @@ mod tests {
 
   #[test]
   fn test_decision() {
-    assert_eq!(decision("si ( expresion ) bloque "), Ok(("", "expresion")));
-    assert_eq!(decision("si ( expresion ) bloque sino bloque"), Ok(("", "expresion")));
-    // assert_eq!(leer("lee()"), Ok(("", vec![])));
+    // assert_eq!(decision("si ( expresion ) bloque "), Ok(("", "expresion")));
+    // assert_eq!(decision("si ( expresion ) bloque sino bloque"), Ok(("", "expresion")));
+
+    assert_eq!(decision("si ( expresion ) bloque "),            Ok(("", "decision")));
+    assert_eq!(decision("si ( expresion ) bloque sino bloque"), Ok(("", "decision")));
   }
 }

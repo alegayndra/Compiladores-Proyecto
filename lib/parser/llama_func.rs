@@ -44,9 +44,14 @@ mod tests {
 
   #[test]
   fn test_llama_func() {
-    assert_eq!(llama_func("id();"), Ok(("", ("id", vec![], ("expresiones", vec![])))));
-    assert_eq!(llama_func("id.metodo();"), Ok(("", ("id", vec!["metodo"], ("expresiones", vec![])))));
-    assert_eq!(llama_func("id(expresion);"), Ok(("", ("id", vec![], ("expresiones", vec!["expresion"])))));
-    assert_eq!(llama_func("id.metodo.metodo2(expresion);"), Ok(("", ("id", vec!["metodo", "metodo2"], ("expresiones", vec!["expresion"])))));
+    // assert_eq!(llama_func("id();"), Ok(("", ("id", vec![], ("expresiones", vec![])))));
+    // assert_eq!(llama_func("id.metodo();"), Ok(("", ("id", vec!["metodo"], ("expresiones", vec![])))));
+    // assert_eq!(llama_func("id(expresion);"), Ok(("", ("id", vec![], ("expresiones", vec!["expresion"])))));
+    // assert_eq!(llama_func("id.metodo.metodo2(expresion);"), Ok(("", ("id", vec!["metodo", "metodo2"], ("expresiones", vec!["expresion"])))));
+
+    assert_eq!(llama_func("id();"),                         Ok(("", "llama_func")));
+    assert_eq!(llama_func("id.metodo();"),                  Ok(("", "llama_func")));
+    assert_eq!(llama_func("id(expresion);"),                Ok(("", "llama_func")));
+    assert_eq!(llama_func("id.metodo.metodo2(expresion);"), Ok(("", "llama_func")));
   }
 }
