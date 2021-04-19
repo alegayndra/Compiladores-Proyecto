@@ -7,25 +7,18 @@ Para correr el programa, se necesita tener instalado el ambiente de desarrollo r
 
 ## Avances
 
-### Avance 2
+### Avance Semana 2
+- Parser completo
+- Tabla de variables definida
 
 #### **Documentos**
-
+- Pequeños ajustes en estructura de gramáticas 
+    - Agregar token ';' al final de algunas instrucciones.
+    - En no terminal 'Factor', los tokens de '+' y '-' son opcionales previo al no terminal 'Valor'
+    - Expresiones son opcionales en algunos casos.
 
 #### **Código**
 - Analizador léxico de _white space_.
 - Analizador léxico de tipos.
-
-### Avance 1
-
-#### **Documentos**
-- Tabla de tokens
-- Tabla de expresiones regulares
-- Diagramas de la sintaxis del lenguaje
-- Gramatica del lenguaje
-
-#### **Código**
-- Analizadores léxicos de operadores aritmeticos, logicos y de relación.
-- Analizador léxico de palabras reservadas de tipos básicos de variables.
-- Avance de analizadores léxicos de `id`s y espacios en blanco.
-- Avance de parser de función `leer()` predifinida;
+- Parser completo.
+- Tabla de variables.
