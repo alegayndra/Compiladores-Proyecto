@@ -70,8 +70,11 @@ fn valor_id(input: &str) -> IResult<&str, (&str, &str)> {
   })
 }
 
-pub fn valor(input: &str) -> IResult<&str, (&str,&str)> {
+pub fn valor(input: &str) -> IResult<&str, (&str, &str)> {
   alt((valor_cte, valor_id ))(input)
+  .map(|(next_input, res)| {
+    (next_input, res)
+  })
 }
 
 #[cfg(test)]

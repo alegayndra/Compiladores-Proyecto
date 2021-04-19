@@ -7,9 +7,18 @@ use nom::{
   
 use crate::scanners::ws::*;
 use crate::scanners::operadores::*;
+use crate::parser::reglas_expresion::termino::*;
 
-pub fn exp(input: &str) -> IResult<&str, Vec<(&str, &str)>> {
-  tuple((tag("termino"), many0(tuple((ws, op_sumsub, ws, tag("termino"))))))(input)
+// pub fn exp(input: &str) -> IResult<&str, Vec<(&str, &str)>> {
+pub fn exp(input: &str) -> IResult<&str, &str> {
+  // tuple((tag("termino"), many0(tuple((ws, op_sumsub, ws, tag("termino"))))))(input)
+  tuple((
+    termino,
+    many0(
+      tuple((ws, op_sumsub, ws, termino))
+    )
+  ))
+  (input)
   .map(|(next_input, res)| {
     let (termino, terminos) = res;
     let mut lista_terminos = Vec::new();
@@ -18,7 +27,8 @@ pub fn exp(input: &str) -> IResult<&str, Vec<(&str, &str)>> {
       let (_, op, _, t) = term;
       lista_terminos.push((op, t));
     }
-    (next_input, lista_terminos)
+    // (next_input, lista_terminos)
+    (next_input, "exp")
   })
 }
 
@@ -32,14 +42,19 @@ mod tests {
 
   #[test]
   fn test_exp() {
-    assert_eq!(exp("termino"), Ok(("", vec![("+", "termino")])));
-    assert_eq!(exp("termino + termino - termino - termino"), Ok(("", 
-      vec![
-        ("+", "termino"),
-        ("+", "termino"),
-        ("-", "termino"),
-        ("-", "termino")
-      ]
-    )));
+    // assert_eq!(exp("termino"), Ok(("", vec![("+", "termino")])));
+    // assert_eq!(exp("termino + termino - termino - termino"), Ok(("", 
+    //   vec![
+    //     ("+", "termino"),
+    //     ("+", "termino"),
+    //     ("-", "termino"),
+    //     ("-", "termino")
+    //   ]
+    // )));
+    assert_eq!(exp("num_entero"), Ok(("", "exp")));
+    assert_eq!(exp("id"), Ok(("", "exp")));
+    assert_eq!(exp("id * num_entero"), Ok(("", "exp")));
+    assert_eq!(exp("id + num_entero"), Ok(("", "exp")));
+    assert_eq!(exp("id + num_entero * id2 - num_entero - termino"), Ok(("", "exp")));
   }
 }

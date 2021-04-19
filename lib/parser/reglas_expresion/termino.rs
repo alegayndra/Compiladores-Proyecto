@@ -7,9 +7,12 @@ use nom::{
   
 use crate::scanners::ws::*;
 use crate::scanners::operadores::*;
+use crate::parser::reglas_expresion::factor::*;
 
-pub fn termino(input: &str) -> IResult<&str, Vec<(&str, &str)>> {
-  tuple((tag("factor"), many0(tuple((ws, op_multdiv, ws, tag("factor"))))))(input)
+// pub fn termino(input: &str) -> IResult<&str, Vec<(&str, &str)>> {
+pub fn termino(input: &str) -> IResult<&str, &str> {
+  // tuple((tag("factor"), many0(tuple((ws, op_multdiv, ws, tag("factor"))))))(input)
+  tuple((factor, many0(tuple((ws, op_multdiv, ws, factor)))))(input)
   .map(|(next_input, res)| {
     let (factor, factores) = res;
     let mut lista_factores = Vec::new();
@@ -18,7 +21,8 @@ pub fn termino(input: &str) -> IResult<&str, Vec<(&str, &str)>> {
       let (_, op, _, fact) = fac;
       lista_factores.push((op, fact));
     }
-    (next_input, lista_factores)
+    // (next_input, lista_factores)
+    (next_input, "termino")
   })
 }
 
@@ -32,14 +36,21 @@ mod tests {
 
   #[test]
   fn test_termino() {
-    assert_eq!(termino("factor"), Ok(("", vec![("+", "factor")])));
-    assert_eq!(termino("factor * factor * factor / factor"), Ok(("", 
-      vec![
-        ("+", "factor"),
-        ("*", "factor"),
-        ("*", "factor"),
-        ("/", "factor")
-      ]
-    )));
+    // assert_eq!(termino("factor"), Ok(("", vec![("+", "factor")])));
+    // assert_eq!(termino("factor * factor * factor / factor"), Ok(("", 
+    //   vec![
+    //     ("+", "factor"),
+    //     ("*", "factor"),
+    //     ("*", "factor"),
+    //     ("/", "factor")
+    //   ]
+    // )));
+
+    // assert_eq!(termino("factor"), Ok(("", "termino")));
+    // assert_eq!(termino("factor * factor * factor / factor"), Ok(("", "termino")));
+
+    assert_eq!(termino("num_entero"), Ok(("", "termino")));
+    assert_eq!(termino("id"), Ok(("", "termino")));
+    assert_eq!(termino("id * num_entero * id2 / id3"), Ok(("", "termino")));
   }
 }
