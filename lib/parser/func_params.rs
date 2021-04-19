@@ -41,3 +41,19 @@ pub fn func_params(input: &str) -> IResult<&str, (&str, Vec<&str>)> {
     (next_input, ("expresiones", expresiones))
   })
 }
+
+#[cfg(test)]
+mod tests {
+  use super::*;
+  // use nom::{
+  //     error::{ErrorKind, VerboseError, VerboseErrorKind},
+  //     Err,
+  // };
+
+  #[test]
+  fn test_func_params() {
+    assert_eq!(func_params("(expresion)"), Ok(("", ("expresiones",vec!["expresion"]))));
+    assert_eq!(func_params("(  expresion , expresion,expresion )"), Ok(("", ("expresiones",vec!["expresion","expresion","expresion"]))));
+    assert_eq!(func_params("()"), Ok(("", ("expresiones",vec![]))));
+  }
+}
