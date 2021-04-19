@@ -7,9 +7,11 @@ use nom::{
 
 use crate::scanners::ws::*;
 use crate::scanners::id::*;
+use crate::parser::reglas_expresion::expresion::*;
+use crate::parser::reglas_expresion::exp::*;
 
 pub fn mientras(input: &str) -> IResult<&str, &str> {
-  tuple((tag("mientras"), ws, tag("("), ws, tag("expresion"), ws, tag(")")))(input)
+  tuple((tag("mientras"), ws, tag("("), ws, expresion, ws, tag(")")))(input)
   .map(|(next_input, _res)| {
     // let (_, _, _, _, expresion, _, bloque) = res;
     (next_input, "mientras")
@@ -17,7 +19,7 @@ pub fn mientras(input: &str) -> IResult<&str, &str> {
 }
 
 pub fn desde(input: &str) -> IResult<&str, &str> {
-  tuple((tag("desde"), necessary_ws, id_con_dim, ws, tag("="), ws, tag("exp"), necessary_ws, tag("hasta"), necessary_ws, tag("exp")))(input)
+  tuple((tag("desde"), necessary_ws, id_con_dim, ws, tag("="), ws, exp, necessary_ws, tag("hasta"), necessary_ws, exp))(input)
   .map(|(next_input, _res)| {
     // let (_, id, _, _, _, exp, _, _, _, exp2) = res;
     (next_input, "desde")
@@ -48,14 +50,14 @@ mod tests {
 
   #[test]
   fn test_desde() {
-    assert_eq!(desde("desde id = exp hasta exp"), Ok(("", "desde")));
-    assert_eq!(desde("desde id[id] = exp hasta exp"), Ok(("", "desde")));
-    assert_eq!(desde("desde id[id][id] = exp hasta exp"), Ok(("", "desde")));
+    assert_eq!(desde("desde id = num_entero hasta num_entero"), Ok(("", "desde")));
+    assert_eq!(desde("desde id[id] = num_entero hasta num_entero"), Ok(("", "desde")));
+    assert_eq!(desde("desde id[id][id] = num_entero hasta num_entero"), Ok(("", "desde")));
   }
 
   #[test]
   fn test_repeticion() {
     assert_eq!(repeticion("mientras(expresion) bloque"), Ok(("", ("mientras", "bloque"))));
-    assert_eq!(repeticion("desde id = exp hasta exp bloque"), Ok(("", ("desde", "bloque"))));
+    assert_eq!(repeticion("desde id = num_entero hasta num_entero bloque"), Ok(("", ("desde", "bloque"))));
   }
 }

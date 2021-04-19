@@ -10,6 +10,7 @@ use crate::scanners::ws::*;
 use crate::scanners::tipos::*;
 use crate::scanners::id::*;
 // use crate::parser::dimensiones::*;
+use crate::parser::reglas_expresion::expresion::*;
 
 fn parametro(input: &str) -> IResult<&str, (&str, (&str, Vec<&str>))> {
   alt((
@@ -51,7 +52,7 @@ fn bloque_funcion(input: &str) -> IResult<&str, (&str, &str)> {
   tuple((
     tag("{"), ws,
     tag("estatuto;"), ws,
-    tag("regresa"), necessary_ws, tag("expresion"), ws, tag(";"), ws,
+    tag("regresa"), necessary_ws, expresion, ws, tag(";"), ws,
     tag("}")
   ))(input)
   .map(|(next_input, res)| {

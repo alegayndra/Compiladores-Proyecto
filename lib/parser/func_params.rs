@@ -7,6 +7,7 @@ use nom::{
 };
 
 use crate::scanners::ws::*;
+use crate::parser::reglas_expresion::expresion::*;
 
 fn expresiones_vacias(input: &str) -> IResult<&str, Vec<&str>> {
   ws(input)
@@ -17,7 +18,7 @@ fn expresiones_vacias(input: &str) -> IResult<&str, Vec<&str>> {
 
 fn lista_expresiones(input: &str) -> IResult<&str, Vec<&str>> {
   tuple((
-    tag("expresion"), many0(tuple((ws, tag(","), ws, tag("expresion"))))
+    expresion, many0(tuple((ws, tag(","), ws, expresion)))
   ))(input)
    //Llama al no terminal expresion
    .map(|(next_input, res)| {

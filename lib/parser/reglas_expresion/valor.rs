@@ -10,6 +10,7 @@ use crate::scanners::ws::*;
 use crate::scanners::id::*;
 use crate::scanners::texto::*;
 use crate::parser::dimensiones::*;
+use crate::parser::func_params::*;
 
 fn valor_cte(input: &str) -> IResult<&str, (&str, &str)> {
   alt((tag("num_entero"), tag("num_float"), texto))(input)
@@ -18,38 +19,6 @@ fn valor_cte(input: &str) -> IResult<&str, (&str, &str)> {
   })
 }
 
-fn expresiones_vacias(input: &str) -> IResult<&str, Vec<&str>> {
-  ws(input)
-  .map(|(next_input, _)| {
-    (next_input, vec![])
-  })
-}
-
-fn lista_expresiones(input: &str) -> IResult<&str, Vec<&str>> {
-  tuple((
-    tag("expresion"), many0(tuple((ws, tag(","), ws, tag("expresion"))))
-  ))(input)
-   //Llama al no terminal expresion
-   .map(|(next_input, res)| {
-    let (exp, expresiones) = res;
-    let mut lista_expresiones = Vec::new();
-    lista_expresiones.push(exp);
-    for i in expresiones {
-      let (_, _, _, expresion) = i;
-      lista_expresiones.push(expresion)
-    }
-    (next_input, lista_expresiones)
-  })
-}
-
-fn func_params(input: &str) -> IResult<&str, (&str, Vec<&str>)> {
-  tuple((tag("("), ws, alt((lista_expresiones, expresiones_vacias)), ws, tag(")")))(input)
-  //Llama al no terminal expresion
-  .map(|(next_input, res)| {
-    let (_, _, expresiones, _, _) = res;
-    (next_input, ("expresiones", expresiones))
-  })
-}
 fn dim_normalizado(input: &str) -> IResult<&str, (&str, Vec<&str>)> {
   con_dim(input)
   .map(|(next_input, res)| {
@@ -92,17 +61,10 @@ mod tests {
     assert_eq!(valor_cte("num_float"), Ok(("", ("num_float", "constante"))));
   }
 
-  #[test]
-  fn test_func_params() {
-    assert_eq!(func_params("(expresion)"), Ok(("", ("expresiones",vec!["expresion"]))));
-    assert_eq!(func_params("(  expresion , expresion,expresion )"), Ok(("", ("expresiones",vec!["expresion","expresion","expresion"]))));
-    assert_eq!(func_params("()"), Ok(("", ("expresiones",vec![]))));
-  }
-
   //Hace las mismas pruebas de lib > parser > dim - "con_dim()", solo regresa valor distinto
   #[test]
   fn test_dim_normalizado() {
-    assert_eq!(dim_normalizado("[id][id]"), Ok(("", ("dimensiones",vec!["id","id"]))));
+    assert_eq!(dim_normalizado("[id][id]"), Ok(("", ("dimensiones", vec!["id","id"]))));
   }
 
   #[test]
