@@ -9,7 +9,7 @@ use crate::scanners::operadores::*;
 use crate::parser::reglas_expresion::exp::*;
 
 fn exp_extra(input: &str) -> IResult<&str, (&str, &str)> {
-  tuple((ws, op_logica, ws, exp))(input)
+  tuple((ws, op_relacional, ws, exp))(input)
   .map(|(next_input, res)| {
     let (_, op, _, exp) = res;
     (next_input, (op, exp))
@@ -49,7 +49,7 @@ mod tests {
   fn test_expresion() {
     // assert_eq!(expresion("exp"), Ok(("", ("exp", "", ""))));
     // assert_eq!(expresion("exp & exp"), Ok(("", ("exp", "&", "exp"))));
-    assert_eq!(expresion("termino & termino"), Ok(("", "expresion")));
+    assert_eq!(expresion("termino > termino"), Ok(("", "expresion")));
     assert_eq!(expresion("termino"), Ok(("", "expresion")));
     assert_eq!(expresion("id + num_entero * id2 - num_entero - termino"), Ok(("", "expresion")));
     assert_eq!(expresion("id + num_entero * id2 - num_entero - termino & id3"), Ok(("", "expresion")));
