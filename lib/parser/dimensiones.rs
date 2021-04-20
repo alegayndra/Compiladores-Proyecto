@@ -12,7 +12,7 @@ fn dimension(input: &str) -> IResult<&str, Vec<&str>> {
   tuple((tag("["), ws, expresion, ws, tag("]")))
   (input)
   .map(|(next_input, res)| {
-    let (_, _, dimension, _, _,) = res;
+    let (_, _, dimension, _, _) = res;
     let mut lista_dimensiones = Vec::new();
     lista_dimensiones.push(dimension);
     (next_input, lista_dimensiones)
@@ -54,8 +54,8 @@ mod tests {
     // assert_eq!(dimension("[ id ]"), Ok(("", vec!["id"])));
     // assert_eq!(dimension("[  id  ]"), Ok(("", vec!["id"])));
 
-    assert_eq!(dimension("[id]"),     Ok(("", vec!["expresion"])));
-    assert_eq!(dimension("[ id ]"),   Ok(("", vec!["expresion"])));
+    assert_eq!(dimension("[expresion]"),     Ok(("", vec!["expresion"])));
+    assert_eq!(dimension("[num_float]"),   Ok(("", vec!["expresion"])));
     assert_eq!(dimension("[  id  ]"), Ok(("", vec!["expresion"])));
   }
 
