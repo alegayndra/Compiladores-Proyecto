@@ -90,7 +90,8 @@ mod tests {
   fn test_parametro() {
     assert_eq!(parametro("Persona id"), Ok(("", ("Persona", ("id", vec![])))));
     assert_eq!(parametro("entero id"), Ok(("", ("entero", ("id", vec![])))));
-    assert_eq!(parametro("entero id[id]"), Ok(("", ("entero", ("id", vec!["id"])))));
+    // assert_eq!(parametro("entero id[id]"), Ok(("", ("entero", ("id", vec!["id"])))));
+    assert_eq!(parametro("entero id[id]"), Ok(("", ("entero", ("id", vec!["expresion"])))));
   }
 
   #[test]
