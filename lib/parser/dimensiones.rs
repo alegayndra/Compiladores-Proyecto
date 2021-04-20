@@ -6,10 +6,10 @@ use nom::{
 };
 
 use crate::scanners::ws::*;
-use crate::parser::reglas_expresion::exp::*;
+use crate::parser::reglas_expresion::expresion::*;
 
 fn dimension(input: &str) -> IResult<&str, Vec<&str>> {
-  tuple((tag("["), ws, exp, ws, tag("]")))
+  tuple((tag("["), ws, expresion, ws, tag("]")))
   (input)
   .map(|(next_input, res)| {
     let (_, _, dimension, _, _,) = res;
@@ -50,16 +50,24 @@ mod tests {
 
   #[test]
   fn test_dimension() {
-    assert_eq!(dimension("[id]"), Ok(("", vec!["id"])));
-    assert_eq!(dimension("[ id ]"), Ok(("", vec!["id"])));
-    assert_eq!(dimension("[  id  ]"), Ok(("", vec!["id"])));
+    // assert_eq!(dimension("[id]"), Ok(("", vec!["id"])));
+    // assert_eq!(dimension("[ id ]"), Ok(("", vec!["id"])));
+    // assert_eq!(dimension("[  id  ]"), Ok(("", vec!["id"])));
+
+    assert_eq!(dimension("[id]"),     Ok(("", vec!["expresion"])));
+    assert_eq!(dimension("[ id ]"),   Ok(("", vec!["expresion"])));
+    assert_eq!(dimension("[  id  ]"), Ok(("", vec!["expresion"])));
   }
 
   #[test]
   fn test_dos_dimensiones() {
-    assert_eq!(dos_dimensiones("[id][id]"), Ok(("", vec!["id", "id"])));
-    assert_eq!(dos_dimensiones("[ id ][ id ]"), Ok(("", vec!["id", "id"])));
-    assert_eq!(dos_dimensiones("[  id  ][  id  ]"), Ok(("", vec!["id", "id"])));
+    // assert_eq!(dos_dimensiones("[id][id]"), Ok(("", vec!["id", "id"])));
+    // assert_eq!(dos_dimensiones("[ id ][ id ]"), Ok(("", vec!["id", "id"])));
+    // assert_eq!(dos_dimensiones("[  id  ][  id  ]"), Ok(("", vec!["id", "id"])));
+
+    assert_eq!(dos_dimensiones("[id][id]"),         Ok(("", vec!["expresion", "expresion"])));
+    assert_eq!(dos_dimensiones("[ id ][ id ]"),     Ok(("", vec!["expresion", "expresion"])));
+    assert_eq!(dos_dimensiones("[  id  ][  id  ]"), Ok(("", vec!["expresion", "expresion"])));
   }
 
   #[test]
@@ -71,8 +79,12 @@ mod tests {
 
   #[test]
   fn test_con_dim() {
-    assert_eq!(con_dim("[id]"), Ok(("", vec!["id"])));
-    assert_eq!(con_dim("[id][id]"), Ok(("", vec!["id", "id"])));
+    // assert_eq!(con_dim("[id]"), Ok(("", vec!["id"])));
+    // assert_eq!(con_dim("[id][id]"), Ok(("", vec!["id", "id"])));
+    // assert_eq!(con_dim("aaaa"), Ok(("aaaa", vec![])));
+
+    assert_eq!(con_dim("[id]"), Ok(("", vec!["expresion"])));
+    assert_eq!(con_dim("[id][id]"), Ok(("", vec!["expresion", "expresion"])));
     assert_eq!(con_dim("aaaa"), Ok(("aaaa", vec![])));
   }
 }
