@@ -6,7 +6,7 @@ use nom::{
 };
 
 use crate::scanners::ws::*;
-use crate::scanners::id::*;
+use crate::parser::reglas_expresion::exp::*;
 
 fn dimension(input: &str) -> IResult<&str, Vec<&str>> {
   tuple((tag("["), ws, exp, ws, tag("]")))
