@@ -52,7 +52,7 @@ mod tests {
     assert_eq!(expresion("termino > termino"), Ok(("", "expresion")));
     assert_eq!(expresion("termino"), Ok(("", "expresion")));
     assert_eq!(expresion("id + num_entero * id2 - num_entero - termino"), Ok(("", "expresion")));
-    assert_eq!(expresion("id + num_entero * id2 - num_entero - termino & id3"), Ok(("", "expresion")));
-    assert_eq!(expresion("( id + num_entero * id2 - num_entero - termino & id3 )"), Ok(("", "expresion")));
+    assert_eq!(expresion("id + num_entero * id2 - num_entero - termino > id3"), Ok(("", "expresion")));
+    assert_eq!(expresion("( id + num_entero * id2 - num_entero - termino >= id3 )"), Ok(("", "expresion")));
   }
 }
