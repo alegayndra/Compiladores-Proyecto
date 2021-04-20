@@ -9,6 +9,7 @@ use crate::scanners::ws::*;
 use crate::scanners::id::*;
 use crate::parser::reglas_expresion::expresion::*;
 use crate::parser::reglas_expresion::exp::*;
+use crate::parser::bloque::*;
 
 pub fn mientras(input: &str) -> IResult<&str, &str> {
   tuple((tag("mientras"), ws, tag("("), ws, expresion, ws, tag(")")))(input)
@@ -28,7 +29,7 @@ pub fn desde(input: &str) -> IResult<&str, &str> {
 
 // pub fn repeticion(input: &str) -> IResult<&str, (&str, &str)> {
 pub fn repeticion(input: &str) -> IResult<&str, &str> {
-  tuple((alt((mientras, desde)), necessary_ws, tag("bloque")))(input)
+  tuple((alt((mientras, desde)), necessary_ws, bloque))(input)
   .map(|(next_input, _res)| {
     // let (repet, _, bloque) = res;
     // (next_input, (repet, bloque))
@@ -62,7 +63,7 @@ mod tests {
     // assert_eq!(repeticion("mientras(expresion) bloque"), Ok(("", ("mientras", "bloque"))));
     // assert_eq!(repeticion("desde id = num_entero hasta num_entero bloque"), Ok(("", ("desde", "bloque"))));
 
-    assert_eq!(repeticion("mientras(expresion) bloque"),                    Ok(("", "repeticion")));
-    assert_eq!(repeticion("desde id = num_entero hasta num_entero bloque"), Ok(("", "repeticion")));
+    assert_eq!(repeticion("mientras(expresion) {}"),                    Ok(("", "repeticion")));
+    assert_eq!(repeticion("desde id = num_entero hasta num_entero {}"), Ok(("", "repeticion")));
   }
 }

@@ -27,7 +27,7 @@ fn cte_texto(input: &str) -> IResult<&str, (&str, Vec<&str>)> {
 }
 
 fn expresion_escribe(input: &str) -> IResult<&str, (&str, Vec<&str>)> {
-  alt((id_parser, cte_texto))(input)
+  alt((expresion, cte_texto))(input)
 }
 
 fn lista_textos(input: &str) -> IResult<&str, Vec<(&str, Vec<&str>)>> {

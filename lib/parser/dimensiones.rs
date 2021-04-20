@@ -9,7 +9,7 @@ use crate::scanners::ws::*;
 use crate::scanners::id::*;
 
 fn dimension(input: &str) -> IResult<&str, Vec<&str>> {
-  tuple((tag("["), ws, id, ws, tag("]")))
+  tuple((tag("["), ws, exp, ws, tag("]")))
   (input)
   .map(|(next_input, res)| {
     let (_, _, dimension, _, _,) = res;
