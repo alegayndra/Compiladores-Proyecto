@@ -56,7 +56,8 @@ mod tests {
 
   #[test]
   fn test_valor_cte() {
-    assert_eq!(valor_cte("\"soyUnaVariable\""), Ok(("", ("\"soyUnaVariable\"", "constante"))));
+    // assert_eq!(valor_cte("\"soyUnaVariable\""), Ok(("", ("\"soyUnaVariable\"", "constante"))));
+    assert_eq!(valor_cte("\"soyUnaVariable\""), Ok(("", ("soyUnaVariable", "constante"))));
     assert_eq!(valor_cte("10"), Ok(("", ("10", "constante"))));
     assert_eq!(valor_cte("num_float"), Ok(("", ("num_float", "constante"))));
   }

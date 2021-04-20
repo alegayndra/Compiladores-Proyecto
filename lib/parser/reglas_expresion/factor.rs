@@ -48,8 +48,11 @@ mod tests {
   fn test_valor_factor() {
     assert_eq!(valor_factor("10"), Ok(("", ("", "10"))));
     assert_eq!(valor_factor("- 10"), Ok(("", ("-", "10"))));
-    assert_eq!(valor_factor("+ \"soyUnaVariable\""), Ok(("", ("+", "\"soyUnaVariable\""))));
-    assert_eq!(valor_factor("+ Nombre . metodo ()"), Ok(("", ("+", "Nombre . metodo ()"))));
+    // assert_eq!(valor_factor("+ \"soyUnaVariable\""), Ok(("", ("+", "\"soyUnaVariable\""))));
+    assert_eq!(valor_factor("+ \"soyUnaVariable\""), Ok(("", ("+", "soyUnaVariable"))));
+    // assert_eq!(valor_factor("+ Nombre . metodo ()"), Ok(("", ("+", "Nombre . metodo ()"))));
+    assert_eq!(valor_factor("+ Nombre.metodo()"), Ok(("", ("+", "Nombre"))));
+    assert_eq!(valor_factor("+ Nombre . metodo ()"), Ok(("", ("+", "Nombre"))));
   }
 
   #[test]
