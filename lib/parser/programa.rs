@@ -7,9 +7,10 @@ use nom::{
 use crate::scanners::ws::*;
 use crate::scanners::id::*;
 use crate::parser::declaraciones::declaraciones::*;
+use crate::parser::bloque::*;
 
 pub fn programa(input: &str) -> IResult<&str, (&str, Vec<&str>, &str)> {
-  tuple((ws, tag("programa"), necessary_ws, id, ws, tag(";"), ws, declaraciones, ws, tag("principal()"), ws, tag("bloque"), ws))
+  tuple((ws, tag("programa"), necessary_ws, id, ws, tag(";"), ws, declaraciones, ws, tag("principal()"), ws, bloque, ws))
   (input)
   .map(|(next_input, res)| {
     let (_, _, _, id, _, _, _, declaraciones, _, _, _, bloque, _) = res;
@@ -32,19 +33,25 @@ mod tests {
     // assert_eq!(programa("programa idPrograma; clase, variables principal() bloque"), Ok(("", ("idPrograma", vec!["clase", "variables"], "bloque"))));
     assert_eq!(programa("
       programa idPrograma;
-      principal() bloque"
+      principal() {}"
+    ), Ok(("", ("idPrograma", vec![], "bloque"))));
+    assert_eq!(programa("
+      programa idPrograma;
+      principal() {
+        %% comentario %%
+      }"
     ), Ok(("", ("idPrograma", vec![], "bloque"))));
     assert_eq!(programa("
       programa idPrograma;
       entero num;
-      principal() bloque"
+      principal() {}"
     ), Ok(("", ("idPrograma", vec!["variables"], "bloque"))));
     assert_eq!(programa("
       programa idPrograma;
       clase Estudiante <Persona> {
         char nombre[10], apellido[10];
       };
-      principal() bloque"
+      principal() {}"
     ), Ok(("", ("idPrograma", vec!["clase"], "bloque"))));
     assert_eq!(programa("
       programa idPrograma;
@@ -52,7 +59,7 @@ mod tests {
         estatuto;
         regresa expresion;
       }
-      principal() bloque"
+      principal() {}"
     ), Ok(("", ("idPrograma", vec!["funcion"], "bloque"))));
     assert_eq!(programa("
       programa idPrograma;
@@ -64,7 +71,7 @@ mod tests {
       clase Estudiante <Persona> {
         char nombre[10], apellido[10];
       };
-      principal() bloque"
+      principal() {}"
     ), Ok(("", ("idPrograma", vec!["funcion", "variables", "clase"], "bloque"))));
   }
 }

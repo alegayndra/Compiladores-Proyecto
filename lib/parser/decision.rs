@@ -19,8 +19,7 @@ fn sino(input: &str) -> IResult<&str, &str> {
 
 }
 
-// pub fn decision(input: &str) -> IResult<&str, &str> {
-  pub fn decision(input: &str) -> IResult<&str, &str> {
+pub fn decision(input: &str) -> IResult<&str, &str> {
   tuple((tag("si"), ws, tag("("), ws, expresion, ws, tag(")"), ws, tag("bloque"), sino))
   (input)
   .map(|(next_input, __res)| {
@@ -40,8 +39,10 @@ mod tests {
 
   #[test]
   fn test_decision() {
-    assert_eq!(decision("si ( expresion ) bloque "), Ok(("", "expresion")));
-    assert_eq!(decision("si ( expresion ) bloque sino bloque"), Ok(("", "expresion")));
-    // assert_eq!(leer("lee()"), Ok(("", vec![])));
+    // assert_eq!(decision("si ( expresion ) bloque "), Ok(("", "expresion")));
+    // assert_eq!(decision("si ( expresion ) bloque sino bloque"), Ok(("", "expresion")));
+
+    assert_eq!(decision("si ( expresion ) bloque "),            Ok(("", "decision")));
+    assert_eq!(decision("si ( expresion ) bloque sino bloque"), Ok(("", "decision")));
   }
 }
