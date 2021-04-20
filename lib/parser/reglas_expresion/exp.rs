@@ -18,14 +18,14 @@ pub fn exp(input: &str) -> IResult<&str, &str> {
     )
   ))
   (input)
-  .map(|(next_input, res)| {
-    let (termino, terminos) = res;
-    let mut lista_terminos = Vec::new();
-    lista_terminos.push(("+", termino));
-    for term in terminos {
-      let (_, op, _, t) = term;
-      lista_terminos.push((op, t));
-    }
+  .map(|(next_input, _res)| {
+    // let (termino, terminos) = res;
+    // let mut lista_terminos = Vec::new();
+    // lista_terminos.push(("+", termino));
+    // for term in terminos {
+    //   let (_, op, _, t) = term;
+    //   lista_terminos.push((op, t));
+    // }
     // (next_input, lista_terminos)
     (next_input, "exp")
   })
@@ -52,6 +52,8 @@ mod tests {
     // )));
     assert_eq!(exp("num_entero"), Ok(("", "exp")));
     assert_eq!(exp("id"), Ok(("", "exp")));
+    // assert_eq!(exp("id  "), Ok(("  ", "exp")));
+    assert_eq!(exp("10  "), Ok(("  ", "exp")));
     assert_eq!(exp("id * num_entero"), Ok(("", "exp")));
     assert_eq!(exp("id + num_entero"), Ok(("", "exp")));
     assert_eq!(exp("id + num_entero * id2 - num_entero - termino"), Ok(("", "exp")));

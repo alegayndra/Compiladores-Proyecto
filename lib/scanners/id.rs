@@ -72,6 +72,8 @@ mod tests {
     assert_eq!(id("aaa123"), Ok(("", "aaa123")));
     assert_eq!(id("1aa123"), Ok(("", "1aa123")));
     assert_eq!(id("1aa_123"), Ok(("", "1aa_123")));
+    assert_eq!(id("1aa_123  "), Ok(("  ", "1aa_123")));
+    assert_eq!(id("1aa_ 123"), Ok((" 123", "1aa_")));
   }
 
   #[test]
