@@ -6,7 +6,7 @@ use nom::{
 };
 
 pub fn num_entero(input: &str) -> IResult<&str, &str> {
-  take_while1(|c: char| c >= '0' || c <= '9')(input)
+  take_while1(|c: char| c.is_digit(10))(input)
 }
 
 // pub fn num_flotante(input: &str) -> IResult<&str, &str> {

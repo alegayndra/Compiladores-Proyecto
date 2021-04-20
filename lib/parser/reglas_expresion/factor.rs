@@ -6,6 +6,7 @@ use nom::{
 };
   
 use crate::scanners::ws::*;
+use crate::scanners::operadores::*;
 use crate::parser::reglas_expresion::valor::*;
 use crate::parser::reglas_expresion::expresion::*;
 
@@ -17,12 +18,8 @@ fn retorna_expresion(input: &str) -> IResult<&str, (&str, &str)> {
   })
 }
 
-fn signo_valor(input: &str) -> IResult<&str, &str> {
-  alt((tag("+"), tag("-"), ws))(input)
-}
-
 fn valor_factor(input: &str) -> IResult<&str, (&str, &str)> {
-  tuple((signo_valor, ws, valor))(input)
+  tuple((alt((op_sumsub, ws)), ws, valor))(input)
   .map(|(next_input, res)| {
     let (signo, _, valor) = res;
     (next_input, (signo, valor.0))
@@ -48,17 +45,13 @@ mod tests {
   // };
 
   #[test]
-  fn test_signo_valor() {
-    assert_eq!(signo_valor("+"), Ok(("", "+")));
-    assert_eq!(signo_valor("-"), Ok(("", "-")));
-    assert_eq!(signo_valor("  "), Ok(("", "  ")));
-  }
-
-  #[test]
   fn test_valor_factor() {
-    assert_eq!(valor_factor("num_entero"), Ok(("", ("", "num_entero"))));
-    assert_eq!(valor_factor("- num_entero"), Ok(("", ("-", "num_entero"))));
+    assert_eq!(valor_factor("10"), Ok(("", ("", "10"))));
+    assert_eq!(valor_factor("- 10"), Ok(("", ("-", "10"))));
+    // assert_eq!(valor_factor("+ \"soyUnaVariable\""), Ok(("", ("+", "\"soyUnaVariable\""))));
     assert_eq!(valor_factor("+ \"soyUnaVariable\""), Ok(("", ("+", "soyUnaVariable"))));
+    // assert_eq!(valor_factor("+ Nombre . metodo ()"), Ok(("", ("+", "Nombre . metodo ()"))));
+    assert_eq!(valor_factor("+ Nombre.metodo()"), Ok(("", ("+", "Nombre"))));
     assert_eq!(valor_factor("+ Nombre . metodo ()"), Ok(("", ("+", "Nombre"))));
   }
 

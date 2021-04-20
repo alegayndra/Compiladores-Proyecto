@@ -73,5 +73,41 @@ mod tests {
       };
       principal() {}"
     ), Ok(("", ("idPrograma", vec!["funcion", "variables", "clase"], "bloque"))));
+
+    assert_eq!(programa("
+      programa idPrograma;
+      void funcion func (entero var): {
+        estatuto;
+        regresa expresion;
+      }
+      entero num;
+      clase Estudiante <Persona> {
+        char nombre[10], apellido[10];
+      };
+      principal() {
+        lee(var);
+        escribe(var);
+        id();
+        id(param);
+        id.metodo();
+        mientras ( id > 10 ) {
+          escribe(id);
+        }
+
+        desde arr[10] = 10 hasta 20 {
+          escribe(id);
+        }
+        %% comentario %%
+        si (id > 2) {
+          escribe(id);
+        }
+        si (id > 2) {
+          escribe(id);
+        } sino {
+          escribe(id);
+        }
+      }"
+    ), Ok(("", ("idPrograma", vec!["funcion", "variables", "clase"], "bloque"))));
+    // id = 10 + 10;
   }
 }

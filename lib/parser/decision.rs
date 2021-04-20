@@ -7,10 +7,11 @@ use nom::{
 
 use crate::scanners::ws::*;
 use crate::parser::reglas_expresion::expresion::*;
+use crate::parser::bloque::*;
 
 fn sino(input: &str) -> IResult<&str, &str> {
   alt((
-    tuple((ws, tag("sino"), ws, tag("bloque"))),
+    tuple((ws, tag("sino"), ws, bloque)),
     tuple((ws, ws, ws, ws))
   ))(input)
   .map(|(next_input, _res)| {
@@ -20,7 +21,7 @@ fn sino(input: &str) -> IResult<&str, &str> {
 }
 
 pub fn decision(input: &str) -> IResult<&str, &str> {
-  tuple((tag("si"), ws, tag("("), ws, expresion, ws, tag(")"), ws, tag("bloque"), sino))
+  tuple((tag("si"), ws, tag("("), ws, expresion, ws, tag(")"), ws, bloque, sino))
   (input)
   .map(|(next_input, __res)| {
     // let (_, _, _, _, exp, _, _, _, _, _sino) = res;
@@ -42,7 +43,7 @@ mod tests {
     // assert_eq!(decision("si ( expresion ) bloque "), Ok(("", "expresion")));
     // assert_eq!(decision("si ( expresion ) bloque sino bloque"), Ok(("", "expresion")));
 
-    assert_eq!(decision("si ( expresion ) bloque "),            Ok(("", "decision")));
-    assert_eq!(decision("si ( expresion ) bloque sino bloque"), Ok(("", "decision")));
+    assert_eq!(decision("si ( expresion ) {} "),            Ok(("", "decision")));
+    assert_eq!(decision("si ( expresion ) {} sino {}"), Ok(("", "decision")));
   }
 }
