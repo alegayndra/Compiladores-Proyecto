@@ -10,7 +10,7 @@ use crate::scanners::ws::*;
 use crate::parser::dimensiones::*;
 
 pub fn id(input: &str) -> IResult<&str, &str> {
-  take_while1(|c: char| c.is_alphanumeric())
+  take_while1(|c: char| c.is_alphanumeric() || c == '_' || c == '-')
   (input)
 }
 
@@ -71,6 +71,7 @@ mod tests {
     assert_eq!(id("id["), Ok(("[", "id")));
     assert_eq!(id("aaa123"), Ok(("", "aaa123")));
     assert_eq!(id("1aa123"), Ok(("", "1aa123")));
+    assert_eq!(id("1aa_123"), Ok(("", "1aa_123")));
   }
 
   #[test]
