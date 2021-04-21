@@ -7,11 +7,13 @@ use nom::{
 use crate::scanners::ws::*;
 use crate::scanners::id::*;
 
-pub fn asignacion(input: &str) -> IResult<&str, ((&str,Vec<&str>), &str)> {
+// pub fn asignacion(input: &str) -> IResult<&str, ((&str,Vec<&str>), &str)> {
+  pub fn asignacion(input: &str) -> IResult<&str, &str> {
   tuple((id_parser, ws, tag("="), ws, tag("exp"), ws, tag(";")))(input)
   .map(|(next_input, res)| {
-    let (id_parser, _, _, _, exp, _, _) = res;
-    (next_input, (id_parser, exp))
+    // let (id_parser, _, _, _, exp, _, _) = res;
+    // (next_input, (id_parser, exp))
+    (next_input, "asignacion")
   })
 }
   
