@@ -14,4 +14,22 @@ use crate::parser::comentario::*;
 pub fn estatuto(input: &str) -> IResult<&str, &str> {
   alt((asignacion, funcion_esp, llama_func, repeticion, decision, comentario))(input)
 }
-  
+
+#[cfg(test)]
+mod tests {
+  use super::*;
+  // use nom::{
+  //     error::{ErrorKind, VerboseError, VerboseErrorKind},
+  //     Err,
+  // };
+
+  #[test]
+  fn test_estatuto() {
+    assert_eq!(estatuto("id = 10;"),              Ok(("", "asignacion")));
+    assert_eq!(estatuto("lee(expresion);"),       Ok(("", "funcion_esp")));
+    assert_eq!(estatuto("metodo();"),             Ok(("", "llama_func")));
+    assert_eq!(estatuto("mientras(10 > 10) {}"),  Ok(("", "repeticion")));
+    assert_eq!(estatuto("si (10 > 10) {}"),       Ok(("", "decision")));
+    assert_eq!(estatuto("%% comentario %%"),      Ok(("", " comentario ")));
+  }
+}
