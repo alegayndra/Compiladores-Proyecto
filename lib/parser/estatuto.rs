@@ -12,6 +12,6 @@ use crate::parser::comentario::*;
 
 
 pub fn estatuto(input: &str) -> IResult<&str, &str> {
-  alt((funcion_esp, llama_func, repeticion, decision, comentario))(input)
+  alt((asignacion, funcion_esp, llama_func, repeticion, decision, comentario))(input)
 }
   
