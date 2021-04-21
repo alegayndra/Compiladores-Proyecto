@@ -26,10 +26,7 @@ fn dos_dimensiones(input: &str) -> IResult<&str, Vec<&str>> {
 }
 
 pub fn ws_vec(input: &str) -> IResult<&str, Vec<&str>> {
-  ws(input)
-  .map(|(next_input, _res)| {
-    (next_input, vec![])
-  })
+  Ok((input, vec![]))
 }
 
 pub fn con_dim(input: &str) -> IResult<&str, Vec<&str>> {
@@ -72,6 +69,7 @@ mod tests {
     assert_eq!(ws_vec("aaaa"), Ok(("aaaa", vec![])));
     assert_eq!(ws_vec("bbbb"), Ok(("bbbb", vec![])));
     assert_eq!(ws_vec("cccc"), Ok(("cccc", vec![])));
+    assert_eq!(ws_vec("    "), Ok(("    ", vec![])));
   }
 
   #[test]
