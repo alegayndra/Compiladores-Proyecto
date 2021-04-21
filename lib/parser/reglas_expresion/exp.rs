@@ -50,6 +50,7 @@ mod tests {
     //     ("-", "termino")
     //   ]
     // )));
+    assert_eq!(exp("abr  "), Ok(("  ", "exp")));
     assert_eq!(exp("num_entero"), Ok(("", "exp")));
     assert_eq!(exp("id"), Ok(("", "exp")));
     // assert_eq!(exp("id  "), Ok(("  ", "exp")));
