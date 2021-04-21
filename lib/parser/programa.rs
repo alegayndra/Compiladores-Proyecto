@@ -85,6 +85,7 @@ mod tests {
         char nombre[10], apellido[10];
       };
       principal() {
+        x = 10;
         lee(var);
         escribe(var);
         id();
