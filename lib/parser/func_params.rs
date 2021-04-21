@@ -32,7 +32,6 @@ fn lista_expresiones(input: &str) -> IResult<&str, Vec<&str>> {
 
 pub fn func_params(input: &str) -> IResult<&str, (&str, Vec<&str>)> {
   tuple((tag("("), ws, alt((lista_expresiones, expresiones_vacias)), ws, tag(")")))(input)
-  //Llama al no terminal expresion
   .map(|(next_input, res)| {
     let (_, _, expresiones, _, _) = res;
     (next_input, ("expresiones", expresiones))
