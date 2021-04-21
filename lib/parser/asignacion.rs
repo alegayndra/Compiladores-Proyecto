@@ -18,8 +18,17 @@ pub fn asignacion(input: &str) -> IResult<&str, &str> {
   })
 }
 
-#[test]
+#[cfg(test)]
+mod tests {
+  use super::*;
+  // use nom::{
+  //     error::{ErrorKind, VerboseError, VerboseErrorKind},
+  //     Err,
+  // };
+
+  #[test]
   fn test_asignacion() {
     assert_eq!(asignacion("id = 10;"), Ok(("", "asignacion")));
   }
+}
   
