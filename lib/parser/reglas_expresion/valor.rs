@@ -30,11 +30,11 @@ fn dim_normalizado(input: &str) -> IResult<&str, (&str, Vec<&str>)> {
 fn valor_id(input: &str) -> IResult<&str, (&str, &str)> {
   tuple((
     id,
-    many0(tuple((ws, tag("."), ws, id))), ws, 
+    many0(tuple((ws, tag("."), ws, id))),
     alt((func_params, dim_normalizado))
   ))(input)
   .map(|(next_input, res)| {
-    let (id, _atributos, _, _dim_func) = res;
+    let (id, _atributos, _dim_func) = res;
     (next_input,(id, "variable"))
   })
 }
@@ -73,9 +73,9 @@ mod tests {
   fn test_valor_id() {
     assert_eq!(valor_id("SoyUnString.arreglo[id]"),             Ok(("", ("SoyUnString", "variable"))));
     assert_eq!(valor_id("Objeto.metodo.arreglo[id][id]"),       Ok(("", ("Objeto", "variable"))));
-    assert_eq!(valor_id("Nombre  .metodo. arreglo[  id][id ]"), Ok(("", ("Nombre", "variable"))));
+    assert_eq!(valor_id("Nombre.metodo.arreglo[  id][id ]"), Ok(("", ("Nombre", "variable"))));
     assert_eq!(valor_id("Nombre.metodo(expresion)"),            Ok(("", ("Nombre", "variable"))));
     assert_eq!(valor_id("Nombre.metodo(expresion)"),            Ok(("", ("Nombre", "variable"))));
-    assert_eq!(valor_id("Nombre.metodo ()"),                    Ok(("", ("Nombre", "variable"))));
+    assert_eq!(valor_id("Nombre.metodo()"),                    Ok(("", ("Nombre", "variable"))));
   }
 }
