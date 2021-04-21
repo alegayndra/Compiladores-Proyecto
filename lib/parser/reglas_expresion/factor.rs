@@ -18,8 +18,13 @@ fn retorna_expresion(input: &str) -> IResult<&str, (&str, &str)> {
   })
 }
 
+fn op_vacio(input: &str) -> IResult<&str, &str> {
+  println!("op_vacio input:{}:", input);
+  Ok((input, ""))
+}
+
 fn valor_factor(input: &str) -> IResult<&str, (&str, &str)> {
-  tuple((alt((op_sumsub, ws)), ws, valor))(input)
+  tuple((alt((op_sumsub, op_vacio)), ws, valor))(input)
   .map(|(next_input, res)| {
     let (signo, _, valor) = res;
     (next_input, (signo, valor.0))
@@ -52,7 +57,7 @@ mod tests {
     assert_eq!(valor_factor("+ \"soyUnaVariable\""), Ok(("", ("+", "soyUnaVariable"))));
     // assert_eq!(valor_factor("+ Nombre . metodo ()"), Ok(("", ("+", "Nombre . metodo ()"))));
     assert_eq!(valor_factor("+ Nombre.metodo()"), Ok(("", ("+", "Nombre"))));
-    assert_eq!(valor_factor("+ Nombre . metodo ()"), Ok(("", ("+", "Nombre"))));
+    assert_eq!(valor_factor("+ Nombre . metodo()"), Ok(("", ("+", "Nombre"))));
   }
 
   #[test]
@@ -64,7 +69,7 @@ mod tests {
     
     assert_eq!(factor("- num_entero"),         Ok(("", "factor")));
     assert_eq!(factor("+ \"soyUnaVariable\""), Ok(("", "factor")));
-    assert_eq!(factor("+ Nombre . metodo ()"), Ok(("", "factor")));
+    assert_eq!(factor("+ Nombre . metodo()"), Ok(("", "factor")));
     assert_eq!(factor("( expresion )"),        Ok(("", "factor")));
     assert_eq!(factor("( num_entero )"),        Ok(("", "factor")));
     assert_eq!(factor("( num_entero * id )"),        Ok(("", "factor")));
