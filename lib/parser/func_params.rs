@@ -10,10 +10,7 @@ use crate::scanners::ws::*;
 use crate::parser::reglas_expresion::expresion::*;
 
 fn expresiones_vacias(input: &str) -> IResult<&str, Vec<&str>> {
-  ws(input)
-  .map(|(next_input, _res)| {
-    (next_input, vec![])
-  })
+  Ok((input, vec![]))
 }
 
 fn lista_expresiones(input: &str) -> IResult<&str, Vec<&str>> {
