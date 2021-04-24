@@ -10,7 +10,7 @@ use crate::parser::declaraciones::declaraciones::*;
 use crate::parser::bloque::*;
 use crate::semantica::tabla_funciones::*;
 
-pub fn programa(input: &str) -> IResult<&str, &str> {
+pub fn programa(input: &str) -> IResult<&str, TablaFunciones> {
   let mut next: &str;
   
   next = match tuple((ws, tag("programa"), necessary_ws))(input) {
@@ -63,7 +63,7 @@ pub fn programa(input: &str) -> IResult<&str, &str> {
   };
 
   match ws(next) {
-    Ok((next_input, _)) => Ok((next_input, "programa")),
+    Ok((_, _)) => Ok(("", funciones)),
     Err(err) => return Err(err),
   }
 }
