@@ -9,18 +9,21 @@ pub struct TipoFunc {
 
 #[derive(Debug)]
 pub struct TablaFunciones {
-  tabla: Vec<TipoFunc>
+  pub tabla: Vec<TipoFunc>
 }
 
 impl TablaFunciones {
-  pub fn agregar_funcion(&mut self, nombre_func: String, tipo_func: String, valor_func: String) -> &str {
+  pub fn agregar_funcion(&mut self, nombre_func: String, tipo_func: String) -> &str {
     let mut var_encontrada: bool = false;
-  
-    for indice in 0..=self.tabla.len() {
-      if !var_encontrada && self.tabla[indice].nombre == nombre_func.clone() {
-        var_encontrada = true;
+
+    if self.tabla.len() > 0 {
+      for indice in 0..=self.tabla.len() {
+        if !var_encontrada && self.tabla[indice].nombre == nombre_func.clone() {
+          var_encontrada = true;
+        }
       }
     }
+  
   
     let mensaje: &str; 
   
@@ -38,7 +41,7 @@ impl TablaFunciones {
     return mensaje;
   }
 
-  pub fn modificar_funcion(&mut self, nombre_func: String, tipo_func: String, valor_func: String) -> &str {
+  pub fn modificar_funcion(&mut self, nombre_func: String, tipo_func: String) -> &str {
     let mut var_encontrada: bool = false;
   
     for indice in 0..=self.tabla.len() {
