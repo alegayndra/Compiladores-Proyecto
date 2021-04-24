@@ -21,14 +21,16 @@ fn attr_objeto(input: &str) -> IResult<&str, Vec<&str>> {
   })
 }
 
-pub fn llama_func(input: &str) -> IResult<&str, (&str, Vec<&str>, (&str, Vec<&str>))> {
+// pub fn llama_func(input: &str) -> IResult<&str, (&str, Vec<&str>, (&str, Vec<&str>))> {
+pub fn llama_func(input: &str) -> IResult<&str, &str> {
   tuple((
     id, attr_objeto, func_params, ws, tag(";")
   ))
   (input)
-  .map(|(next_input, res)| {
-    let (id, atributos, lista_params, _, _) = res;
-    (next_input, (id, atributos, lista_params))
+  .map(|(next_input, __res)| {
+    // let (id, atributos, lista_params, _, _) = res;
+    // (next_input, (id, atributos, lista_params))
+    (next_input, "llama_func")
   })
 }
 
@@ -42,9 +44,14 @@ mod tests {
 
   #[test]
   fn test_llama_func() {
-    assert_eq!(llama_func("id();"), Ok(("", ("id", vec![], ("expresiones", vec![])))));
-    assert_eq!(llama_func("id.metodo();"), Ok(("", ("id", vec!["metodo"], ("expresiones", vec![])))));
-    assert_eq!(llama_func("id(expresion);"), Ok(("", ("id", vec![], ("expresiones", vec!["expresion"])))));
-    assert_eq!(llama_func("id.metodo.metodo2(expresion);"), Ok(("", ("id", vec!["metodo", "metodo2"], ("expresiones", vec!["expresion"])))));
+    // assert_eq!(llama_func("id();"), Ok(("", ("id", vec![], ("expresiones", vec![])))));
+    // assert_eq!(llama_func("id.metodo();"), Ok(("", ("id", vec!["metodo"], ("expresiones", vec![])))));
+    // assert_eq!(llama_func("id(expresion);"), Ok(("", ("id", vec![], ("expresiones", vec!["expresion"])))));
+    // assert_eq!(llama_func("id.metodo.metodo2(expresion);"), Ok(("", ("id", vec!["metodo", "metodo2"], ("expresiones", vec!["expresion"])))));
+
+    assert_eq!(llama_func("id();"),                         Ok(("", "llama_func")));
+    assert_eq!(llama_func("id.metodo();"),                  Ok(("", "llama_func")));
+    assert_eq!(llama_func("id(expresion);"),                Ok(("", "llama_func")));
+    assert_eq!(llama_func("id.metodo.metodo2(expresion);"), Ok(("", "llama_func")));
   }
 }

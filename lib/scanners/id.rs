@@ -10,7 +10,7 @@ use crate::scanners::ws::*;
 use crate::parser::dimensiones::*;
 
 pub fn id(input: &str) -> IResult<&str, &str> {
-  take_while1(|c: char| c.is_alphanumeric())
+  take_while1(|c: char| c.is_alphanumeric() || c == '_' || c == '-')
   (input)
 }
 
@@ -71,6 +71,9 @@ mod tests {
     assert_eq!(id("id["), Ok(("[", "id")));
     assert_eq!(id("aaa123"), Ok(("", "aaa123")));
     assert_eq!(id("1aa123"), Ok(("", "1aa123")));
+    assert_eq!(id("1aa_123"), Ok(("", "1aa_123")));
+    assert_eq!(id("1aa_123  "), Ok(("  ", "1aa_123")));
+    assert_eq!(id("1aa_ 123"), Ok((" 123", "1aa_")));
   }
 
   #[test]
@@ -83,7 +86,8 @@ mod tests {
   #[test]
   fn test_id_con_dim() {
     assert_eq!(id_con_dim("id"), Ok(("", ("id", vec![]))));
-    assert_eq!(id_con_dim("id[id]"), Ok(("", ("id", vec!["id"]))));
+    // assert_eq!(id_con_dim("id[id]"), Ok(("", ("id", vec!["id"]))));
+    assert_eq!(id_con_dim("id[id]"), Ok(("", ("id", vec!["expresion"]))));
   }
 
   #[test]
@@ -91,7 +95,8 @@ mod tests {
     assert_eq!(id_parser("id"), Ok(("", ("id", vec![]))));
     assert_eq!(id_parser("aaa123"), Ok(("", ("aaa123", vec![]))));
     assert_eq!(id_parser("1aa123"), Ok(("", ("1aa123", vec![]))));
-    assert_eq!(id_parser("id[id]"), Ok(("", ("id", vec!["id"]))));
+    // assert_eq!(id_parser("id[id]"), Ok(("", ("id", vec!["id"]))));
+    assert_eq!(id_parser("id[id]"), Ok(("", ("id", vec!["expresion"]))));
   }
 
   #[test]
@@ -102,12 +107,17 @@ mod tests {
 
   #[test]
   fn test_lista_ids_con_dim() {
-    assert_eq!(lista_ids_con_dim("id"), Ok(("", vec![("id", vec![])])));
-    assert_eq!(lista_ids_con_dim("id[1]"), Ok(("", vec![("id", vec!["1"])])));
-    assert_eq!(lista_ids_con_dim("id[1][2]"), Ok(("", vec![("id", vec!["1", "2"])])));
-    assert_eq!(lista_ids_con_dim("id, aa"), Ok(("", vec![("id", vec![]), ("aa", vec![])])));
-    assert_eq!(lista_ids_con_dim("id[1], aa"), Ok(("", vec![("id", vec!["1"]), ("aa", vec![])])));
-    assert_eq!(lista_ids_con_dim("id, aa[1]"), Ok(("", vec![("id", vec![]), ("aa", vec!["1"])])));
-    assert_eq!(lista_ids_con_dim("id[3][4], aa[1]"), Ok(("", vec![("id", vec!["3", "4"]), ("aa", vec!["1"])])));
+    assert_eq!(lista_ids_con_dim("id"),               Ok(("", vec![("id", vec![])])));
+    // assert_eq!(lista_ids_con_dim("id[1]"),            Ok(("", vec![("id", vec!["1"])])));
+    assert_eq!(lista_ids_con_dim("id[1]"),            Ok(("", vec![("id", vec!["expresion"])])));
+    // assert_eq!(lista_ids_con_dim("id[1][2]"),         Ok(("", vec![("id", vec!["1", "2"])])));
+    assert_eq!(lista_ids_con_dim("id[1][2]"),         Ok(("", vec![("id", vec!["expresion", "expresion"])])));
+    assert_eq!(lista_ids_con_dim("id, aa"),           Ok(("", vec![("id", vec![]), ("aa", vec![])])));
+    // assert_eq!(lista_ids_con_dim("id[1], aa"),        Ok(("", vec![("id", vec!["1"]), ("aa", vec![])])));
+    assert_eq!(lista_ids_con_dim("id[1], aa"),        Ok(("", vec![("id", vec!["expresion"]), ("aa", vec![])])));
+    // assert_eq!(lista_ids_con_dim("id, aa[1]"),        Ok(("", vec![("id", vec![]), ("aa", vec!["1"])])));
+    assert_eq!(lista_ids_con_dim("id, aa[1]"),        Ok(("", vec![("id", vec![]), ("aa", vec!["expresion"])])));
+    // assert_eq!(lista_ids_con_dim("id[3][4], aa[1]"),  Ok(("", vec![("id", vec!["3", "4"]), ("aa", vec!["1"])])));
+    assert_eq!(lista_ids_con_dim("id[3][4], aa[1]"),  Ok(("", vec![("id", vec!["expresion", "expresion"]), ("aa", vec!["expresion"])])));
   }
 }

@@ -7,17 +7,15 @@ use nom::{
 };
 
 use crate::scanners::ws::*;
+use crate::parser::reglas_expresion::expresion::*;
 
 fn expresiones_vacias(input: &str) -> IResult<&str, Vec<&str>> {
-  ws(input)
-  .map(|(next_input, _res)| {
-    (next_input, vec![])
-  })
+  Ok((input, vec![]))
 }
 
 fn lista_expresiones(input: &str) -> IResult<&str, Vec<&str>> {
   tuple((
-    tag("expresion"), many0(tuple((ws, tag(","), ws, tag("expresion"))))
+    expresion, many0(tuple((ws, tag(","), ws, expresion)))
   ))(input)
    //Llama al no terminal expresion
    .map(|(next_input, res)| {
@@ -34,9 +32,24 @@ fn lista_expresiones(input: &str) -> IResult<&str, Vec<&str>> {
 
 pub fn func_params(input: &str) -> IResult<&str, (&str, Vec<&str>)> {
   tuple((tag("("), ws, alt((lista_expresiones, expresiones_vacias)), ws, tag(")")))(input)
-  //Llama al no terminal expresion
   .map(|(next_input, res)| {
     let (_, _, expresiones, _, _) = res;
     (next_input, ("expresiones", expresiones))
   })
+}
+
+#[cfg(test)]
+mod tests {
+  use super::*;
+  // use nom::{
+  //     error::{ErrorKind, VerboseError, VerboseErrorKind},
+  //     Err,
+  // };
+
+  #[test]
+  fn test_func_params() {
+    assert_eq!(func_params("(expresion)"), Ok(("", ("expresiones",vec!["expresion"]))));
+    assert_eq!(func_params("(  expresion , expresion,expresion )"), Ok(("", ("expresiones",vec!["expresion","expresion","expresion"]))));
+    assert_eq!(func_params("()"), Ok(("", ("expresiones",vec![]))));
+  }
 }

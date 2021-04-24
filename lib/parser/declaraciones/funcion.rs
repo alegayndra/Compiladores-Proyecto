@@ -10,6 +10,7 @@ use crate::scanners::ws::*;
 use crate::scanners::tipos::*;
 use crate::scanners::id::*;
 // use crate::parser::dimensiones::*;
+use crate::parser::reglas_expresion::expresion::*;
 
 fn parametro(input: &str) -> IResult<&str, (&str, (&str, Vec<&str>))> {
   alt((
@@ -51,7 +52,7 @@ fn bloque_funcion(input: &str) -> IResult<&str, (&str, &str)> {
   tuple((
     tag("{"), ws,
     tag("estatuto;"), ws,
-    tag("regresa"), necessary_ws, tag("expresion"), ws, tag(";"), ws,
+    tag("regresa"), necessary_ws, expresion, ws, tag(";"), ws,
     tag("}")
   ))(input)
   .map(|(next_input, res)| {
@@ -60,7 +61,8 @@ fn bloque_funcion(input: &str) -> IResult<&str, (&str, &str)> {
   })
 }
 
-pub fn funcion(input: &str) -> IResult<&str, (&str, &str, Vec<(&str, (&str, Vec<&str>))>)> {
+// pub fn funcion(input: &str) -> IResult<&str, (&str, &str, Vec<(&str, (&str, Vec<&str>))>)> {
+pub fn funcion(input: &str) -> IResult<&str, &str> {
   tuple((
     tipo_retorno, necessary_ws,
     tag("funcion"), necessary_ws,
@@ -69,9 +71,10 @@ pub fn funcion(input: &str) -> IResult<&str, (&str, &str, Vec<(&str, (&str, Vec<
     bloque_funcion
   ))
   (input)
-  .map(|(next_input, res)| {
-    let (tipo, _, _, _, id, _, _, _, lista_params, _, _, _, _, _, _bloque) = res;
-    (next_input, (tipo, id, lista_params))
+  .map(|(next_input, _res)| {
+    // let (tipo, _, _, _, id, _, _, _, lista_params, _, _, _, _, _, _bloque) = res;
+    // (next_input, (tipo, id, lista_params))
+    (next_input, "funcion")
   })
 }
 
@@ -87,7 +90,8 @@ mod tests {
   fn test_parametro() {
     assert_eq!(parametro("Persona id"), Ok(("", ("Persona", ("id", vec![])))));
     assert_eq!(parametro("entero id"), Ok(("", ("entero", ("id", vec![])))));
-    assert_eq!(parametro("entero id[id]"), Ok(("", ("entero", ("id", vec!["id"])))));
+    // assert_eq!(parametro("entero id[id]"), Ok(("", ("entero", ("id", vec!["id"])))));
+    assert_eq!(parametro("entero id[id]"), Ok(("", ("entero", ("id", vec!["expresion"])))));
   }
 
   #[test]
@@ -99,6 +103,7 @@ mod tests {
 
   #[test]
   fn test_funcion() {
-    assert_eq!(funcion("void funcion func (entero var): { estatuto; regresa expresion ; }"), Ok(("", ("void", "func", vec![("entero", ("var", vec![]))]))));
+    // assert_eq!(funcion("void funcion func (entero var): { estatuto; regresa expresion ; }"), Ok(("", ("void", "func", vec![("entero", ("var", vec![]))]))));
+    assert_eq!(funcion("void funcion func (entero var): { estatuto; regresa expresion ; }"), Ok(("", "funcion")));
   }
 }

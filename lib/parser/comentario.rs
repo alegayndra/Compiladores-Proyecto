@@ -23,8 +23,8 @@ mod tests {
 
   #[test]
   fn test_comentario() {
-    assert_eq!(comentario("%%%%"), Ok(("", "")));
-    assert_eq!(comentario("%%  %%"), Ok(("", "  ")));
+    assert_eq!(comentario("%%%%"),      Ok(("", "")));
+    assert_eq!(comentario("%%  %%"),    Ok(("", "  ")));
     assert_eq!(comentario("%% aaa %%"), Ok(("", " aaa ")));
     // assert_eq!(leer("lee()"), Ok(("", vec![])));
   }

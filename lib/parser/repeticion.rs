@@ -7,9 +7,12 @@ use nom::{
 
 use crate::scanners::ws::*;
 use crate::scanners::id::*;
+use crate::parser::reglas_expresion::expresion::*;
+use crate::parser::reglas_expresion::exp::*;
+use crate::parser::bloque::*;
 
 pub fn mientras(input: &str) -> IResult<&str, &str> {
-  tuple((tag("mientras"), ws, tag("("), ws, tag("expresion"), ws, tag(")")))(input)
+  tuple((tag("mientras"), ws, tag("("), ws, expresion, ws, tag(")")))(input)
   .map(|(next_input, _res)| {
     // let (_, _, _, _, expresion, _, bloque) = res;
     (next_input, "mientras")
@@ -17,18 +20,20 @@ pub fn mientras(input: &str) -> IResult<&str, &str> {
 }
 
 pub fn desde(input: &str) -> IResult<&str, &str> {
-  tuple((tag("desde"), necessary_ws, id_con_dim, ws, tag("="), ws, tag("exp"), necessary_ws, tag("hasta"), necessary_ws, tag("exp")))(input)
+  tuple((tag("desde"), necessary_ws, id_con_dim, ws, tag("="), ws, exp, necessary_ws, tag("hasta"), necessary_ws, exp))(input)
   .map(|(next_input, _res)| {
     // let (_, id, _, _, _, exp, _, _, _, exp2) = res;
     (next_input, "desde")
   })
 }
 
-pub fn repeticion(input: &str) -> IResult<&str, (&str, &str)> {
-  tuple((alt((mientras, desde)), necessary_ws, tag("bloque")))(input)
-  .map(|(next_input, res)| {
-    let (repet, _, bloque) = res;
-    (next_input, (repet, bloque))
+// pub fn repeticion(input: &str) -> IResult<&str, (&str, &str)> {
+pub fn repeticion(input: &str) -> IResult<&str, &str> {
+  tuple((alt((mientras, desde)), necessary_ws, bloque))(input)
+  .map(|(next_input, _res)| {
+    // let (repet, _, bloque) = res;
+    // (next_input, (repet, bloque))
+    (next_input, "repeticion")
   })
 }
 
@@ -48,14 +53,18 @@ mod tests {
 
   #[test]
   fn test_desde() {
-    assert_eq!(desde("desde id = exp hasta exp"), Ok(("", "desde")));
-    assert_eq!(desde("desde id[id] = exp hasta exp"), Ok(("", "desde")));
-    assert_eq!(desde("desde id[id][id] = exp hasta exp"), Ok(("", "desde")));
+    assert_eq!(desde("desde id = 10 hasta 20"), Ok(("", "desde")));
+    // assert_eq!(desde("desde id = num_entero hasta num_entero"), Ok(("", "desde")));
+    assert_eq!(desde("desde id[id] = 10 hasta 20"), Ok(("", "desde")));
+    assert_eq!(desde("desde id[id][id] = 10 hasta 20"), Ok(("", "desde")));
   }
 
   #[test]
   fn test_repeticion() {
-    assert_eq!(repeticion("mientras(expresion) bloque"), Ok(("", ("mientras", "bloque"))));
-    assert_eq!(repeticion("desde id = exp hasta exp bloque"), Ok(("", ("desde", "bloque"))));
+    // assert_eq!(repeticion("mientras(expresion) bloque"), Ok(("", ("mientras", "bloque"))));
+    // assert_eq!(repeticion("desde id = num_entero hasta num_entero bloque"), Ok(("", ("desde", "bloque"))));
+
+    assert_eq!(repeticion("mientras(expresion) {}"),                    Ok(("", "repeticion")));
+    assert_eq!(repeticion("desde id = 10 hasta 20 {}"), Ok(("", "repeticion")));
   }
 }

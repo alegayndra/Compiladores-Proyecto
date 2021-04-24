@@ -15,4 +15,4 @@ name = "compilador_exe"
 path = "src/main.rs"
 
 [dependencies]
-nom = "6.0"
+nom = "6.1.2"
