@@ -19,7 +19,6 @@ fn retorna_expresion(input: &str) -> IResult<&str, (&str, &str)> {
 }
 
 fn op_vacio(input: &str) -> IResult<&str, &str> {
-  println!("op_vacio input:{}:", input);
   Ok((input, ""))
 }
 
