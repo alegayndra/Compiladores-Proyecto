@@ -1,4 +1,4 @@
-use crate::tabla_variables::*;
+use crate::semantica::tabla_variables::*;
 
 #[derive(Debug)]
 pub struct TipoFunc {
@@ -13,11 +13,11 @@ pub struct TablaFunciones {
 }
 
 impl TablaFunciones {
-  pub fn agregar_funcion(&mut self, nombre_var: String, tipo_var: String, valor_var: String) -> &str {
+  pub fn agregar_funcion(&mut self, nombre_func: String, tipo_func: String, valor_func: String) -> &str {
     let mut var_encontrada: bool = false;
   
     for indice in 0..=self.tabla.len() {
-      if !var_encontrada && self.tabla[indice].nombre == nombre_var.clone() {
+      if !var_encontrada && self.tabla[indice].nombre == nombre_func.clone() {
         var_encontrada = true;
       }
     }
@@ -27,10 +27,10 @@ impl TablaFunciones {
     if var_encontrada {
       mensaje = "Nombre de variable ocupado";
     } else {
-      self.tabla.push(TipoVar { 
-        nombre: nombre_var.clone(),
-        tipo: tipo_var.clone(),
-        valor: valor_var.clone()
+      self.tabla.push(TipoFunc { 
+        nombre: nombre_func.clone(),
+        tipo: tipo_func.clone(),
+        variables: TablaVariables { tabla: vec![] } 
       });
       mensaje = "Variable agregada";
     }
@@ -38,15 +38,15 @@ impl TablaFunciones {
     return mensaje;
   }
 
-  pub fn modificar_funcion(&mut self, nombre_var: String, tipo_var: String, valor_var: String) -> &str {
+  pub fn modificar_funcion(&mut self, nombre_func: String, tipo_func: String, valor_func: String) -> &str {
     let mut var_encontrada: bool = false;
   
     for indice in 0..=self.tabla.len() {
-      if self.tabla[indice].nombre == nombre_var.clone() {
-        self.tabla[indice] = TipoVar { 
-          nombre: nombre_var.clone(),
-          tipo: tipo_var.clone(),
-          valor: valor_var.clone()
+      if self.tabla[indice].nombre == nombre_func.clone() {
+        self.tabla[indice] = TipoFunc { 
+          nombre: nombre_func.clone(),
+          tipo: tipo_func.clone(),
+          variables: TablaVariables { tabla: vec![] }
         };
         var_encontrada = true;
       }
@@ -63,12 +63,22 @@ impl TablaFunciones {
     return mensaje;
   }
 
-  pub fn agregar_variable(&mut self, nombre_var: String, tipo_var: String, valor_var: String) - >&str {
-    self.variables.agregar_variable(nombre_var, tipo_var, valor_var)
+  pub fn agregar_variable(&mut self, nombre_func: String, nombre_var: String, tipo_var: String, valor_var: String) -> &str {
+    for indice in 0..=self.tabla.len() {
+      if self.tabla[indice].nombre == nombre_func.clone() {
+        return self.tabla[indice].variables.agregar_variable(nombre_var, tipo_var, valor_var);
+      }
+    }
+    ""
   }
 
-  pub fn buscar_variable(&mut self, nombre_var: String) - >&str {
-    self.variables.buscar_variable(nombre_var)
+  pub fn buscar_variable(&mut self, nombre_func: String, nombre_var: String) -> &str {
+    for indice in 0..=self.tabla.len() {
+      if self.tabla[indice].nombre == nombre_func.clone() {
+        return self.tabla[indice].variables.buscar_variable(nombre_var);
+      }
+    }
+    ""
   }
 }
 

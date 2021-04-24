@@ -7,11 +7,11 @@ pub struct TipoVar {
 
 #[derive(Debug)]
 pub struct TablaVariables {
-  tabla: Vec<TipoVar>
+  pub tabla: Vec<TipoVar>
 }
 
 impl TablaVariables {
-  pub fn agregar_variable(&mut self, nombre_var: String, tipo_var: String, valor_var: String, contexto_var: String) -> &str {
+  pub fn agregar_variable(&mut self, nombre_var: String, tipo_var: String, valor_var: String) -> &str {
     let mut var_encontrada: bool = false;
   
     for indice in 0..=self.tabla.len() {
