@@ -2,8 +2,7 @@
 pub struct TipoVar {
   nombre: String,
   tipo: String,
-  valor: String,
-  contexto: String,
+  valor: String
 }
 
 #[derive(Debug)]
@@ -30,7 +29,6 @@ impl TablaVariables {
         nombre: nombre_var.clone(),
         tipo: tipo_var.clone(),
         valor: valor_var.clone(),
-        contexto: contexto_var.clone()
       });
       mensaje = "Variable agregada";
     }
@@ -38,7 +36,7 @@ impl TablaVariables {
     return mensaje;
   }
 
-  pub fn modificar_variable(&mut self, nombre_var: String, tipo_var: String, valor_var: String, contexto_var: String) -> &str {
+  pub fn modificar_variable(&mut self, nombre_var: String, tipo_var: String, valor_var: String) -> &str {
     let mut var_encontrada: bool = false;
   
     for indice in 0..=self.tabla.len() {
@@ -47,7 +45,6 @@ impl TablaVariables {
           nombre: nombre_var.clone(),
           tipo: tipo_var.clone(),
           valor: valor_var.clone(),
-          contexto: contexto_var.clone()
         };
         var_encontrada = true;
       }
@@ -62,6 +59,16 @@ impl TablaVariables {
     }
 
     return mensaje;
+  }
+
+  pub fn buscar_variable(&mut self, nombre_var: String) -> &str {
+    for indice in 0..=self.tabla.len() {
+      if self.tabla[indice].nombre == nombre_var.clone() {
+        return "Var encontrada";
+      }
+    }
+
+    return "Var no encontrada";
   }
 }
 
