@@ -117,19 +117,19 @@ mod tests {
     // assert_eq!(atributos("Persona id, id;"), Ok(("",    ("Persona", vec![("id", vec![]), ("id", vec![])]))));
     // assert_eq!(atributos("entero id[id][id];"), Ok(("", ("entero",  vec![("id", vec!["id","id"])]))));
     // assert_eq!(metodos("void funcion func (entero var): { estatuto; regresa expresion ; }"), Ok(("", ("void", "func", "funcion"))));
-    assert_eq!(metodos("void funcion func (entero var): { estatuto; regresa expresion ; }"), Ok(("", ("tipo", "id", "funcion"))));
+    assert_eq!(metodos("void funcion func (entero var) {  regresa expresion ; }"), Ok(("", ("tipo", "id", "funcion"))));
   }
 
   #[test]
   fn test_variable_funcion() {
     assert_eq!(variable_funcion("Persona id, id;"),                                               Ok(("", ("null", "variables", "variables"))));
-    assert_eq!(variable_funcion("void funcion func (entero var):{estatuto; regresa expresion;}"), Ok(("", ("tipo", "id", "funcion"))));
+    assert_eq!(variable_funcion("void funcion func (entero var){regresa expresion;}"), Ok(("", ("tipo", "id", "funcion"))));
   }
 
   #[test]
   fn test_lista_variable_funcion() {
     assert_eq!(lista_variable_funcion("Persona id, id;"),                                               Ok(("", vec![("null", "variables", "variables")])));
-    assert_eq!(lista_variable_funcion("void funcion func (entero var):{estatuto; regresa expresion;}"), Ok(("", vec![("tipo", "id", "funcion")])));
+    assert_eq!(lista_variable_funcion("void funcion func (entero var){regresa expresion;}"), Ok(("", vec![("tipo", "id", "funcion")])));
     // assert_eq!(lista_variable_funcion(""),                                                                  Ok(("", ("null", "vacio", "vacio"))));
   }
 

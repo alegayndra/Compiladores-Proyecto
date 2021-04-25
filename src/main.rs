@@ -4,6 +4,7 @@ extern crate nom;
 use compilador::parser::programa::*;
 
 fn main() {
+	println!("{:?}", programa("a"));
 	println!("{:?}", programa("
 	programa idPrograma;
 	void funcion func (entero var): {

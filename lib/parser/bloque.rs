@@ -5,13 +5,11 @@ use nom::{
     sequence::tuple,
 };
 
-  
 use crate::scanners::ws::*;
 use crate::parser::estatuto::*;
 
-
 // fn lista_estautos(input: &str) -> IResult<&str, Vec<&str>> {
-fn lista_estatutos(input: &str) -> IResult<&str, &str> {
+pub fn lista_estatutos(input: &str) -> IResult<&str, &str> {
   many0(tuple((estatuto, ws)))(input)
   .map(|(next_input, _res)| {
     // let mut lista = Vec::new();

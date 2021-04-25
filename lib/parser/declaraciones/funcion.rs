@@ -11,6 +11,7 @@ use crate::scanners::tipos::*;
 use crate::scanners::id::*;
 // use crate::parser::dimensiones::*;
 use crate::parser::reglas_expresion::expresion::*;
+use crate::parser::bloque::*;
 
 fn parametro(input: &str) -> IResult<&str, (&str, (&str, Vec<&str>))> {
   alt((
@@ -24,10 +25,7 @@ fn parametro(input: &str) -> IResult<&str, (&str, (&str, Vec<&str>))> {
 }
 
 fn parametros_vacios(input: &str) -> IResult<&str, Vec<(&str, (&str, Vec<&str>))>> {
-  ws(input)
-  .map(|(next_input, _res)| {
-    (next_input, vec![("", ("", vec![]))])
-  })
+  Ok((input, vec![("", ("", vec![]))]))
 }
 
 fn parametros_varios(input: &str) -> IResult<&str, Vec<(&str, (&str, Vec<&str>))>> {
@@ -51,7 +49,7 @@ fn lista_parametros(input: &str) -> IResult<&str, Vec<(&str, (&str, Vec<&str>))>
 fn bloque_funcion(input: &str) -> IResult<&str, (&str, &str)> {
   tuple((
     tag("{"), ws,
-    tag("estatuto;"), ws,
+    lista_estatutos, ws,
     tag("regresa"), necessary_ws, expresion, ws, tag(";"), ws,
     tag("}")
   ))(input)
@@ -67,7 +65,7 @@ pub fn funcion(input: &str) -> IResult<&str, &str> {
     tipo_retorno, necessary_ws,
     tag("funcion"), necessary_ws,
     id, ws,
-    tag("("), ws, lista_parametros, ws, tag(")"), ws, tag(":"), ws,
+    tag("("), ws, lista_parametros, ws, tag(")"), ws,
     bloque_funcion
   ))
   (input)
@@ -104,6 +102,7 @@ mod tests {
   #[test]
   fn test_funcion() {
     // assert_eq!(funcion("void funcion func (entero var): { estatuto; regresa expresion ; }"), Ok(("", ("void", "func", vec![("entero", ("var", vec![]))]))));
-    assert_eq!(funcion("void funcion func (entero var): { estatuto; regresa expresion ; }"), Ok(("", "funcion")));
+    assert_eq!(funcion("void funcion func () { regresa expresion ; }"), Ok(("", "funcion")));
+    assert_eq!(funcion("void funcion func (entero var) { num = 10; regresa expresion ; }"), Ok(("", "funcion")));
   }
 }
