@@ -1,13 +1,13 @@
 use crate::semantica::tabla_variables::*;
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct TipoFunc {
   nombre: String,
   tipo: String,
   variables: TablaVariables,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct TablaFunciones {
   pub tabla: Vec<TipoFunc>
 }

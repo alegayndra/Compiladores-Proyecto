@@ -1,11 +1,11 @@
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct TipoVar {
   nombre: String,
   tipo: String,
   valor: String
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct TablaVariables {
   pub tabla: Vec<TipoVar>
 }
