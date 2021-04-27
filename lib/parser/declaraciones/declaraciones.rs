@@ -21,8 +21,8 @@ fn diferentes_declaraciones(input: &str) -> IResult<&str, &str> {
 fn lista_declaraciones<'a>(funciones: &mut TablaFunciones) -> impl FnMut(&'a str) -> IResult<&str, Vec<&str>> {
   move |input| {
     many0(diferentes_declaraciones)(input)
-        .map(|(next_input, result)| (next_input, result))
-}
+    .map(|(next_input, result)| (next_input, result))
+  }
 }
 
 

@@ -64,7 +64,7 @@ pub fn programa(input: &str) -> IResult<&str, TablaFunciones> {
 
   match ws(next) {
     Ok((_, _)) => Ok(("", funciones)),
-    Err(err) => return Err(err),
+    Err(err) => Err(err),
   }
 }
 

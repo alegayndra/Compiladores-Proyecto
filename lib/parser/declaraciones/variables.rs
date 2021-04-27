@@ -32,7 +32,7 @@ fn variable_normal(input: &str) -> IResult<&str, (&str, &str, Vec<(&str, Vec<&st
 
 // pub fn variables(input: &str) -> IResult<&str, (&str, Vec<(&str, Vec<&str>)>)> {
 pub fn variables(input: &str) -> IResult<&str, &str> {
-  alt((variable_compuesta, variable_normal))
+  tuple((ws, alt((variable_compuesta, variable_normal)), ws))
   (input)
   .map(|(next_input, _res)| {
     // let (tipo, _, lista_ids, _, _dimensiones, _, _) = res;

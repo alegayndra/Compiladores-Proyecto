@@ -12,6 +12,7 @@ fn main() {
 		id = 10;
 		regresa expresion;
 	}
+	entero num;
 	clase Estudiante <Persona> {
 		char nombre[10], apellido[10];
 	};
