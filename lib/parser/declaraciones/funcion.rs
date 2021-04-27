@@ -62,11 +62,11 @@ fn bloque_funcion(input: &str) -> IResult<&str, (&str, &str)> {
 // pub fn funcion(input: &str) -> IResult<&str, (&str, &str, Vec<(&str, (&str, Vec<&str>))>)> {
 pub fn funcion(input: &str) -> IResult<&str, &str> {
   tuple((
-    tipo_retorno, necessary_ws,
+    ws, tipo_retorno, necessary_ws,
     tag("funcion"), necessary_ws,
     id, ws,
     tag("("), ws, lista_parametros, ws, tag(")"), ws,
-    bloque_funcion
+    bloque_funcion, ws
   ))
   (input)
   .map(|(next_input, _res)| {
