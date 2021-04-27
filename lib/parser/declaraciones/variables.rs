@@ -68,12 +68,12 @@ mod tests {
     // assert_eq!(variables("entero id[id][id];"), Ok(("", ("entero",  vec![("id", vec!["id","id"])]))));
     // assert_eq!(variables("entero id, id;"), Ok(("",     ("entero",  vec![("id", vec![]), ("id", vec![])]))));
 
-    // assert_eq!(variables("Persona id;"),        Ok(("", "variables")));
-    // assert_eq!(variables("Persona id, id;"),    Ok(("", "variables")));
-    // assert_eq!(variables("entero id;"),         Ok(("", "variables")));
+    assert_eq!(variables("Persona id;"),        Ok(("", "variables")));
+    assert_eq!(variables("Persona id, id;"),    Ok(("", "variables")));
+    assert_eq!(variables("entero id;"),         Ok(("", "variables")));
     assert_eq!(variables("entero id[id];"),     Ok(("", "variables")));
-    // assert_eq!(variables("entero id[id][id];"), Ok(("", "variables")));
+    assert_eq!(variables("entero id[id][id];"), Ok(("", "variables")));
     assert_eq!(variables("entero id, id;"),     Ok(("", "variables")));
-    // assert_eq!(variables("entero id[id], id;"), Ok(("", "variables")));
+    assert_eq!(variables("entero id[id], id;"), Ok(("", "variables")));
   }
 }
