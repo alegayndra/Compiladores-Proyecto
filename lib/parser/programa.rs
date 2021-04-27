@@ -39,7 +39,7 @@ pub fn programa(input: &str) -> IResult<&str, TablaFunciones> {
 
   let decl: Vec<&str>;
 
-  match (declaraciones)(next) {
+  match (declaraciones)(next, &mut funciones) {
     Ok((next_input, de)) => {
       next = next_input;
       decl = de;
@@ -70,29 +70,29 @@ pub fn programa(input: &str) -> IResult<&str, TablaFunciones> {
 
 #[cfg(test)]
 mod tests {
-  // use super::*;
-  // use crate::semantica::tabla_variables::*;
+  use super::*;
+  use crate::semantica::tabla_variables::*;
   // use nom::{
   //     error::{ErrorKind, VerboseError, VerboseErrorKind},
   //     Err,
   // };
 
-  // #[test]
-  // fn test_programa() {
-  //   assert_eq!(programa("
-  //     programa idPrograma;
-  //     principal() {}"
-  //   ), Ok(("", TablaFunciones {
-  //     tabla: vec![
-  //       TipoFunc {
-  //         nombre: "idPrograma".to_owned(),
-  //         tipo:  "programa".to_owned(),
-  //         variables: TablaVariables {
-  //           tabla: vec![]
-  //         },
-  //       }
-  //     ]
-  //   })));
+  #[test]
+  fn test_programa() {
+    // assert_eq!(programa("
+    //   programa idPrograma;
+    //   principal() {}"
+    // ), Ok(("", TablaFunciones {
+    //   tabla: vec![
+    //     TipoFunc {
+    //       nombre: "idPrograma".to_owned(),
+    //       tipo:  "programa".to_owned(),
+    //       variables: TablaVariables {
+    //         tabla: vec![]
+    //       },
+    //     }
+    //   ]
+    // })));
     // assert_eq!(programa("
     //   programa idPrograma;
     //   principal() {
@@ -168,5 +168,5 @@ mod tests {
     //     }
     //   }"
     // ), Ok(("", "programa")));
-  // }
+  }
 }

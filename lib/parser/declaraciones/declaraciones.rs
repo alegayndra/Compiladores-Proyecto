@@ -1,6 +1,7 @@
 use nom::{
   IResult,
-  sequence::tuple,
+  combinator::opt,
+  sequence::{tuple, preceded, terminated},
   branch::alt,
   multi::many0
 };
@@ -9,32 +10,28 @@ use crate::scanners::ws::*;
 use crate::parser::declaraciones::clase::*;
 use crate::parser::declaraciones::funcion::*;
 use crate::parser::declaraciones::variables::*;
+use crate::semantica::tabla_funciones::*;
 
 fn diferentes_declaraciones(input: &str) -> IResult<&str, &str> {
   // alt((tag("variables"), tag("funcion"), tag("clase")))(input)
   alt((clase, funcion, variables))(input)
 }
 
-fn lista_declaraciones(input: &str) -> IResult<&str, Vec<&str>> {
-  tuple((diferentes_declaraciones, many0(tuple((ws, diferentes_declaraciones)))))(input)
+// n_to_m_digits<'a>(n: usize, m: usize) -> impl FnMut(&'a str) -> Res<&str, String>
+fn lista_declaraciones<'a>(funciones: &mut TablaFunciones) -> impl FnMut(&'a str) -> IResult<&str, Vec<&str>> {
+  move |input| {
+    many0(diferentes_declaraciones)(input)
+        .map(|(next_input, result)| (next_input, result))
+}
+}
+
+
+pub fn declaraciones<'a>(input: &'a str, funciones: &mut TablaFunciones) -> IResult<&'a str, Vec<&'a str>> {
+  opt(lista_declaraciones(funciones))(input)
   .map(|(next_input, res)| {
-    let (decl, declaraciones) = res;
-    let mut lista = Vec::new();
-    lista.push(decl);
-    for d in declaraciones {
-      let (_, de) = d;
-      lista.push(de);
-    }
-    (next_input, lista)
+    // println!("{}", res);
+    (next_input, res.unwrap_or(vec![]))
   })
-}
-
-fn declaraciones_vacias(input: &str) -> IResult<&str, Vec<&str>> {
-  Ok((input, vec![]))
-}
-
-pub fn declaraciones(input: &str) -> IResult<&str, Vec<&str>> {
-  alt((lista_declaraciones, declaraciones_vacias))(input)
 }
 
 #[cfg(test)]
@@ -61,12 +58,6 @@ mod tests {
   }
 
   #[test]
-  fn test_declaraciones_vacias() {
-    assert_eq!(declaraciones_vacias(""), Ok(("", vec![])));
-    assert_eq!(declaraciones_vacias("asd"), Ok(("asd", vec![])));
-  }
-
-  // #[test]
   fn test_declaraciones() {
     assert_eq!(declaraciones("entero id;"), Ok(("", vec!["variables"])));
     assert_eq!(declaraciones("clase Estudiante {};"), Ok(("", vec!["clase"])));

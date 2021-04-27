@@ -70,9 +70,9 @@ fn lista_variable_funcion(input: &str) -> IResult<&str, Vec<(&str, &str, &str)>>
 // pub fn clase(input: &str) -> IResult<&str, (&str, &str, Vec<(&str, &str, &str)>)> {
 pub fn clase(input: &str) -> IResult<&str, &str> {
   tuple((
-    tag("clase"), necessary_ws,
+    ws, tag("clase"), necessary_ws,
     id, ws, posible_herencia, ws,
-    tag("{"), ws, lista_variable_funcion, ws, tag("}"), ws, tag(";") 
+    tag("{"), ws, lista_variable_funcion, ws, tag("}"), ws, tag(";"), ws
   ))
   (input)
   .map(|(next_input, _res)| {
