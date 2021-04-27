@@ -22,7 +22,6 @@ fn lista_declaraciones<'a>(funciones: &mut TablaFunciones) -> impl FnMut(&'a str
   }
 }
 
-
 pub fn declaraciones<'a>(input: &'a str, funciones: &mut TablaFunciones) -> IResult<&'a str, Vec<&'a str>> {
   opt(lista_declaraciones(funciones))(input)
   .map(|(next_input, res)| {
