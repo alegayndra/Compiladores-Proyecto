@@ -2,9 +2,9 @@ use crate::semantica::tabla_variables::*;
 
 #[derive(Debug, PartialEq, Eq, Clone)]
 pub struct TipoFunc {
-  nombre: String,
-  tipo: String,
-  variables: TablaVariables,
+  pub nombre: String,
+  pub tipo: String,
+  pub variables: TablaVariables,
 }
 
 #[derive(Debug, PartialEq, Eq, Clone)]
@@ -84,27 +84,6 @@ impl TablaFunciones {
     ""
   }
 }
-
-// let mut tabla_variables: Vec<TipoVar>;
-
-// pub fn agregar_variable_a_tabla(nombre: String, tipo: String, valor: String, contexto: String) -> &str {
-//   bool var_encontrada = false;
-
-//   for var in tabla_variables {
-//     if (!var_encontrada && var.nombre == nombre) {
-//       var_encontrada = true;
-//     }
-//   }
-
-//   let mut mensaje: &str; 
-
-//   if (var_encontrada) {
-//     mensaje = "Nombre de variable ocupado";
-//   } else {
-//     tabla_variables.push(TipoVar { nombre, tipo, valor, contexto});
-//     mensaje = "Variable agregada";
-//   }
-// }
 
 // #[cfg(test)]
 // mod tests {

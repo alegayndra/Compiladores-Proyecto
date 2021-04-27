@@ -79,94 +79,99 @@ mod tests {
 
   #[test]
   fn test_programa() {
-    // assert_eq!(programa("
-    //   programa idPrograma;
-    //   principal() {}"
-    // ), Ok(("", TablaFunciones {
-    //   tabla: vec![
-    //     TipoFunc {
-    //       nombre: "idPrograma".to_owned(),
-    //       tipo:  "programa".to_owned(),
-    //       variables: TablaVariables {
-    //         tabla: vec![]
-    //       },
-    //     }
-    //   ]
-    // })));
-    // assert_eq!(programa("
-    //   programa idPrograma;
-    //   principal() {
-    //     %% comentario %%
-    //   }"
-    // ), Ok(("", "programa")));
-    // assert_eq!(programa("
-    //   programa idPrograma;
-    //   entero num;
-    //   principal() {}"
-    // ), Ok(("", "programa")));
-    // assert_eq!(programa("
-    //   programa idPrograma;
-    //   clase Estudiante <Persona> {
-    //     char nombre[10], apellido[10];
-    //   };
-    //   principal() {}"
-    // ), Ok(("", "programa")));
-    // assert_eq!(programa("
-    //   programa idPrograma;
-    //   void funcion func (entero var): {
-    //     estatuto;
-    //     regresa expresion;
-    //   }
-    //   principal() {}"
-    // ), Ok(("", "programa")));
-    // assert_eq!(programa("
-    //   programa idPrograma;
-    //   void funcion func (entero var): {
-    //     estatuto;
-    //     regresa expresion;
-    //   }
-    //   entero num;
-    //   clase Estudiante <Persona> {
-    //     char nombre[10], apellido[10];
-    //   };
-    //   principal() {}"
-    // ), Ok(("", "programa")));
+    let funciones: TablaFunciones = TablaFunciones {tabla: vec![
+      TipoFunc {
+        nombre: "idPrograma".to_owned(),
+        tipo:  "programa".to_owned(),
+        variables: TablaVariables {
+          tabla: vec![]
+        },
+      }
+    ]};
 
-    // assert_eq!(programa("
-    //   programa idPrograma;
-    //   void funcion func (entero var): {
-    //     estatuto;
-    //     regresa expresion;
-    //   }
-    //   entero num;
-    //   clase Estudiante <Persona> {
-    //     char nombre[10], apellido[10];
-    //   };
-    //   principal() {
-    //     x = 10;
-    //     d = 10 + 10;
-    //     lee(var);
-    //     escribe(var);
-    //     id();
-    //     id(param);
-    //     id.metodo();
-    //     mientras ( id > 10 ) {
-    //       escribe(id);
-    //     }
+    assert_eq!(programa("
+      programa idPrograma;
+      principal() {}"
+    ), Ok(("", funciones.clone())));
 
-    //     desde arr[10] = 10 hasta 20 {
-    //       escribe(id);
-    //     }
-    //     %% comentario %%
-    //     si (id > 2) {
-    //       escribe(id);
-    //     }
-    //     si (id > 2) {
-    //       escribe(id);
-    //     } sino {
-    //       escribe(id);
-    //     }
-    //   }"
-    // ), Ok(("", "programa")));
+    assert_eq!(programa("
+      programa idPrograma;
+      principal() {
+        %% comentario %%
+      }"
+    ), Ok(("", funciones.clone())));
+
+    assert_eq!(programa("
+      programa idPrograma;
+      entero num;
+      principal() {}"
+    ), Ok(("", funciones.clone())));
+
+    assert_eq!(programa("
+      programa idPrograma;
+      clase Estudiante <Persona> {
+        char nombre[10], apellido[10];
+      };
+      principal() {}"
+    ), Ok(("", funciones.clone())));
+
+    assert_eq!(programa("
+      programa idPrograma;
+      void funcion func (entero var) {
+        id = 10;
+        regresa expresion;
+      }
+      principal() {}"
+    ), Ok(("", funciones.clone())));
+    
+    assert_eq!(programa("
+      programa idPrograma;
+      void funcion func (entero var) {
+        id = 10;
+        regresa expresion;
+      }
+      entero num;
+      clase Estudiante <Persona> {
+        char nombre[10], apellido[10];
+      };
+      principal() {}"
+    ), Ok(("", funciones.clone())));
+
+    assert_eq!(programa("
+      programa idPrograma;
+      void funcion func (entero var) {
+        id = 10;
+        regresa expresion;
+      }
+      entero num;
+      clase Estudiante <Persona> {
+        char nombre[10], apellido[10];
+      };
+      principal() {
+        x = 10;
+        d = 10 + 10;
+        lee(var);
+        escribe(var);
+        id();
+        id(param);
+        id.metodo();
+        mientras ( id > 10 ) {
+          escribe(id);
+        }
+
+        desde arr[10] = 10 hasta 20 {
+          escribe(id);
+        }
+        %% comentario %%
+        si (id > 2) {
+          escribe(id);
+        }
+        si (id > 2) {
+          escribe(id);
+        } sino {
+          escribe(id);
+        }
+      }"
+    ), Ok(("", funciones.clone())));
   }
 }
