@@ -10,7 +10,7 @@ use crate::parser::declaraciones::declaraciones::*;
 use crate::parser::bloque::*;
 use crate::semantica::tabla_funciones::*;
 
-pub fn programa(input: &str) -> IResult<&str, TablaFunciones> {
+pub fn programa(input: &str) -> IResult<&str, &str> {
   let mut next: &str;
   
   next = match tuple((ws, tag("programa"), necessary_ws))(input) {
@@ -63,7 +63,7 @@ pub fn programa(input: &str) -> IResult<&str, TablaFunciones> {
   };
 
   match ws(next) {
-    Ok((_, _)) => Ok(("", funciones)),
+    Ok((_, _)) => Ok(("", "programa")),
     Err(err) => Err(err),
   }
 }
@@ -79,33 +79,33 @@ mod tests {
 
   #[test]
   fn test_programa() {
-    let funciones: TablaFunciones = TablaFunciones {tabla: vec![
-      TipoFunc {
-        nombre: "idPrograma".to_owned(),
-        tipo:  "programa".to_owned(),
-        variables: TablaVariables {
-          tabla: vec![]
-        },
-      }
-    ]};
+    // let funciones: TablaFunciones = TablaFunciones {tabla: vec![
+    //   TipoFunc {
+    //     nombre: "idPrograma".to_owned(),
+    //     tipo:  "programa".to_owned(),
+    //     variables: TablaVariables {
+    //       tabla: vec![]
+    //     },
+    //   }
+    // ]};
 
     assert_eq!(programa("
       programa idPrograma;
       principal() {}"
-    ), Ok(("", funciones.clone())));
+    ), Ok(("", "programa")));
 
     assert_eq!(programa("
       programa idPrograma;
       principal() {
         %% comentario %%
       }"
-    ), Ok(("", funciones.clone())));
+    ), Ok(("", "programa")));
 
     assert_eq!(programa("
       programa idPrograma;
       entero num;
       principal() {}"
-    ), Ok(("", funciones.clone())));
+    ), Ok(("", "programa")));
 
     assert_eq!(programa("
       programa idPrograma;
@@ -113,7 +113,7 @@ mod tests {
         char nombre[10], apellido[10];
       };
       principal() {}"
-    ), Ok(("", funciones.clone())));
+    ), Ok(("", "programa")));
 
     assert_eq!(programa("
       programa idPrograma;
@@ -122,7 +122,7 @@ mod tests {
         regresa expresion;
       }
       principal() {}"
-    ), Ok(("", funciones.clone())));
+    ), Ok(("", "programa")));
     
     assert_eq!(programa("
       programa idPrograma;
@@ -135,7 +135,7 @@ mod tests {
         char nombre[10], apellido[10];
       };
       principal() {}"
-    ), Ok(("", funciones.clone())));
+    ), Ok(("", "programa")));
 
     assert_eq!(programa("
       programa idPrograma;
@@ -172,6 +172,6 @@ mod tests {
           escribe(id);
         }
       }"
-    ), Ok(("", funciones.clone())));
+    ), Ok(("", "programa")));
   }
 }
