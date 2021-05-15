@@ -4,6 +4,8 @@ use nom::{
   bytes::complete::tag
 };
 
+use std::collections::HashMap;
+
 use crate::scanners::ws::*;
 use crate::scanners::id::*;
 use crate::parser::declaraciones::declaraciones::*;
@@ -18,7 +20,7 @@ pub fn programa(input: &str) -> IResult<&str, &str> {
     Err(err) => return Err(err), 
   };
 
-  let mut funciones: TablaFunciones = TablaFunciones {tabla: vec![]};
+  let mut funciones: TablaFunciones = TablaFunciones {tabla: HashMap::new()};
 
   let id_programa: &str;
 
