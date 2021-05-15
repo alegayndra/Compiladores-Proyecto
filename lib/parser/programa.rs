@@ -39,7 +39,7 @@ pub fn programa(input: &str) -> IResult<&str, TablaFunciones> {
 
   let decl: Vec<&str>;
 
-  match (declaraciones)(next, &mut funciones) {
+  match (declaraciones)(next) {
     Ok((next_input, de)) => {
       next = next_input;
       decl = de;
