@@ -17,11 +17,9 @@ fn exp_extra(input: &str) -> IResult<&str, (&str, &str)> {
 }
 
 fn exp_vacio(input: &str) -> IResult<&str, (&str, &str)> {
-  ws(input)
-  .map(|(next_input, _)| {
-    (next_input, ("", ""))
-  })
+  Ok((input, ("", "")))
 }
+
 fn exp_opcional(input: &str) -> IResult<&str, (&str, &str)> {
   alt((exp_extra, exp_vacio))(input)
 }
