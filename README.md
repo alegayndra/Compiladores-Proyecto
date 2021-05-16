@@ -7,7 +7,7 @@ Para correr el programa, se necesita tener instalado el ambiente de desarrollo r
 
 ## Avances
 
-### Avance 3
-- Corrección de errores del parser
-- Modificación de los metodos de la tabla de variables
-- Definición de tabla de funciones
+### Avance 6
+- Corrección de las definiciones de las tablas de variables y funciones.
+- Definición de la tabla de clases.
+- Actualización del parser de acuerdo a los cambios de los diagramas/gramáticas.
