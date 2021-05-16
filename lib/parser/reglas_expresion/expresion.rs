@@ -1,7 +1,8 @@
 use nom::{
   IResult,
   sequence::tuple,
-  branch::alt
+  branch::alt,
+  combinator::opt,
 };
   
 use crate::scanners::ws::*;
@@ -21,7 +22,10 @@ fn exp_vacio(input: &str) -> IResult<&str, (&str, &str)> {
 }
 
 fn exp_opcional(input: &str) -> IResult<&str, (&str, &str)> {
-  alt((exp_extra, exp_vacio))(input)
+  match opt(exp_extra)(input) {
+    Ok((next_input, Some(res))) => Ok((next_input, res)), 
+    _ => Ok((input, ("", "")))  
+  }
 }
 
 // pub fn expresion(input: &str) -> IResult<&str, (&str, &str, &str)> {

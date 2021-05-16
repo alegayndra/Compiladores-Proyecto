@@ -4,7 +4,6 @@ use nom::{
   sequence::tuple,
 };
 
-
 use crate::scanners::ws::*;
 use crate::parser::reglas_expresion::exp::*;
 

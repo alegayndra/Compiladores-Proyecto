@@ -55,10 +55,10 @@ mod tests {
 
   #[test]
   fn test_ws_vec_decl() {
-    assert_eq!(ws_vec_decl("aaaa"), Ok(("aaaa", vec![])));
-    assert_eq!(ws_vec_decl("bbbb"), Ok(("bbbb", vec![])));
-    assert_eq!(ws_vec_decl("cccc"), Ok(("cccc", vec![])));
-    assert_eq!(ws_vec_decl("    "), Ok(("    ", vec![])));
+    assert_eq!(ws_vec("aaaa"), Ok(("aaaa", vec![])));
+    assert_eq!(ws_vec("bbbb"), Ok(("bbbb", vec![])));
+    assert_eq!(ws_vec("cccc"), Ok(("cccc", vec![])));
+    assert_eq!(ws_vec("    "), Ok(("    ", vec![])));
   }
 
   #[test]

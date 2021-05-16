@@ -13,14 +13,6 @@ pub fn termino(input: &str) -> IResult<&str, &str> {
   // tuple((tag("factor"), many0(tuple((ws, op_multdiv, ws, tag("factor"))))))(input)
   tuple((factor, many0(tuple((ws, op_multdiv, ws, factor)))))(input)
   .map(|(next_input, res)| {
-    // let (factor, factores) = res;
-    // let mut lista_factores = Vec::new();
-    // lista_factores.push(("+", factor));
-    // for fac in factores {
-    //   let (_, op, _, fact) = fac;
-    //   lista_factores.push((op, fact));
-    // }
-    // (next_input, lista_factores)
     (next_input, "termino")
   })
 }

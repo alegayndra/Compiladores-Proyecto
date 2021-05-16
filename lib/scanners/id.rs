@@ -82,32 +82,31 @@ mod tests {
 
   #[test]
   fn test_id() {
-    assert_eq!(id("id"), Ok(("", "id")));
-    assert_eq!(id("id["), Ok(("[", "id")));
-    assert_eq!(id("aaa123"), Ok(("", "aaa123")));
-    assert_eq!(id("1aa123"), Ok(("", "1aa123")));
-    assert_eq!(id("1aa_123"), Ok(("", "1aa_123")));
+    assert_eq!(id("id"),        Ok(("", "id")));
+    assert_eq!(id("id["),       Ok(("[", "id")));
+    assert_eq!(id("aaa123"),    Ok(("", "aaa123")));
+    assert_eq!(id("1aa123"),    Ok(("", "1aa123")));
+    assert_eq!(id("1aa_123"),   Ok(("", "1aa_123")));
     assert_eq!(id("1aa_123  "), Ok(("  ", "1aa_123")));
-    assert_eq!(id("1aa_ 123"), Ok((" 123", "1aa_")));
+    assert_eq!(id("1aa_ 123"),  Ok((" 123", "1aa_")));
   }
 
   #[test]
   fn test_id_sin_dim() {
-    assert_eq!(id_sin_dim("id"), Ok(("", ("id", vec![]))));
+    assert_eq!(id_sin_dim("id"),     Ok(("", ("id", vec![]))));
     assert_eq!(id_sin_dim("aaa123"), Ok(("", ("aaa123", vec![]))));
     assert_eq!(id_sin_dim("1aa123"), Ok(("", ("1aa123", vec![]))));
   }
 
   #[test]
   fn test_id_con_dim() {
-    assert_eq!(id_con_dim("id"), Ok(("", ("id", vec![]))));
-    // assert_eq!(id_con_dim("id[id]"), Ok(("", ("id", vec!["id"]))));
+    assert_eq!(id_con_dim("id"),     Ok(("", ("id", vec![]))));
     assert_eq!(id_con_dim("id[id]"), Ok(("", ("id", vec!["exp"]))));
   }
   
   #[test]
   fn test_lista_ids_sin_dim() {
-    assert_eq!(lista_ids_sin_dim("id"), Ok(("", vec![("id", vec![])])));
+    assert_eq!(lista_ids_sin_dim("id"),     Ok(("", vec![("id", vec![])])));
     assert_eq!(lista_ids_sin_dim("id, aa"), Ok(("", vec![("id", vec![]), ("aa", vec![])])));
   }
 
