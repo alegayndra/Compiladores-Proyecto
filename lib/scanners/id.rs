@@ -102,7 +102,7 @@ mod tests {
   fn test_id_con_dim() {
     assert_eq!(id_con_dim("id"), Ok(("", ("id", vec![]))));
     // assert_eq!(id_con_dim("id[id]"), Ok(("", ("id", vec!["id"]))));
-    assert_eq!(id_con_dim("id[id]"), Ok(("", ("id", vec!["expresion"]))));
+    assert_eq!(id_con_dim("id[id]"), Ok(("", ("id", vec!["exp"]))));
   }
   
   #[test]
@@ -125,11 +125,11 @@ mod tests {
   #[test]
   fn test_lista_ids() {
     assert_eq!(lista_ids("id"),               Ok(("", vec![("id", vec![])])));
-    assert_eq!(lista_ids("id[1]"),            Ok(("", vec![("id", vec!["expresion"])])));
-    assert_eq!(lista_ids("id[1][2]"),         Ok(("", vec![("id", vec!["expresion", "expresion"])])));
+    assert_eq!(lista_ids("id[1]"),            Ok(("", vec![("id", vec!["exp"])])));
+    assert_eq!(lista_ids("id[1][2]"),         Ok(("", vec![("id", vec!["exp", "exp"])])));
     assert_eq!(lista_ids("id, aa"),           Ok(("", vec![("id", vec![]), ("aa", vec![])])));
-    assert_eq!(lista_ids("id[1], aa"),        Ok(("", vec![("id", vec!["expresion"]), ("aa", vec![])])));
-    assert_eq!(lista_ids("id, aa[1]"),        Ok(("", vec![("id", vec![]), ("aa", vec!["expresion"])])));
-    assert_eq!(lista_ids("id[3][4], aa[1]"),  Ok(("", vec![("id", vec!["expresion", "expresion"]), ("aa", vec!["expresion"])])));
+    assert_eq!(lista_ids("id[1], aa"),        Ok(("", vec![("id", vec!["exp"]), ("aa", vec![])])));
+    assert_eq!(lista_ids("id, aa[1]"),        Ok(("", vec![("id", vec![]), ("aa", vec!["exp"])])));
+    assert_eq!(lista_ids("id[3][4], aa[1]"),  Ok(("", vec![("id", vec!["exp", "exp"]), ("aa", vec!["exp"])])));
   }
 }

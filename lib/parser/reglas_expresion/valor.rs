@@ -65,8 +65,8 @@ mod tests {
   //Hace las mismas pruebas de lib > parser > dim - "con_dim()", solo regresa valor distinto
   #[test]
   fn test_dim_normalizado() {
-    assert_eq!(dim_normalizado("[id][id]"), Ok(("", ("dimensiones", vec!["expresion", "expresion"]))));
-    assert_eq!(dim_normalizado("[id][id]"), Ok(("", ("dimensiones", vec!["expresion", "expresion"]))));
+    assert_eq!(dim_normalizado("[id][id]"), Ok(("", ("dimensiones", vec!["exp", "exp"]))));
+    assert_eq!(dim_normalizado("[id][id]"), Ok(("", ("dimensiones", vec!["exp", "exp"]))));
   }
 
   #[test]
