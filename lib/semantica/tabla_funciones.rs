@@ -1,121 +1,74 @@
+use std::collections::HashMap;
+
 use crate::semantica::tabla_variables::*;
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Eq, Clone)]
 pub struct TipoFunc {
-  nombre: String,
-  tipo: String,
-  variables: TablaVariables,
+  pub nombre: String,
+  pub tipo: String,
+  pub parametros: TablaVariables,
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Eq, Clone)]
 pub struct TablaFunciones {
-  pub tabla: Vec<TipoFunc>
+  pub tabla: HashMap<String, TipoFunc>
 }
 
 impl TablaFunciones {
   pub fn agregar_funcion(&mut self, nombre_func: String, tipo_func: String) -> &str {
-    let mut var_encontrada: bool = false;
-
-    if self.tabla.len() > 0 {
-      for indice in 0..=self.tabla.len() {
-        if !var_encontrada && self.tabla[indice].nombre == nombre_func.clone() {
-          var_encontrada = true;
-        }
-      }
-    }
-  
-  
-    let mensaje: &str; 
-  
-    if var_encontrada {
-      mensaje = "Nombre de variable ocupado";
-    } else {
-      self.tabla.push(TipoFunc { 
-        nombre: nombre_func.clone(),
-        tipo: tipo_func.clone(),
-        variables: TablaVariables { tabla: vec![] } 
-      });
-      mensaje = "Variable agregada";
-    }
-
-    return mensaje;
-  }
-
-  pub fn modificar_funcion(&mut self, nombre_func: String, tipo_func: String) -> &str {
-    let mut var_encontrada: bool = false;
-  
-    for indice in 0..=self.tabla.len() {
-      if self.tabla[indice].nombre == nombre_func.clone() {
-        self.tabla[indice] = TipoFunc { 
+    match self.tabla.contains_key(&nombre_func) {
+      true => "Nombre de funcion ocupado",
+      false =>  {
+        self.tabla.insert(nombre_func.clone(), TipoFunc { 
           nombre: nombre_func.clone(),
           tipo: tipo_func.clone(),
-          variables: TablaVariables { tabla: vec![] }
-        };
-        var_encontrada = true;
+          parametros: TablaVariables { tabla: HashMap::new() } 
+        });
+        "Funcion agregada"
       }
     }
-  
-    let mensaje: &str; 
-  
-    if var_encontrada {
-      mensaje = "Variable no encontrada";
-    } else {
-      mensaje = "Variable modificada";
-    }
-
-    return mensaje;
   }
 
-  pub fn agregar_variable(&mut self, nombre_func: String, nombre_var: String, tipo_var: String, valor_var: String) -> &str {
-    for indice in 0..=self.tabla.len() {
-      if self.tabla[indice].nombre == nombre_func.clone() {
-        return self.tabla[indice].variables.agregar_variable(nombre_var, tipo_var, valor_var);
-      }
+  pub fn buscar_funcion(&self, nombre_func: String) -> &str {
+    match self.tabla.contains_key(&nombre_func) {
+      true => "Funcion existente",
+      false =>  "Funcion no existente"
     }
-    ""
+  }
+
+  pub fn agregar_variable(&mut self, nombre_func: String, nombre_var: String, tipo_var: String) -> &str {
+    match self.tabla.get_mut(&nombre_func) {
+      Some(funcion) => funcion.parametros.agregar_variable(nombre_var, tipo_var),
+      None => "Funcion no existente"
+    }
   }
 
   pub fn buscar_variable(&mut self, nombre_func: String, nombre_var: String) -> &str {
-    for indice in 0..=self.tabla.len() {
-      if self.tabla[indice].nombre == nombre_func.clone() {
-        return self.tabla[indice].variables.buscar_variable(nombre_var);
-      }
+    match self.tabla.get(&nombre_func) {
+      Some(funcion) => funcion.parametros.buscar_variable(nombre_var),
+      None => "Funcion no existente"
     }
-    ""
   }
 }
 
-// let mut tabla_variables: Vec<TipoVar>;
+#[cfg(test)]
+mod tests {
+  use super::*;
+  // use nom::{
+  //     error::{ErrorKind, VerboseError, VerboseErrorKind},
+  //     Err,
+  // };
 
-// pub fn agregar_variable_a_tabla(nombre: String, tipo: String, valor: String, contexto: String) -> &str {
-//   bool var_encontrada = false;
-
-//   for var in tabla_variables {
-//     if (!var_encontrada && var.nombre == nombre) {
-//       var_encontrada = true;
-//     }
-//   }
-
-//   let mut mensaje: &str; 
-
-//   if (var_encontrada) {
-//     mensaje = "Nombre de variable ocupado";
-//   } else {
-//     tabla_variables.push(TipoVar { nombre, tipo, valor, contexto});
-//     mensaje = "Variable agregada";
-//   }
-// }
-
-// #[cfg(test)]
-// mod tests {
-//   use super::*;
-//   // use nom::{
-//   //     error::{ErrorKind, VerboseError, VerboseErrorKind},
-//   //     Err,
-//   // };
-
-//   #[test]
-//   fn test_agregar_variable_a_tabla() {
-//     assert_eq!(agregar_variable_a_tabla("var", "entero", "1", "global" ), Ok(("", "1")));
-//   }
-// }
+  #[test]
+  fn test_tabla_funciones() {
+    let mut tabla : TablaFunciones = TablaFunciones { tabla: HashMap::new() };
+    assert_eq!(tabla.agregar_funcion("func".to_string(), "entero".to_string()), "Funcion agregada");
+    assert_eq!(tabla.agregar_funcion("func".to_string(), "entero".to_string()), "Nombre de funcion ocupado");
+    assert_eq!(tabla.buscar_funcion("func".to_string()), "Funcion existente");
+    assert_eq!(tabla.agregar_variable("func".to_string(), "variable".to_string(), "entero".to_string()), "Variable agregada");
+    assert_eq!(tabla.agregar_variable("func".to_string(), "variable".to_string(), "entero".to_string()), "Nombre de variable ocupado");
+    assert_eq!(tabla.buscar_variable("func".to_string(), "variable".to_string()), "Variable existente");
+    assert_eq!(tabla.buscar_variable("func".to_string(), "a".to_string()), "Variable no existente");
+    assert_eq!(tabla.buscar_variable("a".to_string(), "a".to_string()), "Funcion no existente");
+  }
+}

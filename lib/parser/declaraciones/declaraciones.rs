@@ -1,6 +1,7 @@
 use nom::{
   IResult,
   sequence::tuple,
+  combinator::opt,
   branch::alt,
   multi::many0
 };
@@ -9,9 +10,9 @@ use crate::scanners::ws::*;
 use crate::parser::declaraciones::clase::*;
 use crate::parser::declaraciones::funcion::*;
 use crate::parser::declaraciones::variables::*;
+use crate::semantica::tabla_funciones::*;
 
 fn diferentes_declaraciones(input: &str) -> IResult<&str, &str> {
-  // alt((tag("variables"), tag("funcion"), tag("clase")))(input)
   alt((clase, funcion, variables))(input)
 }
 
@@ -29,15 +30,11 @@ fn lista_declaraciones(input: &str) -> IResult<&str, Vec<&str>> {
   })
 }
 
-fn declaraciones_vacias(input: &str) -> IResult<&str, Vec<&str>> {
-  ws(input)
-  .map(|(next_input, _)| {
-    (next_input, vec![])
-  })
-}
-
 pub fn declaraciones(input: &str) -> IResult<&str, Vec<&str>> {
-  alt((lista_declaraciones, declaraciones_vacias))(input)
+  opt(lista_declaraciones)(input)
+  .map(|(next_input, res)| {
+    (next_input, res.unwrap_or(vec![]))
+  })
 }
 
 #[cfg(test)]
@@ -48,32 +45,28 @@ mod tests {
   //     Err,
   // };
 
-  // #[test]
-  // fn test_diferentes_declaraciones() {
-  //   assert_eq!(diferentes_declaraciones("variables"), Ok(("", "variables")));
-  //   assert_eq!(diferentes_declaraciones("clase"), Ok(("", "clase")));
-  //   assert_eq!(diferentes_declaraciones("funcion"), Ok(("", "funcion")));
-  // }
+  #[test]
+  fn test_diferentes_declaraciones() {
+    assert_eq!(diferentes_declaraciones("entero id;"),                          Ok(("", "variables")));
+    assert_eq!(diferentes_declaraciones("clase Estudiante {};"),                Ok(("", "clase")));
+    assert_eq!(diferentes_declaraciones("void funcion func() { regresa 10; }"), Ok(("", "funcion")));
+  }
 
-  // #[test]
-  // fn test_lista_declaraciones() {
-  //   assert_eq!(lista_declaraciones("variables"), Ok(("", vec!["variables"])));
-  //   assert_eq!(lista_declaraciones("clase"), Ok(("", vec!["clase"])));
-  //   assert_eq!(lista_declaraciones("funcion"), Ok(("", vec!["funcion"])));
-  //   assert_eq!(lista_declaraciones("variables, clase, funcion"), Ok(("", vec!["variables", "clase", "funcion"])));
-  // }
+  #[test]
+  fn test_lista_declaraciones() {
+    assert_eq!(lista_declaraciones("entero id;"),                                                          Ok(("", vec!["variables"])));
+    assert_eq!(lista_declaraciones("clase Estudiante {};"),                                                Ok(("", vec!["clase"])));
+    assert_eq!(lista_declaraciones("void funcion func() { regresa 10; }"),                                 Ok(("", vec!["funcion"])));
+    assert_eq!(lista_declaraciones("entero id; clase Estudiante {}; void funcion func() { regresa 10; }"), Ok(("", vec!["variables", "clase", "funcion"])));
+  }
 
-  // #[test]
-  // fn test_declaraciones_vacias() {
-  //   assert_eq!(declaraciones_vacias(""), Ok(("", vec![])));
-  // }
-
-  // #[test]
-  // fn test_declaraciones() {
-  //   assert_eq!(declaraciones("variables"), Ok(("", vec!["variables"])));
-  //   assert_eq!(declaraciones("clase"), Ok(("", vec!["clase"])));
-  //   assert_eq!(declaraciones("funcion"), Ok(("", vec!["funcion"])));
-  //   assert_eq!(declaraciones("variables, clase, funcion"), Ok(("", vec!["variables", "clase", "funcion"])));
-  //   assert_eq!(declaraciones(""), Ok(("", vec![])));
-  // }
+  #[test]
+  fn test_declaraciones() {
+    assert_eq!(declaraciones("entero id;"),                                                           Ok(("", vec!["variables"])));
+    assert_eq!(declaraciones("clase Estudiante {};"),                                                 Ok(("", vec!["clase"])));
+    assert_eq!(declaraciones("void funcion func () { regresa expresion ; }"),                         Ok(("", vec!["funcion"])));
+    assert_eq!(declaraciones("entero id; clase Estudiante {}; void funcion func() { regresa 10; }"),  Ok(("", vec!["variables", "clase", "funcion"])));
+    assert_eq!(declaraciones(""),                                                                     Ok(("", vec![])));
+    assert_eq!(declaraciones("asd"),                                                                  Ok(("asd", vec![])));
+  }
 }

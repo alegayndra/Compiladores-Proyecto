@@ -9,28 +9,22 @@ use nom::{
 use crate::scanners::ws::*;
 use crate::scanners::tipos::*;
 use crate::scanners::id::*;
-// use crate::parser::dimensiones::*;
 use crate::parser::reglas_expresion::expresion::*;
+use crate::parser::bloque::*;
 
-fn parametro(input: &str) -> IResult<&str, (&str, (&str, Vec<&str>))> {
-  alt((
-    tuple((tipo, ws, id_con_dim)),
-    tuple((id, ws, id_sin_dim)),
-  ))(input)
+fn parametro(input: &str) -> IResult<&str, (&str, &str)> {
+  tuple((tipo, ws, id))(input)
   .map(|(next_input, res)| {
     let (tipo, _, id) = res;
     (next_input, (tipo, id))
   })
 }
 
-fn parametros_vacios(input: &str) -> IResult<&str, Vec<(&str, (&str, Vec<&str>))>> {
-  ws(input)
-  .map(|(next_input, _res)| {
-    (next_input, vec![("", ("", vec![]))])
-  })
+fn parametros_vacios(input: &str) -> IResult<&str, Vec<(&str, &str)>> {
+  Ok((input, vec![("", "")]))
 }
 
-fn parametros_varios(input: &str) -> IResult<&str, Vec<(&str, (&str, Vec<&str>))>> {
+fn parametros_varios(input: &str) -> IResult<&str, Vec<(&str, &str)>> {
   tuple((parametro, many0(tuple((ws, tag(","), ws, parametro)))))(input)
   .map(|(next_input, res)| {
     let (param, params) = res;
@@ -44,36 +38,20 @@ fn parametros_varios(input: &str) -> IResult<&str, Vec<(&str, (&str, Vec<&str>))
   })
 }
 
-fn lista_parametros(input: &str) -> IResult<&str, Vec<(&str, (&str, Vec<&str>))>> {
+fn lista_parametros(input: &str) -> IResult<&str, Vec<(&str, &str)>> {
   alt((parametros_varios, parametros_vacios))(input)
 }
 
-fn bloque_funcion(input: &str) -> IResult<&str, (&str, &str)> {
-  tuple((
-    tag("{"), ws,
-    tag("estatuto;"), ws,
-    tag("regresa"), necessary_ws, expresion, ws, tag(";"), ws,
-    tag("}")
-  ))(input)
-  .map(|(next_input, res)| {
-    let (_, _, estatutos, _, _, _, valor_retorno, _, _, _, _) = res;
-    (next_input, (estatutos, valor_retorno))
-  })
-}
-
-// pub fn funcion(input: &str) -> IResult<&str, (&str, &str, Vec<(&str, (&str, Vec<&str>))>)> {
 pub fn funcion(input: &str) -> IResult<&str, &str> {
   tuple((
-    tipo_retorno, necessary_ws,
+    ws, tipo_retorno, necessary_ws,
     tag("funcion"), necessary_ws,
     id, ws,
-    tag("("), ws, lista_parametros, ws, tag(")"), ws, tag(":"), ws,
-    bloque_funcion
+    tag("("), ws, lista_parametros, ws, tag(")"), ws,
+    bloque, ws
   ))
   (input)
   .map(|(next_input, _res)| {
-    // let (tipo, _, _, _, id, _, _, _, lista_params, _, _, _, _, _, _bloque) = res;
-    // (next_input, (tipo, id, lista_params))
     (next_input, "funcion")
   })
 }
@@ -88,22 +66,20 @@ mod tests {
 
   #[test]
   fn test_parametro() {
-    assert_eq!(parametro("Persona id"), Ok(("", ("Persona", ("id", vec![])))));
-    assert_eq!(parametro("entero id"), Ok(("", ("entero", ("id", vec![])))));
-    // assert_eq!(parametro("entero id[id]"), Ok(("", ("entero", ("id", vec!["id"])))));
-    assert_eq!(parametro("entero id[id]"), Ok(("", ("entero", ("id", vec!["expresion"])))));
+    assert_eq!(parametro("char id"),   Ok(("", ("char", "id"))));
+    assert_eq!(parametro("entero id"), Ok(("", ("entero", "id"))));
   }
 
   #[test]
   fn test_parametros_vacios() {
-    assert_eq!(parametros_vacios("Persona id"), Ok(("Persona id", vec![("", ("", vec![]))])));
-    assert_eq!(parametros_vacios("entero id"), Ok(("entero id", vec![("", ("", vec![]))])));
-    assert_eq!(parametros_vacios("entero id[id]"), Ok(("entero id[id]", vec![("", ("", vec![]))])));
+    assert_eq!(parametros_vacios("Persona id"), Ok(("Persona id", vec![("", "")])));
+    assert_eq!(parametros_vacios("entero id"),  Ok(("entero id", vec![("", "")])));
   }
 
   #[test]
   fn test_funcion() {
     // assert_eq!(funcion("void funcion func (entero var): { estatuto; regresa expresion ; }"), Ok(("", ("void", "func", vec![("entero", ("var", vec![]))]))));
-    assert_eq!(funcion("void funcion func (entero var): { estatuto; regresa expresion ; }"), Ok(("", "funcion")));
+    assert_eq!(funcion("void funcion func () { regresa expresion ; }"), Ok(("", "funcion")));
+    assert_eq!(funcion("void funcion func (entero var) { num = 10; regresa expresion ; }"), Ok(("", "funcion")));
   }
 }

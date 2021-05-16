@@ -4,6 +4,8 @@ use nom::{
   bytes::complete::tag
 };
 
+use std::collections::HashMap;
+
 use crate::scanners::ws::*;
 use crate::scanners::id::*;
 use crate::parser::declaraciones::declaraciones::*;
@@ -18,7 +20,7 @@ pub fn programa(input: &str) -> IResult<&str, &str> {
     Err(err) => return Err(err), 
   };
 
-  let mut funciones: TablaFunciones = TablaFunciones {tabla: vec![]};
+  let mut funciones: TablaFunciones = TablaFunciones {tabla: HashMap::new()};
 
   let id_programa: &str;
 
@@ -63,14 +65,15 @@ pub fn programa(input: &str) -> IResult<&str, &str> {
   };
 
   match ws(next) {
-    Ok((next_input, _)) => Ok((next_input, "programa")),
-    Err(err) => return Err(err),
+    Ok((_, _)) => Ok(("", "programa")),
+    Err(err) => Err(err),
   }
 }
 
 #[cfg(test)]
 mod tests {
   use super::*;
+  use crate::semantica::tabla_variables::*;
   // use nom::{
   //     error::{ErrorKind, VerboseError, VerboseErrorKind},
   //     Err,
@@ -78,21 +81,34 @@ mod tests {
 
   #[test]
   fn test_programa() {
+    // let funciones: TablaFunciones = TablaFunciones {tabla: vec![
+    //   TipoFunc {
+    //     nombre: "idPrograma".to_owned(),
+    //     tipo:  "programa".to_owned(),
+    //     variables: TablaVariables {
+    //       tabla: vec![]
+    //     },
+    //   }
+    // ]};
+
     assert_eq!(programa("
       programa idPrograma;
       principal() {}"
     ), Ok(("", "programa")));
+
     assert_eq!(programa("
       programa idPrograma;
       principal() {
         %% comentario %%
       }"
     ), Ok(("", "programa")));
+
     assert_eq!(programa("
       programa idPrograma;
       entero num;
       principal() {}"
     ), Ok(("", "programa")));
+
     assert_eq!(programa("
       programa idPrograma;
       clase Estudiante <Persona> {
@@ -100,18 +116,20 @@ mod tests {
       };
       principal() {}"
     ), Ok(("", "programa")));
+
     assert_eq!(programa("
       programa idPrograma;
-      void funcion func (entero var): {
-        estatuto;
+      void funcion func (entero var) {
+        id = 10;
         regresa expresion;
       }
       principal() {}"
     ), Ok(("", "programa")));
+    
     assert_eq!(programa("
       programa idPrograma;
-      void funcion func (entero var): {
-        estatuto;
+      void funcion func (entero var) {
+        id = 10;
         regresa expresion;
       }
       entero num;
@@ -123,8 +141,8 @@ mod tests {
 
     assert_eq!(programa("
       programa idPrograma;
-      void funcion func (entero var): {
-        estatuto;
+      void funcion func (entero var) {
+        id = 10;
         regresa expresion;
       }
       entero num;
