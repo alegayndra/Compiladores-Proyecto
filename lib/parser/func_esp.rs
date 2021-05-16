@@ -11,7 +11,6 @@ use crate::scanners::id::*;
 use crate::scanners::texto::*;
 use crate::parser::reglas_expresion::expresion::*;
 
-// pub fn leer(input: &str) -> IResult<&str, Vec<(&str, Vec<&str>)>> {
 pub fn leer(input: &str) -> IResult<&str, &str> {
   tuple((tag("lee"), ws, tag("("), ws, lista_ids, ws, tag(")"), tag(";")))
   (input)

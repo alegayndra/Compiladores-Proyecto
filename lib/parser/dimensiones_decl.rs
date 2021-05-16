@@ -7,6 +7,7 @@ use nom::{
 
 use crate::scanners::ws::*;
 use crate::scanners::constantes::*;
+use crate::parser::dimensiones::*;
 
 pub fn dimension_decl(input: &str) -> IResult<&str, Vec<&str>> {
   tuple((tag("["), ws, num_entero, ws, tag("]")))(input)
@@ -25,12 +26,8 @@ fn dos_dimensiones_decl(input: &str) -> IResult<&str, Vec<&str>> {
   })
 }
 
-fn ws_vec_decl(input: &str) -> IResult<&str, Vec<&str>> {
-  Ok((input, vec![]))
-}
-
 pub fn con_dim_decl(input: &str) -> IResult<&str, Vec<&str>> {
-  alt((dos_dimensiones_decl, dimension_decl, ws_vec_decl))
+  alt((dos_dimensiones_decl, dimension_decl, ws_vec))
   (input)
 }
 
@@ -44,24 +41,16 @@ mod tests {
 
   #[test]
   fn test_dimension_decl() {
-    // assert_eq!(dimension("[id]"), Ok(("", vec!["id"])));
-    // assert_eq!(dimension("[ id ]"), Ok(("", vec!["id"])));
-    // assert_eq!(dimension("[  id  ]"), Ok(("", vec!["id"])));
-
-    assert_eq!(dimension_decl("[1 ]"),     Ok(("", vec!["1"])));
-    assert_eq!(dimension_decl("[ 78]"),   Ok(("", vec!["78"])));
-    assert_eq!(dimension_decl("[  69  ]"), Ok(("", vec!["69"])));
+    assert_eq!(dimension_decl("[1 ]"),      Ok(("", vec!["1"])));
+    assert_eq!(dimension_decl("[ 78]"),     Ok(("", vec!["78"])));
+    assert_eq!(dimension_decl("[  69  ]"),  Ok(("", vec!["69"])));
   }
 
   #[test]
   fn test_dos_dimensiones_decl() {
-    // assert_eq!(dos_dimensiones("[id][id]"), Ok(("", vec!["id", "id"])));
-    // assert_eq!(dos_dimensiones("[ id ][ id ]"), Ok(("", vec!["id", "id"])));
-    // assert_eq!(dos_dimensiones("[  id  ][  id  ]"), Ok(("", vec!["id", "id"])));
-
-    assert_eq!(dos_dimensiones_decl("[420][2]"),         Ok(("", vec!["420", "2"])));
+    assert_eq!(dos_dimensiones_decl("[420][2]"),          Ok(("", vec!["420", "2"])));
     assert_eq!(dos_dimensiones_decl("[ 69666][ 0 ]"),     Ok(("", vec!["69666", "0"])));
-    assert_eq!(dos_dimensiones_decl("[  1  ][   2 ]"), Ok(("", vec!["1", "2"])));
+    assert_eq!(dos_dimensiones_decl("[  1  ][   2 ]"),    Ok(("", vec!["1", "2"])));
   }
 
   #[test]
@@ -74,12 +63,8 @@ mod tests {
 
   #[test]
   fn test_con_dim_decl() {
-    // assert_eq!(con_dim("[id]"), Ok(("", vec!["id"])));
-    // assert_eq!(con_dim("[id][id]"), Ok(("", vec!["id", "id"])));
-    // assert_eq!(con_dim("aaaa"), Ok(("aaaa", vec![])));
-
-    assert_eq!(con_dim_decl("[7]"), Ok(("", vec!["7"])));
+    assert_eq!(con_dim_decl("[7]"),     Ok(("", vec!["7"])));
     assert_eq!(con_dim_decl("[3][13]"), Ok(("", vec!["3", "13"])));
-    assert_eq!(con_dim_decl("aaaa"), Ok(("aaaa", vec![])));
+    assert_eq!(con_dim_decl("aaaa"),    Ok(("aaaa", vec![])));
   }
 }

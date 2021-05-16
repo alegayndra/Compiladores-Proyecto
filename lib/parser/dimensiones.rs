@@ -44,10 +44,6 @@ mod tests {
 
   #[test]
   fn test_dimension() {
-    // assert_eq!(dimension("[id]"), Ok(("", vec!["id"])));
-    // assert_eq!(dimension("[ id ]"), Ok(("", vec!["id"])));
-    // assert_eq!(dimension("[  id  ]"), Ok(("", vec!["id"])));
-
     assert_eq!(dimension("[termino]"),     Ok(("", vec!["exp"])));
     assert_eq!(dimension("[num_float]"),   Ok(("", vec!["exp"])));
     assert_eq!(dimension("[  id  ]"), Ok(("", vec!["exp"])));
@@ -55,10 +51,6 @@ mod tests {
 
   #[test]
   fn test_dos_dimensiones() {
-    // assert_eq!(dos_dimensiones("[id][id]"), Ok(("", vec!["id", "id"])));
-    // assert_eq!(dos_dimensiones("[ id ][ id ]"), Ok(("", vec!["id", "id"])));
-    // assert_eq!(dos_dimensiones("[  id  ][  id  ]"), Ok(("", vec!["id", "id"])));
-
     assert_eq!(dos_dimensiones("[id][id]"),         Ok(("", vec!["exp", "exp"])));
     assert_eq!(dos_dimensiones("[ id ][ id ]"),     Ok(("", vec!["exp", "exp"])));
     assert_eq!(dos_dimensiones("[  id  ][  id  ]"), Ok(("", vec!["exp", "exp"])));
@@ -74,10 +66,6 @@ mod tests {
 
   #[test]
   fn test_con_dim() {
-    // assert_eq!(con_dim("[id]"), Ok(("", vec!["id"])));
-    // assert_eq!(con_dim("[id][id]"), Ok(("", vec!["id", "id"])));
-    // assert_eq!(con_dim("aaaa"), Ok(("aaaa", vec![])));
-
     assert_eq!(con_dim("[id]"), Ok(("", vec!["exp"])));
     assert_eq!(con_dim("[id][id]"), Ok(("", vec!["exp", "exp"])));
     assert_eq!(con_dim("aaaa"), Ok(("aaaa", vec![])));
