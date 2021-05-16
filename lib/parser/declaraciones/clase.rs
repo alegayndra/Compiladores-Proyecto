@@ -106,8 +106,6 @@ mod tests {
 
   #[test]
   fn test_atributos() {
-    // assert_eq!(atributos("Persona id, id;"), Ok(("",    ("Persona", vec![("id", vec![]), ("id", vec![])]))));
-    // assert_eq!(atributos("entero id[id][id];"), Ok(("", ("entero",  vec![("id", vec!["id","id"])]))));
     assert_eq!(atributos("Persona id, id;"), Ok(("", ("null", "variables", "variables"))));
     assert_eq!(atributos("entero id[10][7];"), Ok(("", ("null", "variables", "variables"))));
   }

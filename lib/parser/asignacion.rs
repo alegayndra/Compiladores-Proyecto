@@ -8,7 +8,6 @@ use crate::scanners::ws::*;
 use crate::scanners::id::*;
 use crate::parser::reglas_expresion::exp::*;
 
-// pub fn asignacion(input: &str) -> IResult<&str, ((&str,Vec<&str>), &str)> {
 pub fn asignacion(input: &str) -> IResult<&str, &str> {
   tuple((id_con_dim, ws, tag("="), ws, exp, ws, tag(";")))(input)
   .map(|(next_input, _res)| {
