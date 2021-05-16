@@ -17,10 +17,6 @@ fn exp_extra(input: &str) -> IResult<&str, (&str, &str)> {
   })
 }
 
-fn exp_vacio(input: &str) -> IResult<&str, (&str, &str)> {
-  Ok((input, ("", "")))
-}
-
 fn exp_opcional(input: &str) -> IResult<&str, (&str, &str)> {
   match opt(exp_extra)(input) {
     Ok((next_input, Some(res))) => Ok((next_input, res)), 
