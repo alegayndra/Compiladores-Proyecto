@@ -34,7 +34,7 @@ mod tests {
     assert_eq!(exp_logica("abr  "),                               Ok(("  ", "exp_logica")));
     assert_eq!(exp_logica("num_entero"),                          Ok(("", "exp_logica")));
     assert_eq!(exp_logica("id"),                                  Ok(("", "exp_logica")));
-    assert_eq!(exp_logica("id  "),                                       Ok(("  ", "exp_logica")));
+    assert_eq!(exp_logica("id  "),                                Ok(("  ", "exp_logica")));
     assert_eq!(exp_logica("10  "),                                Ok(("  ", "exp_logica")));
     assert_eq!(exp_logica("id & num_entero"),                     Ok(("", "exp_logica")));
     assert_eq!(exp_logica("id | num_entero"),                     Ok(("", "exp_logica")));

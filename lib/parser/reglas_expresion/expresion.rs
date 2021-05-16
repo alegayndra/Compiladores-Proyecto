@@ -51,10 +51,10 @@ mod tests {
   fn test_expresion() {
     // assert_eq!(expresion("exp"), Ok(("", ("exp", "", ""))));
     // assert_eq!(expresion("exp & exp"), Ok(("", ("exp", "&", "exp"))));
-    assert_eq!(expresion("termino > termino"), Ok(("", "expresion")));
-    assert_eq!(expresion("termino"), Ok(("", "expresion")));
-    assert_eq!(expresion("id + num_entero * id2 - num_entero - termino"), Ok(("", "expresion")));
-    assert_eq!(expresion("id + num_entero * id2 - num_entero - termino > id3"), Ok(("", "expresion")));
-    assert_eq!(expresion("( id + num_entero * id2 - num_entero - termino >= id3 )"), Ok(("", "expresion")));
+    assert_eq!(expresion("termino > termino"),                                        Ok(("", "expresion")));
+    assert_eq!(expresion("termino"),                                                  Ok(("", "expresion")));
+    assert_eq!(expresion("id + num_entero * id2 - num_entero - termino"),             Ok(("", "expresion")));
+    assert_eq!(expresion("id + num_entero * id2 - num_entero - termino > id3"),       Ok(("", "expresion")));
+    assert_eq!(expresion("( id + num_entero * id2 - num_entero - termino >= id3 )"),  Ok(("", "expresion")));
   }
 }

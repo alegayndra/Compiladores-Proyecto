@@ -24,7 +24,7 @@ mod tests {
 
   #[test]
   fn test_regresa() {
-    assert_eq!(regresa("regresa  a;"), Ok(("", "regresa")));
-    assert_eq!(regresa("regresa 0;"), Ok(("", "regresa")));
+    assert_eq!(regresa("regresa  a;"),  Ok(("", "regresa")));
+    assert_eq!(regresa("regresa 0;"),   Ok(("", "regresa")));
   }
 }

@@ -51,18 +51,18 @@ mod tests {
 
   #[test]
   fn test_mientras() {
-    assert_eq!(mientras("mientras(expresion)"), Ok(("", "mientras")));
+    assert_eq!(mientras("mientras(expresion)"),    Ok(("", "mientras")));
     assert_eq!(mientras("mientras ( expresion )"), Ok(("", "mientras")));
   }
 
   #[test]
   fn test_desde() {
-    assert_eq!(desde("desde id = 10 hasta 20"), Ok(("", "desde")));
+    assert_eq!(desde("desde id = 10 hasta 20"),         Ok(("", "desde")));
     // assert_eq!(desde("desde id = num_entero hasta num_entero"), Ok(("", "desde")));
-    assert_eq!(desde("desde id[id] = 10 hasta 20"), Ok(("", "desde")));
+    assert_eq!(desde("desde id[id] = 10 hasta 20"),     Ok(("", "desde")));
     assert_eq!(desde("desde id[id][id] = 10 hasta 20"), Ok(("", "desde")));
-    assert_eq!(desde("desde id.id[id] = 10 hasta 20"), Ok(("", "desde")));
-    assert_eq!(desde("desde id.id = 15 hasta 25"), Ok(("", "desde")));
+    assert_eq!(desde("desde id.id[id] = 10 hasta 20"),  Ok(("", "desde")));
+    assert_eq!(desde("desde id.id = 15 hasta 25"),      Ok(("", "desde")));
   }
 
   #[test]
@@ -70,7 +70,7 @@ mod tests {
     // assert_eq!(repeticion("mientras(expresion) bloque"), Ok(("", ("mientras", "bloque"))));
     // assert_eq!(repeticion("desde id = num_entero hasta num_entero bloque"), Ok(("", ("desde", "bloque"))));
 
-    assert_eq!(repeticion("mientras(expresion) {}"),                    Ok(("", "repeticion")));
+    assert_eq!(repeticion("mientras(expresion) {}"),    Ok(("", "repeticion")));
     assert_eq!(repeticion("desde id = 10 hasta 20 {}"), Ok(("", "repeticion")));
   }
 }

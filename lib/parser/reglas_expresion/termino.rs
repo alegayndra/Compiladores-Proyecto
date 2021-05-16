@@ -37,11 +37,10 @@ mod tests {
     //   ]
     // )));
 
-    assert_eq!(termino("factor"), Ok(("", "termino")));
+    assert_eq!(termino("factor"),                            Ok(("", "termino")));
     assert_eq!(termino("factor * factor * factor / factor"), Ok(("", "termino")));
-
-    assert_eq!(termino("num_entero"), Ok(("", "termino")));
-    assert_eq!(termino("id"), Ok(("", "termino")));
-    assert_eq!(termino("id * num_entero * id2 / id3"), Ok(("", "termino")));
+    assert_eq!(termino("num_entero"),                       Ok(("", "termino")));
+    assert_eq!(termino("id"),                                Ok(("", "termino")));
+    assert_eq!(termino("id * num_entero * id2 / id3"),       Ok(("", "termino")));
   }
 }

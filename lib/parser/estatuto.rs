@@ -32,6 +32,6 @@ mod tests {
     assert_eq!(estatuto("mientras(10 > 10) {}"),  Ok(("", "repeticion")));
     assert_eq!(estatuto("si (10 > 10) {}"),       Ok(("", "decision")));
     assert_eq!(estatuto("%% comentario %%"),      Ok(("", " comentario ")));
-    assert_eq!(estatuto("regresa char ;"),      Ok(("", "regresa")));
+    assert_eq!(estatuto("regresa char ;"),        Ok(("", "regresa")));
   }
 }

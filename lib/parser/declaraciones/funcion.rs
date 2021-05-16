@@ -66,14 +66,14 @@ mod tests {
 
   #[test]
   fn test_parametro() {
-    assert_eq!(parametro("char id"), Ok(("", ("char", "id"))));
+    assert_eq!(parametro("char id"),   Ok(("", ("char", "id"))));
     assert_eq!(parametro("entero id"), Ok(("", ("entero", "id"))));
   }
 
   #[test]
   fn test_parametros_vacios() {
     assert_eq!(parametros_vacios("Persona id"), Ok(("Persona id", vec![("", "")])));
-    assert_eq!(parametros_vacios("entero id"), Ok(("entero id", vec![("", "")])));
+    assert_eq!(parametros_vacios("entero id"),  Ok(("entero id", vec![("", "")])));
   }
 
   #[test]
