@@ -14,5 +14,5 @@ pub mod func_esp;
 pub mod func_params;
 pub mod llama_func;
 pub mod programa;
-pub mod repeticion;
 pub mod regresa;
+pub mod repeticion;
