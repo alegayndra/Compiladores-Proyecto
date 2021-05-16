@@ -25,24 +25,29 @@ impl TablaVariables {
     }
   }
 
-  pub fn buscar_variable(&mut self, nombre_var: String) -> &str {
+  pub fn buscar_variable(&self, nombre_var: String) -> &str {
     match self.tabla.contains_key(&nombre_var) {
       true => "Variable existente",
-      false => "Variable no existe"
+      false => "Variable no existente"
     }
   }
 }
 
-// #[cfg(test)]
-// mod tests {
-//   use super::*;
-//   // use nom::{
-//   //     error::{ErrorKind, VerboseError, VerboseErrorKind},
-//   //     Err,
-//   // };
+#[cfg(test)]
+mod tests {
+  use super::*;
+  // use nom::{
+  //     error::{ErrorKind, VerboseError, VerboseErrorKind},
+  //     Err,
+  // };
 
-//   #[test]
-//   fn test_agregar_variable_a_tabla() {
-//     assert_eq!(agregar_variable_a_tabla("var", "entero", "1", "global" ), Ok(("", "1")));
-//   }
-// }
+  #[test]
+  fn test_agregar_funcion() {
+    let mut tabla : TablaVariables = TablaVariables { tabla: HashMap::new() };
+    assert_eq!(tabla.agregar_variable("variable".to_string(), "entero".to_string()), "Variable agregada");
+    assert_eq!(tabla.agregar_variable("variable".to_string(), "entero".to_string()), "Nombre de variable ocupado");
+    assert_eq!(tabla.buscar_variable("variable".to_string()), "Variable existente");
+    assert_eq!(tabla.buscar_variable("a".to_string()), "Variable no existente");
+  }
+}
+

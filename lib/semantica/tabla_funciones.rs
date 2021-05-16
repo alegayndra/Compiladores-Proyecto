@@ -1,5 +1,4 @@
 use std::collections::HashMap;
-use std::hash::{Hash, Hasher};
 
 use crate::semantica::tabla_variables::*;
 
@@ -7,18 +6,12 @@ use crate::semantica::tabla_variables::*;
 pub struct TipoFunc {
   pub nombre: String,
   pub tipo: String,
-  pub parametros: HashMap<String, TipoVar>,
+  pub parametros: TablaVariables,
 }
 
 #[derive(Debug, PartialEq, Eq, Clone)]
 pub struct TablaFunciones {
   pub tabla: HashMap<String, TipoFunc>
-}
-
-impl TipoFunc {
-  fn hash<H: Hasher>(&self, state: &mut H) {
-    self.nombre.hash(state);
-  }
 }
 
 impl TablaFunciones {
@@ -29,14 +22,14 @@ impl TablaFunciones {
         self.tabla.insert(nombre_func.clone(), TipoFunc { 
           nombre: nombre_func.clone(),
           tipo: tipo_func.clone(),
-          parametros: HashMap::new() 
+          parametros: TablaVariables { tabla: HashMap::new() } 
         });
         "Funcion agregada"
       }
     }
   }
 
-  pub fn buscar_funcion(&mut self, nombre_func: String) -> &str {
+  pub fn buscar_funcion(&self, nombre_func: String) -> &str {
     match self.tabla.contains_key(&nombre_func) {
       true => "Funcion existente",
       false =>  "Funcion no existe"
@@ -45,26 +38,14 @@ impl TablaFunciones {
 
   pub fn agregar_variable(&mut self, nombre_func: String, nombre_var: String, tipo_var: String) -> &str {
     match self.tabla.get_mut(&nombre_func) {
-      Some(funcion) => match funcion.parametros.contains_key(&nombre_var) {
-        true => "Nombre de variable ocupado",
-        false => {
-          funcion.parametros.insert(nombre_var.clone(), TipoVar {
-            nombre: nombre_var.clone(),
-            tipo: tipo_var.clone()
-          });
-          "Variable agregada"
-        }
-      }
+      Some(funcion) => funcion.parametros.agregar_variable(nombre_var, tipo_var),
       None => "Funcion no existente"
     }
   }
 
   pub fn buscar_variable(&mut self, nombre_func: String, nombre_var: String) -> &str {
     match self.tabla.get(&nombre_func) {
-      Some(funcion) => match funcion.parametros.contains_key(&nombre_var) {
-        true => "Variable existente",
-        false => "Variable no existente"
-      },
+      Some(funcion) => funcion.parametros.buscar_variable(nombre_var),
       None => "Funcion no existente"
     }
   }
