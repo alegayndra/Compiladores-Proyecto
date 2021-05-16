@@ -8,6 +8,7 @@ pub mod bloque;
 pub mod comentario;
 pub mod decision;
 pub mod dimensiones;
+pub mod dimensiones_decl;
 pub mod estatuto;
 pub mod func_esp;
 pub mod func_params;

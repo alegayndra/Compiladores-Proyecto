@@ -17,7 +17,7 @@ pub fn dimension_decl(input: &str) -> IResult<&str, Vec<&str>> {
 }
 
 fn dos_dimensiones_decl(input: &str) -> IResult<&str, Vec<&str>> {
-  tuple((dimension, ws, dimension))
+  tuple((dimension_decl, ws, dimension_decl))
   (input)
   .map(|(next_input, res)| {
     let (dimension_1, _, dimension_2) = res;
@@ -25,12 +25,12 @@ fn dos_dimensiones_decl(input: &str) -> IResult<&str, Vec<&str>> {
   })
 }
 
-priv pub fn ws_vec_decl(input: &str) -> IResult<&str, Vec<&str>> {
+fn ws_vec_decl(input: &str) -> IResult<&str, Vec<&str>> {
   Ok((input, vec![]))
 }
 
 pub fn con_dim_decl(input: &str) -> IResult<&str, Vec<&str>> {
-  alt((dos_dimensiones, dimension, ws_vec))
+  alt((dos_dimensiones_decl, dimension_decl, ws_vec_decl))
   (input)
 }
 
@@ -48,9 +48,9 @@ mod tests {
     // assert_eq!(dimension("[ id ]"), Ok(("", vec!["id"])));
     // assert_eq!(dimension("[  id  ]"), Ok(("", vec!["id"])));
 
-    assert_eq!(dimension_decl("[1 ]"),     Ok(("", vec!["expresion"])));
-    assert_eq!(dimension_decl("[ 78]"),   Ok(("", vec!["expresion"])));
-    assert_eq!(dimension_decl("[  69  ]"), Ok(("", vec!["expresion"])));
+    assert_eq!(dimension_decl("[1 ]"),     Ok(("", vec!["1"])));
+    assert_eq!(dimension_decl("[ 78]"),   Ok(("", vec!["78"])));
+    assert_eq!(dimension_decl("[  69  ]"), Ok(("", vec!["69"])));
   }
 
   #[test]
@@ -59,9 +59,9 @@ mod tests {
     // assert_eq!(dos_dimensiones("[ id ][ id ]"), Ok(("", vec!["id", "id"])));
     // assert_eq!(dos_dimensiones("[  id  ][  id  ]"), Ok(("", vec!["id", "id"])));
 
-    assert_eq!(dos_dimensiones_decl("[420][2]"),         Ok(("", vec!["expresion", "expresion"])));
-    assert_eq!(dos_dimensiones_decl("[ 69666][ 0 ]"),     Ok(("", vec!["expresion", "expresion"])));
-    assert_eq!(dos_dimensiones_decl("[  1  ][   2 ]"), Ok(("", vec!["expresion", "expresion"])));
+    assert_eq!(dos_dimensiones_decl("[420][2]"),         Ok(("", vec!["420", "2"])));
+    assert_eq!(dos_dimensiones_decl("[ 69666][ 0 ]"),     Ok(("", vec!["69666", "0"])));
+    assert_eq!(dos_dimensiones_decl("[  1  ][   2 ]"), Ok(("", vec!["1", "2"])));
   }
 
   #[test]
@@ -78,8 +78,8 @@ mod tests {
     // assert_eq!(con_dim("[id][id]"), Ok(("", vec!["id", "id"])));
     // assert_eq!(con_dim("aaaa"), Ok(("aaaa", vec![])));
 
-    assert_eq!(con_dim_decl("[id]"), Ok(("", vec!["expresion"])));
-    assert_eq!(con_dim_decl("[id][id]"), Ok(("", vec!["expresion", "expresion"])));
+    assert_eq!(con_dim_decl("[7]"), Ok(("", vec!["7"])));
+    assert_eq!(con_dim_decl("[3][13]"), Ok(("", vec!["3", "13"])));
     assert_eq!(con_dim_decl("aaaa"), Ok(("aaaa", vec![])));
   }
 }

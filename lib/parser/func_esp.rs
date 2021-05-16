@@ -13,21 +13,12 @@ use crate::parser::reglas_expresion::expresion::*;
 
 // pub fn leer(input: &str) -> IResult<&str, Vec<(&str, Vec<&str>)>> {
 pub fn leer(input: &str) -> IResult<&str, &str> {
-  tuple((tag("lee"), ws, tag("("), ws, lista_ids_con_dim, ws, tag(")"), tag(";")))
+  tuple((tag("lee"), ws, tag("("), ws, lista_ids, ws, tag(")"), tag(";")))
   (input)
   .map(|(next_input, _res)| {
-    // let (_, _, _, _, list_ids, _, _, _) = res;
-    // (next_input, list_ids)
     (next_input, "leer")
   })
 }
-
-// fn cte_texto(input: &str) -> IResult<&str, (&str, Vec<&str>)> {
-//   texto(input)
-//   .map(|(next_input, res)| {
-//     (next_input, (res, vec![]))
-//   })
-// }
 
 // fn expresion_escribe(input: &str) -> IResult<&str, (&str, Vec<&str>)> {
 fn expresion_escribe(input: &str) -> IResult<&str, &str> {
