@@ -133,9 +133,6 @@ mod tests {
 
   #[test]
   fn test_clase() {
-    // assert_eq!(atributos("Persona id, id;"), Ok(("",    ("Persona", vec![("id", vec![]), ("id", vec![])]))));
-    // assert_eq!(atributos("entero id[id][id];"), Ok(("", ("entero",  vec![("id", vec!["id","id"])]))));
-    // assert_eq!(metodos("void funcion func (entero var): { estatuto; regresa expresion ; }"), Ok(("", ("void", "func", "funcion"))));
     assert_eq!(clase("clase Estudiante {};"),           Ok(("", "clase")));
     assert_eq!(clase("clase Estudiante <Persona> {};"), Ok(("", "clase")));
     assert_eq!(clase(
