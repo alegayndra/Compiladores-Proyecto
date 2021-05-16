@@ -29,24 +29,24 @@ mod tests {
 
   #[test]
   fn test_tipo() {
-    assert_eq!(tipo("entero"), Ok(("", "entero")));
+    assert_eq!(tipo("entero"),   Ok(("", "entero")));
     assert_eq!(tipo("flotante"), Ok(("", "flotante")));
-    assert_eq!(tipo("char"), Ok(("", "char")));
+    assert_eq!(tipo("char"),     Ok(("", "char")));
   }
 
   #[test]
   fn test_tipo_compuesto() {
-    assert_eq!(tipo_compuesto("entero"), Ok(("", "entero")));
-    assert_eq!(tipo_compuesto("flotante"), Ok(("", "flotante")));
-    assert_eq!(tipo_compuesto("char"), Ok(("", "char")));
+    assert_eq!(tipo_compuesto("entero"),      Ok(("", "entero")));
+    assert_eq!(tipo_compuesto("flotante"),    Ok(("", "flotante")));
+    assert_eq!(tipo_compuesto("char"),        Ok(("", "char")));
     assert_eq!(tipo_compuesto("soyUnObjeto"), Ok(("", "soyUnObjeto")));
   }
 
   #[test]
   fn test_tipo_retorno() {
-    assert_eq!(tipo_retorno("entero"), Ok(("", "entero")));
+    assert_eq!(tipo_retorno("entero"),   Ok(("", "entero")));
     assert_eq!(tipo_retorno("flotante"), Ok(("", "flotante")));
-    assert_eq!(tipo_retorno("char"), Ok(("", "char")));
-    assert_eq!(tipo_retorno("void"), Ok(("", "void")));
+    assert_eq!(tipo_retorno("char"),     Ok(("", "char")));
+    assert_eq!(tipo_retorno("void"),     Ok(("", "void")));
   }
 }

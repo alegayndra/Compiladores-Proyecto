@@ -9,9 +9,10 @@ use crate::scanners::ws::*;
 use crate::scanners::operadores::*;
 use crate::parser::reglas_expresion::valor::*;
 use crate::parser::reglas_expresion::expresion::*;
+use crate::parser::reglas_expresion::exp_logica::*;
 
 fn retorna_expresion(input: &str) -> IResult<&str, (&str, &str)> {
-  tuple((tag("("), ws, expresion, ws, tag(")")))(input)
+  tuple((tag("("), ws, exp_logica, ws, tag(")")))(input)
   .map(|(next_input, res)| {
     let (_, _, expresion, _, _) = res;
     (next_input, ("operacion", expresion))
@@ -50,13 +51,13 @@ mod tests {
 
   #[test]
   fn test_valor_factor() {
-    assert_eq!(valor_factor("10"), Ok(("", ("", "10"))));
-    assert_eq!(valor_factor("- 10"), Ok(("", ("-", "10"))));
+    assert_eq!(valor_factor("10"),                   Ok(("", ("", "10"))));
+    assert_eq!(valor_factor("- 10"),                 Ok(("", ("-", "10"))));
     // assert_eq!(valor_factor("+ \"soyUnaVariable\""), Ok(("", ("+", "\"soyUnaVariable\""))));
     assert_eq!(valor_factor("+ \"soyUnaVariable\""), Ok(("", ("+", "soyUnaVariable"))));
     // assert_eq!(valor_factor("+ Nombre . metodo ()"), Ok(("", ("+", "Nombre . metodo ()"))));
-    assert_eq!(valor_factor("+ Nombre.metodo()"), Ok(("", ("+", "Nombre"))));
-    assert_eq!(valor_factor("+ Nombre . metodo()"), Ok(("", ("+", "Nombre"))));
+    assert_eq!(valor_factor("+ Nombre.metodo()"),    Ok(("", ("+", "Nombre"))));
+    assert_eq!(valor_factor("+ Nombre . metodo()"),  Ok(("", ("+", "Nombre"))));
   }
 
   #[test]
@@ -66,11 +67,13 @@ mod tests {
     // assert_eq!(factor("+ Nombre . metodo ()"), Ok(("", ("+", "Nombre"))));
     // assert_eq!(factor("( expresion )"), Ok(("", ("operacion", "expresion"))));
     
-    assert_eq!(factor("- num_entero"),         Ok(("", "factor")));
-    assert_eq!(factor("+ \"soyUnaVariable\""), Ok(("", "factor")));
-    assert_eq!(factor("+ Nombre . metodo()"), Ok(("", "factor")));
-    assert_eq!(factor("( expresion )"),        Ok(("", "factor")));
+    assert_eq!(factor("- num_entero"),          Ok(("", "factor")));
+    assert_eq!(factor("+ \"soyUnaVariable\""),  Ok(("", "factor")));
+    assert_eq!(factor("+ Nombre . metodo()"),   Ok(("", "factor")));
+    assert_eq!(factor("( expresion )"),         Ok(("", "factor")));
     assert_eq!(factor("( num_entero )"),        Ok(("", "factor")));
-    assert_eq!(factor("( num_entero * id )"),        Ok(("", "factor")));
+    assert_eq!(factor("( num_entero * id )"),   Ok(("", "factor")));
+    assert_eq!(factor("( num_entero & id )"),   Ok(("", "factor")));
+    assert_eq!(factor("( 1 | 0 )"),             Ok(("", "factor")));
   }
 }

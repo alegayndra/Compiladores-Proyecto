@@ -92,24 +92,22 @@ mod tests {
 
   #[test]
   fn test_herencia() {
-    assert_eq!(herencia("<Persona>"), Ok(("", "Persona")));
+    assert_eq!(herencia("<Persona>"),   Ok(("", "Persona")));
     assert_eq!(herencia("< Persona >"), Ok(("", "Persona")));
   }
 
   #[test]
   fn test_posible_herencia() {
-    assert_eq!(posible_herencia("<Persona>"), Ok(("", "Persona")));
+    assert_eq!(posible_herencia("<Persona>"),   Ok(("", "Persona")));
     assert_eq!(posible_herencia("< Persona >"), Ok(("", "Persona")));
-    assert_eq!(posible_herencia("< Persona"), Ok(("< Persona", "")));
-    assert_eq!(posible_herencia(":{}"), Ok((":{}", "")));
+    assert_eq!(posible_herencia("< Persona"),   Ok(("< Persona", "")));
+    assert_eq!(posible_herencia(":{}"),         Ok((":{}", "")));
   }
 
   #[test]
   fn test_atributos() {
-    // assert_eq!(atributos("Persona id, id;"), Ok(("",    ("Persona", vec![("id", vec![]), ("id", vec![])]))));
-    // assert_eq!(atributos("entero id[id][id];"), Ok(("", ("entero",  vec![("id", vec!["id","id"])]))));
-    assert_eq!(atributos("Persona id, id;"), Ok(("", ("null", "variables", "variables"))));
-    assert_eq!(atributos("entero id[id][id];"), Ok(("", ("null", "variables", "variables"))));
+    assert_eq!(atributos("Persona id, id;"),   Ok(("", ("null", "variables", "variables"))));
+    assert_eq!(atributos("entero id[10][7];"), Ok(("", ("null", "variables", "variables"))));
   }
 
   #[test]
@@ -122,23 +120,19 @@ mod tests {
 
   #[test]
   fn test_variable_funcion() {
-    assert_eq!(variable_funcion("Persona id, id;"),                                               Ok(("", ("null", "variables", "variables"))));
+    assert_eq!(variable_funcion("Persona id, id;"),                                    Ok(("", ("null", "variables", "variables"))));
     assert_eq!(variable_funcion("void funcion func (entero var){regresa expresion;}"), Ok(("", ("tipo", "id", "funcion"))));
   }
 
   #[test]
   fn test_lista_variable_funcion() {
-    assert_eq!(lista_variable_funcion("Persona id, id;"),                                               Ok(("", vec![("null", "variables", "variables")])));
+    assert_eq!(lista_variable_funcion("Persona id, id;"),                                    Ok(("", vec![("null", "variables", "variables")])));
     assert_eq!(lista_variable_funcion("void funcion func (entero var){regresa expresion;}"), Ok(("", vec![("tipo", "id", "funcion")])));
-    // assert_eq!(lista_variable_funcion(""),                                                                  Ok(("", ("null", "vacio", "vacio"))));
   }
 
   #[test]
   fn test_clase() {
-    // assert_eq!(atributos("Persona id, id;"), Ok(("",    ("Persona", vec![("id", vec![]), ("id", vec![])]))));
-    // assert_eq!(atributos("entero id[id][id];"), Ok(("", ("entero",  vec![("id", vec!["id","id"])]))));
-    // assert_eq!(metodos("void funcion func (entero var): { estatuto; regresa expresion ; }"), Ok(("", ("void", "func", "funcion"))));
-    assert_eq!(clase("clase Estudiante {};"), Ok(("", "clase")));
+    assert_eq!(clase("clase Estudiante {};"),           Ok(("", "clase")));
     assert_eq!(clase("clase Estudiante <Persona> {};"), Ok(("", "clase")));
     assert_eq!(clase(
       "clase Estudiante <Persona> {

@@ -58,24 +58,24 @@ mod tests {
   fn test_valor_cte() {
     // assert_eq!(valor_cte("\"soyUnaVariable\""), Ok(("", ("\"soyUnaVariable\"", "constante"))));
     assert_eq!(valor_cte("\"soyUnaVariable\""), Ok(("", ("soyUnaVariable", "constante"))));
-    assert_eq!(valor_cte("10"), Ok(("", ("10", "constante"))));
-    assert_eq!(valor_cte("num_float"), Ok(("", ("num_float", "constante"))));
+    assert_eq!(valor_cte("10"),                 Ok(("", ("10", "constante"))));
+    assert_eq!(valor_cte("num_float"),          Ok(("", ("num_float", "constante"))));
   }
 
   //Hace las mismas pruebas de lib > parser > dim - "con_dim()", solo regresa valor distinto
   #[test]
   fn test_dim_normalizado() {
-    assert_eq!(dim_normalizado("[id][id]"), Ok(("", ("dimensiones", vec!["expresion", "expresion"]))));
-    assert_eq!(dim_normalizado("[id][id]"), Ok(("", ("dimensiones", vec!["expresion", "expresion"]))));
+    assert_eq!(dim_normalizado("[id][id]"), Ok(("", ("dimensiones", vec!["exp", "exp"]))));
+    assert_eq!(dim_normalizado("[id][id]"), Ok(("", ("dimensiones", vec!["exp", "exp"]))));
   }
 
   #[test]
   fn test_valor_id() {
     assert_eq!(valor_id("SoyUnString.arreglo[id]"),             Ok(("", ("SoyUnString", "variable"))));
     assert_eq!(valor_id("Objeto.metodo.arreglo[id][id]"),       Ok(("", ("Objeto", "variable"))));
-    assert_eq!(valor_id("Nombre.metodo.arreglo[  id][id ]"), Ok(("", ("Nombre", "variable"))));
+    assert_eq!(valor_id("Nombre.metodo.arreglo[  id][id ]"),    Ok(("", ("Nombre", "variable"))));
     assert_eq!(valor_id("Nombre.metodo(expresion)"),            Ok(("", ("Nombre", "variable"))));
     assert_eq!(valor_id("Nombre.metodo(expresion)"),            Ok(("", ("Nombre", "variable"))));
-    assert_eq!(valor_id("Nombre.metodo()"),                    Ok(("", ("Nombre", "variable"))));
+    assert_eq!(valor_id("Nombre.metodo()"),                     Ok(("", ("Nombre", "variable"))));
   }
 }

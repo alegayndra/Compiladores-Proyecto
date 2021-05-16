@@ -47,16 +47,16 @@ mod tests {
 
   #[test]
   fn test_diferentes_declaraciones() {
-    assert_eq!(diferentes_declaraciones("entero id;"), Ok(("", "variables")));
-    assert_eq!(diferentes_declaraciones("clase Estudiante {};"), Ok(("", "clase")));
+    assert_eq!(diferentes_declaraciones("entero id;"),                          Ok(("", "variables")));
+    assert_eq!(diferentes_declaraciones("clase Estudiante {};"),                Ok(("", "clase")));
     assert_eq!(diferentes_declaraciones("void funcion func() { regresa 10; }"), Ok(("", "funcion")));
   }
 
   #[test]
   fn test_lista_declaraciones() {
-    assert_eq!(lista_declaraciones("entero id;"), Ok(("", vec!["variables"])));
-    assert_eq!(lista_declaraciones("clase Estudiante {};"), Ok(("", vec!["clase"])));
-    assert_eq!(lista_declaraciones("void funcion func() { regresa 10; }"), Ok(("", vec!["funcion"])));
+    assert_eq!(lista_declaraciones("entero id;"),                                                          Ok(("", vec!["variables"])));
+    assert_eq!(lista_declaraciones("clase Estudiante {};"),                                                Ok(("", vec!["clase"])));
+    assert_eq!(lista_declaraciones("void funcion func() { regresa 10; }"),                                 Ok(("", vec!["funcion"])));
     assert_eq!(lista_declaraciones("entero id; clase Estudiante {}; void funcion func() { regresa 10; }"), Ok(("", vec!["variables", "clase", "funcion"])));
   }
 
