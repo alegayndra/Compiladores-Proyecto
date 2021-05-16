@@ -32,7 +32,7 @@ impl TablaFunciones {
   pub fn buscar_funcion(&self, nombre_func: String) -> &str {
     match self.tabla.contains_key(&nombre_func) {
       true => "Funcion existente",
-      false =>  "Funcion no existe"
+      false =>  "Funcion no existente"
     }
   }
 
@@ -60,7 +60,7 @@ mod tests {
   // };
 
   #[test]
-  fn test_agregar_funcion() {
+  fn test_tabla_funciones() {
     let mut tabla : TablaFunciones = TablaFunciones { tabla: HashMap::new() };
     assert_eq!(tabla.agregar_funcion("func".to_string(), "entero".to_string()), "Funcion agregada");
     assert_eq!(tabla.agregar_funcion("func".to_string(), "entero".to_string()), "Nombre de funcion ocupado");

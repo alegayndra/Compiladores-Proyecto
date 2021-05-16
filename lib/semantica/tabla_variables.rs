@@ -42,7 +42,7 @@ mod tests {
   // };
 
   #[test]
-  fn test_agregar_funcion() {
+  fn test_tabla_variables() {
     let mut tabla : TablaVariables = TablaVariables { tabla: HashMap::new() };
     assert_eq!(tabla.agregar_variable("variable".to_string(), "entero".to_string()), "Variable agregada");
     assert_eq!(tabla.agregar_variable("variable".to_string(), "entero".to_string()), "Nombre de variable ocupado");
