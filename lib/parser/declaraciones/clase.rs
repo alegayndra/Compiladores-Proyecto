@@ -128,7 +128,6 @@ mod tests {
   fn test_lista_variable_funcion() {
     assert_eq!(lista_variable_funcion("Persona id, id;"),                                    Ok(("", vec![("null", "variables", "variables")])));
     assert_eq!(lista_variable_funcion("void funcion func (entero var){regresa expresion;}"), Ok(("", vec![("tipo", "id", "funcion")])));
-    // assert_eq!(lista_variable_funcion(""),                                                                  Ok(("", ("null", "vacio", "vacio"))));
   }
 
   #[test]
