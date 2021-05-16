@@ -1,7 +1,8 @@
 use nom::{
   IResult,
   sequence::tuple,
-  branch::alt
+  branch::alt,
+  combinator::opt,
 };
   
 use crate::scanners::ws::*;
@@ -16,14 +17,11 @@ fn exp_extra(input: &str) -> IResult<&str, (&str, &str)> {
   })
 }
 
-fn exp_vacio(input: &str) -> IResult<&str, (&str, &str)> {
-  ws(input)
-  .map(|(next_input, _)| {
-    (next_input, ("", ""))
-  })
-}
 fn exp_opcional(input: &str) -> IResult<&str, (&str, &str)> {
-  alt((exp_extra, exp_vacio))(input)
+  match opt(exp_extra)(input) {
+    Ok((next_input, Some(res))) => Ok((next_input, res)), 
+    _ => Ok((input, ("", "")))  
+  }
 }
 
 // pub fn expresion(input: &str) -> IResult<&str, (&str, &str, &str)> {
@@ -49,10 +47,10 @@ mod tests {
   fn test_expresion() {
     // assert_eq!(expresion("exp"), Ok(("", ("exp", "", ""))));
     // assert_eq!(expresion("exp & exp"), Ok(("", ("exp", "&", "exp"))));
-    assert_eq!(expresion("termino > termino"), Ok(("", "expresion")));
-    assert_eq!(expresion("termino"), Ok(("", "expresion")));
-    assert_eq!(expresion("id + num_entero * id2 - num_entero - termino"), Ok(("", "expresion")));
-    assert_eq!(expresion("id + num_entero * id2 - num_entero - termino > id3"), Ok(("", "expresion")));
-    assert_eq!(expresion("( id + num_entero * id2 - num_entero - termino >= id3 )"), Ok(("", "expresion")));
+    assert_eq!(expresion("termino > termino"),                                        Ok(("", "expresion")));
+    assert_eq!(expresion("termino"),                                                  Ok(("", "expresion")));
+    assert_eq!(expresion("id + num_entero * id2 - num_entero - termino"),             Ok(("", "expresion")));
+    assert_eq!(expresion("id + num_entero * id2 - num_entero - termino > id3"),       Ok(("", "expresion")));
+    assert_eq!(expresion("( id + num_entero * id2 - num_entero - termino >= id3 )"),  Ok(("", "expresion")));
   }
 }

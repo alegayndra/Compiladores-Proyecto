@@ -8,7 +8,7 @@ use nom::{
 use crate::scanners::ws::*;
 use crate::scanners::tipos::*;
 use crate::scanners::id::*;
-use crate::parser::dimensiones::*;
+use crate::parser::dimensiones_decl::*;
 
 fn variable_compuesta(input: &str) -> IResult<&str, (&str, Vec<(&str, Vec<&str>)>)> {
   tuple((
@@ -39,8 +39,6 @@ pub fn variables(input: &str) -> IResult<&str, &str> {
   tuple((ws, alt((variable_normal, variable_compuesta)), tag(";"), ws))
   (input)
   .map(|(next_input, _res)| {
-    // let (tipo, _, lista_ids, _, _dimensiones, _, _) = res;
-    // (next_input, (tipo, lista_ids))
     (next_input, "variables")
   })
 }
@@ -71,9 +69,9 @@ mod tests {
     assert_eq!(variables("Persona id;"),        Ok(("", "variables")));
     assert_eq!(variables("Persona id, id;"),    Ok(("", "variables")));
     assert_eq!(variables("entero id;"),         Ok(("", "variables")));
-    assert_eq!(variables("entero id[id];"),     Ok(("", "variables")));
-    assert_eq!(variables("entero id[id][id];"), Ok(("", "variables")));
+    assert_eq!(variables("entero id[74];"),     Ok(("", "variables")));
+    assert_eq!(variables("entero id[22][0];"), Ok(("", "variables")));
     assert_eq!(variables("entero id, id;"),     Ok(("", "variables")));
-    assert_eq!(variables("entero id[id], id;"), Ok(("", "variables")));
+    assert_eq!(variables("entero id[1], id;"), Ok(("", "variables")));
   }
 }
