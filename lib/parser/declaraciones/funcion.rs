@@ -45,32 +45,16 @@ fn lista_parametros(input: &str) -> IResult<&str, Vec<(&str, (&str, Vec<&str>))>
   alt((parametros_varios, parametros_vacios))(input)
 }
 
-fn bloque_funcion(input: &str) -> IResult<&str, (&str, &str)> {
-  tuple((
-    tag("{"), ws,
-    lista_estatutos, ws,
-    tag("regresa"), necessary_ws, expresion, ws, tag(";"), ws,
-    tag("}")
-  ))(input)
-  .map(|(next_input, res)| {
-    let (_, _, estatutos, _, _, _, valor_retorno, _, _, _, _) = res;
-    (next_input, (estatutos, valor_retorno))
-  })
-}
-
-// pub fn funcion(input: &str) -> IResult<&str, (&str, &str, Vec<(&str, (&str, Vec<&str>))>)> {
 pub fn funcion(input: &str) -> IResult<&str, &str> {
   tuple((
     ws, tipo_retorno, necessary_ws,
     tag("funcion"), necessary_ws,
     id, ws,
     tag("("), ws, lista_parametros, ws, tag(")"), ws,
-    bloque_funcion, ws
+    bloque, ws
   ))
   (input)
   .map(|(next_input, _res)| {
-    // let (tipo, _, _, _, id, _, _, _, lista_params, _, _, _, _, _, _bloque) = res;
-    // (next_input, (tipo, id, lista_params))
     (next_input, "funcion")
   })
 }
