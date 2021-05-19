@@ -1,3 +1,8 @@
+CONSTANTES
+start
+nombre,tipo,dimensiones
+end
+
 FUNCIONES
 start
 nombre,tipo

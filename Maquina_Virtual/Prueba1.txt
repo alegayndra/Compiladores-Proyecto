@@ -1,7 +1,27 @@
+CONSTANTES
+start
+num, entero, []
+end
+
 FUNCIONES
 start
+func,void
+    PARAMETROS
+    start2
+    var,entero,[]
+    end2
 
+pelos,int
+    PARAMETROS
+    start2
+    c,char,[]
+    end2
+end
 
+CLASES
+start
+
+end
 CUADRUPLOS
 start
 *,A,B,t1
