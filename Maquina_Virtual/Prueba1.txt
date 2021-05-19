@@ -1,0 +1,11 @@
+FUNCIONES
+start
+
+
+CUADRUPLOS
+start
+*,A,B,t1
++,C,t1,t2
+=,t2,,D
+end
+//D = C + A * B

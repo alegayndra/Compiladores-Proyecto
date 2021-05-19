@@ -1,0 +1,33 @@
+FUNCIONES
+start
+nombre,tipo
+PARAMETROS
+start2
+nombre,tipo,dimensiones
+end2
+end
+
+CLASES
+start
+nombre,padre
+METODOS
+start2
+nombre,tipo
+PARAMETROS
+start3
+nombre,tipo,dimensiones
+end3
+end2
+ATRIBUTOS
+start2
+nombre,tipo,dimensiones
+end2
+end
+
+CUADRUPLOS
+start
+//operador, valorIzq, valorDer, direccionMemoria
+*,A,B,5000
++,
+end
+//D = C + A * B
