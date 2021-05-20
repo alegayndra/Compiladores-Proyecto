@@ -42,6 +42,75 @@ fn lista_parametros(input: &str) -> IResult<&str, Vec<(&str, &str)>> {
 }
 
 pub fn funcion(input: &str) -> IResult<&str, &str> {
+  let mut next : &str;
+  let tipo_func : &str;
+  // let id_func : &str;
+
+  next = match ws(input) {
+    Ok((next_input, _)) => next_input,
+    Err(err) => return Err(err)
+  };
+
+  next = match tipo_retorno(next) {
+    Ok((next_input, tipo_f)) => {
+      tipo_func = tipo_f;
+      next_input
+    },
+    Err(err) => return Err(err)
+  };
+
+  next = match tuple((ws, tag("funcion"), necessary_w))(next) {
+    Ok((next_input, _)) => next_input,
+    Err(err) => return Err(err)
+  };
+
+  next = match id(next) {
+    Ok((next_input, id_f)) => {
+      // id_func = id_f;
+      let contexto_clase = CONTEXTO_CLASE.lock().unwrap();
+      let contexto_funcion = CONTEXTO_FUNCION.lock().unwrap();
+
+      if contexto_clase.clone() != "".to_owned() {
+        match CLASES.lock().unwrap().agregar_variable_metodo(contexto_clase.to_string(), contexto_funcion.to_string(), var.to_owned(), tipo_var.to_owned(), dims_string.clone()) {
+          Ok(res) => {
+            println!("{:?}", res);
+            ()
+          },
+          Err(err) => {
+            println!("{:?}", err);
+            ()
+          },
+        }
+      } else {
+        match FUNCIONES.lock().unwrap().agregar_variable(contexto_funcion.to_string(), var.to_owned(), tipo_var.to_owned(), dims_string.clone()) {
+          Ok(res) => {
+            println!("{:?}", res);
+            ()
+          },
+          Err(err) => {
+            println!("{:?}", err);
+            ()
+          },
+        }
+      }
+    
+      match FUNCIONES.lock().unwrap().agregar_funcion(id_f.to_string()) {
+        Ok(res) => {
+          println!("{:?}", res);
+          let contexto_funcion = CONTEXTO_FUNCION.lock().unwrap();
+          *contexto_funcion = id_f;
+          ()
+        },
+        Err(err) => {
+          println!("{:?}", err);
+          ()
+        },
+      }
+      next_input
+    },
+    Err(err) => return Err(err)
+  };
+
   tuple((
     ws, tipo_retorno, necessary_ws,
     tag("funcion"), necessary_ws,
