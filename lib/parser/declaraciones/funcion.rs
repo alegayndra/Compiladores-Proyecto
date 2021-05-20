@@ -9,7 +9,6 @@ use nom::{
 use crate::scanners::ws::*;
 use crate::scanners::tipos::*;
 use crate::scanners::id::*;
-use crate::parser::reglas_expresion::expresion::*;
 use crate::parser::bloque::*;
 
 fn parametro(input: &str) -> IResult<&str, (&str, &str)> {

@@ -8,7 +8,6 @@ use nom::{
 use crate::scanners::ws::*;
 use crate::scanners::operadores::*;
 use crate::parser::reglas_expresion::valor::*;
-use crate::parser::reglas_expresion::expresion::*;
 use crate::parser::reglas_expresion::exp_logica::*;
 
 fn retorna_expresion(input: &str) -> IResult<&str, (&str, &str)> {
@@ -31,12 +30,9 @@ fn valor_factor(input: &str) -> IResult<&str, (&str, &str)> {
   })
 }
 
-// pub fn factor(input: &str) -> IResult<&str, (&str, &str)> {
 pub fn factor(input: &str) -> IResult<&str, &str> {
   alt((retorna_expresion, valor_factor))(input)
   .map(|(next_input, _)| {
-    // let (signo, _, valor) = res;
-    // (next_input, (signo, valor.0))
     (next_input, "factor")
   })
 }

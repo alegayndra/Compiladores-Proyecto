@@ -8,11 +8,9 @@ use crate::scanners::ws::*;
 use crate::scanners::operadores::*;
 use crate::parser::reglas_expresion::factor::*;
 
-// pub fn termino(input: &str) -> IResult<&str, Vec<(&str, &str)>> {
 pub fn termino(input: &str) -> IResult<&str, &str> {
-  // tuple((tag("factor"), many0(tuple((ws, op_multdiv, ws, tag("factor"))))))(input)
   tuple((factor, many0(tuple((ws, op_multdiv, ws, factor)))))(input)
-  .map(|(next_input, res)| {
+  .map(|(next_input, _)| {
     (next_input, "termino")
   })
 }
@@ -39,7 +37,7 @@ mod tests {
 
     assert_eq!(termino("factor"),                            Ok(("", "termino")));
     assert_eq!(termino("factor * factor * factor / factor"), Ok(("", "termino")));
-    assert_eq!(termino("num_entero"),                       Ok(("", "termino")));
+    assert_eq!(termino("num_entero"),                        Ok(("", "termino")));
     assert_eq!(termino("id"),                                Ok(("", "termino")));
     assert_eq!(termino("id * num_entero * id2 / id3"),       Ok(("", "termino")));
   }

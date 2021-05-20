@@ -4,13 +4,10 @@ use nom::{
   bytes::complete::tag
 };
 
-use std::collections::HashMap;
-
 use crate::scanners::ws::*;
 use crate::scanners::id::*;
 use crate::parser::declaraciones::declaraciones::*;
 use crate::parser::bloque::*;
-use crate::semantica::tabla_funciones::*;
 use crate::semantica::globales::*;
 
 pub fn programa(input: &str) -> IResult<&str, &str> {
@@ -31,7 +28,10 @@ pub fn programa(input: &str) -> IResult<&str, &str> {
     Err(err) => return Err(err),
   };
 
-  FUNCIONES.lock().unwrap().agregar_funcion(id_programa.to_owned(), "programa".to_owned());
+  match FUNCIONES.lock().unwrap().agregar_funcion(id_programa.to_owned(), "programa".to_owned()) {
+    Ok(res) => Ok(res),
+    Err(err) => Err(err)
+  };
 
   next = match tuple((ws, tag(";"), ws))(next) {
     Ok((next_input, _)) => next_input,
@@ -80,16 +80,6 @@ mod tests {
 
   #[test]
   fn test_programa() {
-    // let funciones: TablaFunciones = TablaFunciones {tabla: vec![
-    //   TipoFunc {
-    //     nombre: "idPrograma".to_owned(),
-    //     tipo:  "programa".to_owned(),
-    //     variables: TablaVariables {
-    //       tabla: vec![]
-    //     },
-    //   }
-    // ]};
-
     assert_eq!(programa("
       programa idPrograma;
       principal() {}"

@@ -10,7 +10,6 @@ use crate::scanners::ws::*;
 use crate::parser::declaraciones::clase::*;
 use crate::parser::declaraciones::funcion::*;
 use crate::parser::declaraciones::variables::*;
-use crate::semantica::tabla_funciones::*;
 
 fn diferentes_declaraciones(input: &str) -> IResult<&str, &str> {
   alt((clase, funcion, variables))(input)
