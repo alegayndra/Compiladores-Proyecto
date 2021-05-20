@@ -3,7 +3,8 @@ use std::collections::HashMap;
 #[derive(Debug, PartialEq, Eq, Clone, Hash)]
 pub struct TipoVar {
   pub nombre: String,
-  pub tipo: String
+  pub tipo: String,
+  pub dimensiones: Vec<String>
 }
 
 #[derive(Debug, PartialEq, Eq, Clone)]
@@ -12,13 +13,14 @@ pub struct TablaVariables {
 }
 
 impl TablaVariables {
-  pub fn agregar_variable(&mut self, nombre_var: String, tipo_var: String) -> Result<(&str, String), (&str, String)> {
+  pub fn agregar_variable(&mut self, nombre_var: String, tipo_var: String, dims: Vec<String>) -> Result<(&str, String), (&str, String)> {
     match self.tabla.contains_key(&nombre_var) {
       true => Err(("Nombre de variable ocupado", nombre_var.clone())),
       false => {
         self.tabla.insert(nombre_var.clone(), TipoVar {
           nombre: nombre_var.clone(),
-          tipo: tipo_var.clone()
+          tipo: tipo_var.clone(),
+          dimensiones: dims
         });
         Ok(("Variable agregada", nombre_var.clone()))
       }
@@ -44,12 +46,13 @@ mod tests {
   #[test]
   fn test_tabla_variables() {
     let mut tabla : TablaVariables = TablaVariables { tabla: HashMap::new() };
+    let dims = vec![];
     assert_eq!(
-      tabla.agregar_variable("variable".to_owned(), "entero".to_owned()), 
+      tabla.agregar_variable("variable".to_owned(), "entero".to_owned(), dims.clone()), 
       Ok(("Variable agregada", "variable".to_owned()))
     );
     assert_eq!(
-      tabla.agregar_variable("variable".to_owned(), "entero".to_owned()), 
+      tabla.agregar_variable("variable".to_owned(), "entero".to_owned(), dims.clone()), 
       Err(("Nombre de variable ocupado", "variable".to_owned()))
     );
     assert_eq!(

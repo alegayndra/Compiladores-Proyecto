@@ -21,6 +21,12 @@ impl TablaClases {
     match self.tabla.contains_key(&nombre_clase) {
       true => Err(("Nombre de clase ocupado", nombre_clase.clone())),
       false =>  {
+        if nombre_padre.clone() != "".to_owned() {
+          match self.tabla.contains_key(&nombre_padre) {
+            false => return Err(("Padre no existe", nombre_padre.clone())),
+            true => (),
+          }
+        }
         self.tabla.insert(nombre_clase.clone(), TipoClase { 
           nombre: nombre_clase.clone(),
           padre: nombre_padre.clone(),
@@ -53,7 +59,27 @@ impl TablaClases {
     }
   }
 
-  pub fn agregar_parametro_metodo(&mut self, nombre_clase: String, nombre_func: String, nombre_var: String, tipo_var: String) -> Result<(&str, String), (&str, String)> {
+  pub fn agregar_variable_metodo(&mut self, nombre_clase: String, nombre_func: String, nombre_var: String, tipo_var: String, dims: Vec<String>) -> Result<(&str, String), (&str, String)> {
+    match self.tabla.get_mut(&nombre_clase) {
+      Some(clase) => match clase.metodos.tabla.get_mut(&nombre_func) {
+        Some(metodo) => metodo.variables.agregar_variable(nombre_var.clone(), tipo_var.clone(), dims),
+        None => Err(("Metodo no existente", nombre_func.clone()))
+      },
+      None => Err(("Clase no existente", nombre_clase.clone()))
+    }
+  }
+
+  pub fn buscar_variable_metodo(&self, nombre_clase: String, nombre_func: String, nombre_var: String) -> Result<(&str, String), (&str, String)> {
+    match self.tabla.get(&nombre_clase) {
+      Some(clase) => match clase.metodos.tabla.get(&nombre_func) {
+        Some(metodo) => metodo.variables.buscar_variable(nombre_var),
+        None => Err(("Metodo no existente", nombre_func.clone()))
+      },
+      None => Err(("Clase no existente", nombre_clase.clone()))
+    }
+  }
+
+  pub fn agregar_parametro_metodo(&mut self, nombre_clase: String, nombre_func: String, nombre_var: String, tipo_var: String, dims: Vec<String>) -> Result<(&str, String), (&str, String)> {
     match self.tabla.get_mut(&nombre_clase) {
       Some(clase) => match clase.metodos.tabla.get_mut(&nombre_func) {
         // Some(metodo) => match metodo.parametros_hash.buscar_variable(nombre_var.clone()) {
@@ -66,7 +92,7 @@ impl TablaClases {
         //   },
         //   Err(err) => Err(err)
         // },
-        Some(metodo) => metodo.parametros_hash.agregar_variable(nombre_var.clone(), tipo_var.clone()),
+        Some(metodo) => metodo.parametros.hash.agregar_variable(nombre_var.clone(), tipo_var.clone(), dims),
         None => Err(("Metodo no existente", nombre_func.clone()))
       },
       None => Err(("Clase no existente", nombre_clase.clone()))
@@ -76,16 +102,16 @@ impl TablaClases {
   pub fn buscar_parametro_metodo(&self, nombre_clase: String, nombre_func: String, nombre_var: String) -> Result<(&str, String), (&str, String)> {
     match self.tabla.get(&nombre_clase) {
       Some(clase) => match clase.metodos.tabla.get(&nombre_func) {
-        Some(metodo) => metodo.parametros_hash.buscar_variable(nombre_var),
+        Some(metodo) => metodo.parametros.hash.buscar_variable(nombre_var),
         None => Err(("Metodo no existente", nombre_func.clone()))
       },
       None => Err(("Clase no existente", nombre_clase.clone()))
     }
   }
 
-  pub fn agregar_atributo(&mut self, nombre_clase: String, nombre_var: String, tipo_var: String) -> Result<(&str, String), (&str, String)> {
+  pub fn agregar_atributo(&mut self, nombre_clase: String, nombre_var: String, tipo_var: String, dims: Vec<String>) -> Result<(&str, String), (&str, String)> {
     match self.tabla.get_mut(&nombre_clase) {
-      Some(clase) => clase.atributos.agregar_variable(nombre_var, tipo_var),
+      Some(clase) => clase.atributos.agregar_variable(nombre_var, tipo_var, dims),
       None => Err(("Clase no existente", nombre_clase.clone()))
     }
   }
@@ -109,6 +135,7 @@ mod tests {
   #[test]
   fn test_tabla_clases() {
     let mut tabla : TablaClases = TablaClases { tabla: HashMap::new() };
+    let dims = vec![];
     assert_eq!(
       tabla.agregar_clase("Persona".to_owned(), "".to_owned()),
       Ok(("Clase agregada", "Persona".to_owned()))
@@ -148,19 +175,19 @@ mod tests {
     );
 
     assert_eq!(
-      tabla.agregar_parametro_metodo("Persona".to_owned(), "func".to_owned(), "variable".to_owned(), "entero".to_owned()),
+      tabla.agregar_parametro_metodo("Persona".to_owned(), "func".to_owned(), "variable".to_owned(), "entero".to_owned(), dims.clone()),
       Ok(("Variable agregada", "variable".to_owned()))
     );
     assert_eq!(
-      tabla.agregar_parametro_metodo("Persona".to_owned(), "func".to_owned(), "variable".to_owned(), "entero".to_owned()),
+      tabla.agregar_parametro_metodo("Persona".to_owned(), "func".to_owned(), "variable".to_owned(), "entero".to_owned(), dims.clone()),
       Err(("Nombre de variable ocupado", "variable".to_owned()))
     );
     assert_eq!(
-      tabla.agregar_parametro_metodo("Persona".to_owned(), "a".to_owned(), "variable".to_owned(), "entero".to_owned()),
+      tabla.agregar_parametro_metodo("Persona".to_owned(), "a".to_owned(), "variable".to_owned(), "entero".to_owned(), dims.clone()),
       Err(("Metodo no existente", "a".to_owned()))
     );
     assert_eq!(
-      tabla.agregar_parametro_metodo("Estudiante".to_owned(), "a".to_owned(), "variable".to_owned(), "entero".to_owned()),
+      tabla.agregar_parametro_metodo("Estudiante".to_owned(), "a".to_owned(), "variable".to_owned(), "entero".to_owned(), dims.clone()),
       Err(("Clase no existente", "Estudiante".to_owned()))
     );
     assert_eq!(
@@ -181,11 +208,11 @@ mod tests {
     );
 
     assert_eq!(
-      tabla.agregar_atributo("Persona".to_owned(), "variable".to_owned(), "entero".to_owned()),
+      tabla.agregar_atributo("Persona".to_owned(), "variable".to_owned(), "entero".to_owned(), dims.clone()),
       Ok(("Variable agregada", "variable".to_owned()))
     );
     assert_eq!(
-      tabla.agregar_atributo("Persona".to_owned(), "variable".to_owned(), "entero".to_owned()),
+      tabla.agregar_atributo("Persona".to_owned(), "variable".to_owned(), "entero".to_owned(), dims.clone()),
       Err(("Nombre de variable ocupado", "variable".to_owned()))
     );
     assert_eq!(

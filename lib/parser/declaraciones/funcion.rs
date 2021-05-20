@@ -47,7 +47,7 @@ pub fn funcion(input: &str) -> IResult<&str, &str> {
     tag("funcion"), necessary_ws,
     id, ws,
     tag("("), ws, lista_parametros, ws, tag(")"), ws,
-    bloque, ws
+    bloque_funcion, ws
   ))
   (input)
   .map(|(next_input, _res)| {

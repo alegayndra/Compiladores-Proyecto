@@ -3,11 +3,17 @@ use std::collections::HashMap;
 use crate::semantica::tabla_variables::*;
 
 #[derive(Debug, PartialEq, Eq, Clone)]
+pub struct Parametros {
+  pub hash: TablaVariables,
+  pub vec: Vec<TipoVar>,
+}
+
+#[derive(Debug, PartialEq, Eq, Clone)]
 pub struct TipoFunc {
   pub nombre: String,
   pub tipo: String,
-  pub parametros_hash: TablaVariables,
-  pub parametros_vec: Vec<TipoVar>,
+  pub variables: TablaVariables,
+  pub parametros: Parametros
 }
 
 #[derive(Debug, PartialEq, Eq, Clone)]
@@ -23,8 +29,11 @@ impl TablaFunciones {
         self.tabla.insert(nombre_func.clone(), TipoFunc { 
           nombre: nombre_func.clone(),
           tipo: tipo_func.clone(),
-          parametros_hash: TablaVariables { tabla: HashMap::new() },
-          parametros_vec: vec![]
+          variables: TablaVariables { tabla: HashMap::new() },
+          parametros: Parametros {
+            hash: TablaVariables { tabla: HashMap::new() },
+            vec: vec![]
+          }
         });
         Ok(("Funcion agregada", nombre_func.clone()))
       }
@@ -38,7 +47,21 @@ impl TablaFunciones {
     }
   }
 
-  pub fn agregar_variable(&mut self, nombre_func: String, nombre_var: String, tipo_var: String) -> Result<(&str, String), (&str, String)> {
+  pub fn agregar_variable(&mut self, nombre_func: String, nombre_var: String, tipo_var: String, dims: Vec<String>) -> Result<(&str, String), (&str, String)> {
+    match self.tabla.get_mut(&nombre_func) {  
+      Some(funcion) => funcion.variables.agregar_variable(nombre_var.clone(), tipo_var.clone(), dims),
+      None => Err(("Funcion no existente", nombre_func.clone()))
+    }
+  }
+
+  pub fn buscar_variable(&mut self, nombre_func: String, nombre_var: String) -> Result<(&str, String), (&str, String)> {
+    match self.tabla.get(&nombre_func) {
+      Some(funcion) => funcion.variables.buscar_variable(nombre_var),
+      None => Err(("Funcion no existente", nombre_func.clone()))
+    }
+  }
+
+  pub fn agregar_parametro(&mut self, nombre_func: String, nombre_var: String, tipo_var: String, dims: Vec<String>) -> Result<(&str, String), (&str, String)> {
     match self.tabla.get_mut(&nombre_func) {
       // Some(funcion) => match funcion.parametros_hash.buscar_variable(nombre_var.clone()) {
       //   Ok(_) => {
@@ -50,14 +73,14 @@ impl TablaFunciones {
       //   },
       //   Err(err) => Err(err)
       // },
-      Some(funcion) => funcion.parametros_hash.agregar_variable(nombre_var.clone(), tipo_var.clone()),
+      Some(funcion) => funcion.parametros.hash.agregar_variable(nombre_var.clone(), tipo_var.clone(), dims),
       None => Err(("Funcion no existente", nombre_func.clone()))
     }
   }
 
-  pub fn buscar_variable(&mut self, nombre_func: String, nombre_var: String) -> Result<(&str, String), (&str, String)> {
+  pub fn buscar_parametro(&mut self, nombre_func: String, nombre_var: String) -> Result<(&str, String), (&str, String)> {
     match self.tabla.get(&nombre_func) {
-      Some(funcion) => funcion.parametros_hash.buscar_variable(nombre_var),
+      Some(funcion) => funcion.parametros.hash.buscar_variable(nombre_var),
       None => Err(("Funcion no existente", nombre_func.clone()))
     }
   }
@@ -74,6 +97,7 @@ mod tests {
   #[test]
   fn test_tabla_funciones() {
     let mut tabla : TablaFunciones = TablaFunciones { tabla: HashMap::new() };
+    let dims = vec![];
     assert_eq!(
       tabla.agregar_funcion("func".to_owned(), "entero".to_owned()), 
       Ok(("Funcion agregada", "func".to_owned()))
@@ -93,15 +117,15 @@ mod tests {
     );
 
     assert_eq!(
-      tabla.agregar_variable("func".to_owned(), "variable".to_owned(), "entero".to_owned()), 
+      tabla.agregar_variable("func".to_owned(), "variable".to_owned(), "entero".to_owned(), dims.clone()), 
       Ok(("Variable agregada", "variable".to_owned()))
     );
     assert_eq!(
-      tabla.agregar_variable("func".to_owned(), "variable".to_owned(), "entero".to_owned()),
+      tabla.agregar_variable("func".to_owned(), "variable".to_owned(), "entero".to_owned(), dims.clone()),
       Err(("Nombre de variable ocupado", "variable".to_owned()))
     );
     assert_eq!(
-      tabla.agregar_variable("a".to_owned(), "variable".to_owned(), "entero".to_owned()),
+      tabla.agregar_variable("a".to_owned(), "variable".to_owned(), "entero".to_owned(), dims.clone()),
       Err(("Funcion no existente", "a".to_owned()))
     );
 

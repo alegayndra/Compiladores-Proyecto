@@ -4,6 +4,7 @@ use nom::{
   multi::many0,
   IResult,
   sequence::tuple,
+  combinator::opt,
 };
 
 use crate::scanners::ws::*;
@@ -20,35 +21,26 @@ fn herencia(input: &str) -> IResult<&str, &str> {
 }
 
 fn posible_herencia(input: &str) -> IResult<&str, &str> {
-  alt((herencia, ws))(input)
+  match opt(herencia)(input) {
+    Ok((next_input, Some(res))) => Ok((next_input, res)), 
+    _ => Ok((input, ""))  
+  }
 }
 
-// fn atributos(input: &str) -> IResult<&str, (&str, &str, Vec<(&str, (&str, Vec<&str>))>)> {
 fn atributos(input: &str) -> IResult<&str, (&str, &str, &str)> {
   variables(input)
   .map(|(next_input, _res)| {
-    // (next_input, ("null", "variables", vec![res]))
     (next_input, ("null", "variables", "variables"))
   })
 }
 
-// fn metodos(input: &str) -> IResult<&str, (&str, &str, Vec<(&str, (&str, Vec<&str>))>)> {
 fn metodos(input: &str) -> IResult<&str, (&str, &str, &str)> {
   funcion(input)
   .map(|(next_input, _res)| {
-    // let (tipo, id, params) = res;
-    // let mut lista_params = Vec::new();
-    // for par in params {
-    //   let (tipo_param, param) = par;
-    //   lista_params.push((tipo_param, vec![param]))
-    // } 
-    // (next_input, (tipo, id, lista_params))
-    // (next_input, (tipo, id, "funcion"))
     (next_input, ("tipo", "id", "funcion"))
   })
 }
 
-// fn variable_funcion(input: &str) -> IResult<&str, (&str, &str, Vec<(&str, (&str, Vec<&str>))>)> {
 fn variable_funcion(input: &str) -> IResult<&str, (&str, &str, &str)> {
   alt((atributos, metodos))(input)
 }
@@ -61,13 +53,10 @@ fn lista_variable_funcion(input: &str) -> IResult<&str, Vec<(&str, &str, &str)>>
       let (cont, _) = r;
       lista.push(cont);
     }
-    // (next_input, (id, padre, declaraciones))
     (next_input, lista)
   })
 }
 
-// pub fn clase(input: &str) -> IResult<&str, (&str, &str, (&str, &str, Vec<(&str, (&str, Vec<&str>))>))> {
-// pub fn clase(input: &str) -> IResult<&str, (&str, &str, Vec<(&str, &str, &str)>)> {
 pub fn clase(input: &str) -> IResult<&str, &str> {
   tuple((
     ws, tag("clase"), necessary_ws,
@@ -76,8 +65,6 @@ pub fn clase(input: &str) -> IResult<&str, &str> {
   ))
   (input)
   .map(|(next_input, _res)| {
-    // let (_, _, id, _, padre, _, _, _, declaraciones, _, _, _, _) = res;
-    // (next_input, (id, padre, declaraciones))
     (next_input, "clase")
   })
 }

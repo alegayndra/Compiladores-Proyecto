@@ -15,7 +15,7 @@ pub fn programa(input: &str) -> IResult<&str, &str> {
   
   next = match tuple((ws, tag("programa"), necessary_ws))(input) {
     Ok((next_input, _)) => next_input,
-    Err(err) => return Err(err), 
+    Err(err) => return Err(err),
   };
 
   let id_programa: &str;
@@ -28,23 +28,28 @@ pub fn programa(input: &str) -> IResult<&str, &str> {
     Err(err) => return Err(err),
   };
 
-  match FUNCIONES.lock().unwrap().agregar_funcion(id_programa.to_owned(), "programa".to_owned()) {
-    Ok(res) => Ok(res),
-    Err(err) => Err(err)
+  let mut funcs1 = FUNCIONES.lock().unwrap();
+
+  match funcs1.agregar_funcion(id_programa.to_owned(), "void".to_owned()) {
+    // Ok(res) => Ok(res),
+    Ok(_) => (),
+    // Err(err) => Err(err)
+    Err(_) => ()
   };
+  drop(funcs1);
+
+  let mut contexto_funcion1 = CONTEXTO_FUNCION.lock().unwrap();
+  *contexto_funcion1 = id_programa.to_owned();
+  drop(contexto_funcion1);
+  // Mutex::unlock(contexto_funcion1);
 
   next = match tuple((ws, tag(";"), ws))(next) {
     Ok((next_input, _)) => next_input,
     Err(err) => return Err(err),
   };
 
-  let decl: Vec<&str>;
-
-  match (declaraciones)(next) {
-    Ok((next_input, de)) => {
-      next = next_input;
-      decl = de;
-    },
+  next = match (declaraciones)(next) {
+    Ok((next_input, _)) => next_input,
     Err(err) => return Err(err),
   };
 
@@ -53,15 +58,29 @@ pub fn programa(input: &str) -> IResult<&str, &str> {
     Err(err) => return Err(err),
   };
 
-  let blo: &str;
+  let mut funcs2 = FUNCIONES.lock().unwrap();
 
-  match bloque(next) {
-    Ok((next_input, b)) => {
-      next = next_input;
-      blo = b;
-    },
+  match funcs2.agregar_funcion("principal".to_owned(), "void".to_owned()) {
+    // Ok(res) => Ok(res),
+    Ok(_) => (),
+    // Err(err) => Err(err)
+    Err(_) => ()
+  };
+  drop(funcs2);
+
+  let mut contexto_funcion2 = CONTEXTO_FUNCION.lock().unwrap();
+  *contexto_funcion2 = "principal".to_owned();
+  drop(contexto_funcion2);
+  // Mutex::unlock(contexto_funcion2);
+
+  next = match bloque(next) {
+    Ok((next_input, _)) => next_input,
     Err(err) => return Err(err),
   };
+
+  println!("{:?}", FUNCIONES.lock().unwrap());
+  println!("{:?}", CLASES.lock().unwrap());
+  println!("{:?}", VARIABLES.lock().unwrap());
 
   match ws(next) {
     Ok((_, _)) => Ok(("", "programa")),
@@ -72,7 +91,7 @@ pub fn programa(input: &str) -> IResult<&str, &str> {
 #[cfg(test)]
 mod tests {
   use super::*;
-  use crate::semantica::tabla_variables::*;
+  // use crate::semantica::tabla_variables::*;
   // use nom::{
   //     error::{ErrorKind, VerboseError, VerboseErrorKind},
   //     Err,

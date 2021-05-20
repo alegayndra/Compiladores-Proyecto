@@ -19,4 +19,14 @@ lazy_static! {
     let map = Mutex::new(TablaVariables { tabla: HashMap::new() });
     map
   };
+
+  pub static ref CONTEXTO_FUNCION: Mutex<String> = {
+    let string = Mutex::new("".to_owned());
+    string
+  };
+
+  pub static ref CONTEXTO_CLASE: Mutex<String> = {
+    let string = Mutex::new("".to_owned());
+    string
+  };
 }
