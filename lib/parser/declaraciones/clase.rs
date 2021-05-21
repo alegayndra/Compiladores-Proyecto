@@ -113,11 +113,11 @@ mod tests {
   //     Err,
   // };
 
-  #[test]
-  fn test_herencia() {
-    assert_eq!(herencia("<Persona>"),   Ok(("", "Persona")));
-    assert_eq!(herencia("< Persona >"), Ok(("", "Persona")));
-  }
+  // #[test]
+  // fn test_herencia() {
+  //   assert_eq!(herencia("<Persona>"),   Ok(("", "Persona")));
+  //   assert_eq!(herencia("< Persona >"), Ok(("", "Persona")));
+  // }
 
   #[test]
   fn test_atributos() {

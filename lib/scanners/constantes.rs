@@ -3,8 +3,9 @@ use nom::{
   combinator::{recognize, opt},
   multi::{many0, many1},
   character::complete::{one_of, char},
-  sequence::{terminated, tuple, preceded},
-  branch::alt
+  sequence::{terminated, tuple, preceded,delimited},
+  branch::alt,
+  bytes::complete::{tag, take_while_m_n}
 };
 
 pub fn num_entero(input: &str) -> IResult<&str, &str> {
@@ -13,6 +14,10 @@ pub fn num_entero(input: &str) -> IResult<&str, &str> {
       terminated(one_of("0123456789"), many0(char('_')))
     )
   )(input)
+}
+
+pub fn caracter(input: &str) -> IResult<&str, &str> {
+  delimited(tag("\""), take_while_m_n(1, 1, |c| c != ' '), tag("\""))(input)
 }
 
 pub fn num_flotante(input: &str) -> IResult<&str, &str> {
@@ -60,6 +65,12 @@ mod tests {
   //     error::{ErrorKind, VerboseError, VerboseErrorKind},
   //     Err,
   // };
+
+  #[test]
+  fn test_num_caracter() {
+    assert_eq!(caracter("\"a\""), Ok(("", "a")));
+    assert_eq!(caracter("\"-\""), Ok(("", "-")));
+  }
 
   #[test]
   fn test_num_entero() {

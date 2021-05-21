@@ -49,22 +49,15 @@ mod tests {
   fn test_valor_factor() {
     assert_eq!(valor_factor("10"),                   Ok(("", ("", "10"))));
     assert_eq!(valor_factor("- 10"),                 Ok(("", ("-", "10"))));
-    // assert_eq!(valor_factor("+ \"soyUnaVariable\""), Ok(("", ("+", "\"soyUnaVariable\""))));
-    assert_eq!(valor_factor("+ \"soyUnaVariable\""), Ok(("", ("+", "soyUnaVariable"))));
-    // assert_eq!(valor_factor("+ Nombre . metodo ()"), Ok(("", ("+", "Nombre . metodo ()"))));
+    assert_eq!(valor_factor("+ \"s\""), Ok(("", ("+", "s"))));
     assert_eq!(valor_factor("+ Nombre.metodo()"),    Ok(("", ("+", "Nombre"))));
     assert_eq!(valor_factor("+ Nombre . metodo()"),  Ok(("", ("+", "Nombre"))));
   }
 
   #[test]
   fn test_factor() {
-    // assert_eq!(factor("- num_entero"), Ok(("", ("-", "num_entero"))));
-    // assert_eq!(factor("+ \"soyUnaVariable\""), Ok(("", ("+", "soyUnaVariable"))));
-    // assert_eq!(factor("+ Nombre . metodo ()"), Ok(("", ("+", "Nombre"))));
-    // assert_eq!(factor("( expresion )"), Ok(("", ("operacion", "expresion"))));
-    
     assert_eq!(factor("- num_entero"),          Ok(("", "factor")));
-    assert_eq!(factor("+ \"soyUnaVariable\""),  Ok(("", "factor")));
+    assert_eq!(factor("+ \"s\""),               Ok(("", "factor")));
     assert_eq!(factor("+ Nombre . metodo()"),   Ok(("", "factor")));
     assert_eq!(factor("( expresion )"),         Ok(("", "factor")));
     assert_eq!(factor("( num_entero )"),        Ok(("", "factor")));
