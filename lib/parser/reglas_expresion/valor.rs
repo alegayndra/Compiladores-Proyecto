@@ -8,13 +8,12 @@ use nom::{
 
 use crate::scanners::ws::*;
 use crate::scanners::id::*;
-use crate::scanners::texto::*;
 use crate::scanners::constantes::*;
 use crate::parser::dimensiones::*;
 use crate::parser::func_params::*;
 
 fn valor_cte(input: &str) -> IResult<&str, (&str, &str)> {
-  alt((num_entero, tag("num_float"), texto))(input)
+  alt((num_flotante, num_entero, caracter))(input)
   .map(|(next_input, res)| {
     (next_input, (res, "constante"))
   })
@@ -57,9 +56,9 @@ mod tests {
   #[test]
   fn test_valor_cte() {
     // assert_eq!(valor_cte("\"soyUnaVariable\""), Ok(("", ("\"soyUnaVariable\"", "constante"))));
-    assert_eq!(valor_cte("\"soyUnaVariable\""), Ok(("", ("soyUnaVariable", "constante"))));
-    assert_eq!(valor_cte("10"),                 Ok(("", ("10", "constante"))));
-    assert_eq!(valor_cte("num_float"),          Ok(("", ("num_float", "constante"))));
+    assert_eq!(valor_cte("\"s\""),  Ok(("", ("s", "constante"))));
+    assert_eq!(valor_cte("10"),     Ok(("", ("10", "constante"))));
+    assert_eq!(valor_cte("10.1"),   Ok(("", ("10.1", "constante"))));
   }
 
   //Hace las mismas pruebas de lib > parser > dim - "con_dim()", solo regresa valor distinto

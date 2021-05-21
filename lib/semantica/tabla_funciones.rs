@@ -6,7 +6,9 @@ use crate::semantica::tabla_variables::*;
 pub struct TipoFunc {
   pub nombre: String,
   pub tipo: String,
-  pub parametros: TablaVariables,
+  pub variables: TablaVariables,
+  pub direccion: i64,
+  pub parametros: Vec<TipoVar>
 }
 
 #[derive(Debug, PartialEq, Eq, Clone)]
@@ -15,40 +17,69 @@ pub struct TablaFunciones {
 }
 
 impl TablaFunciones {
-  pub fn agregar_funcion(&mut self, nombre_func: String, tipo_func: String) -> &str {
+  pub fn agregar_funcion(&mut self, nombre_func: String, tipo_func: String) -> Result<(&str, String), (&str, String)> {
     match self.tabla.contains_key(&nombre_func) {
-      true => "Nombre de funcion ocupado",
+      true => Err(("Nombre de funcion ocupado", nombre_func.clone())),
       false =>  {
         self.tabla.insert(nombre_func.clone(), TipoFunc { 
           nombre: nombre_func.clone(),
           tipo: tipo_func.clone(),
-          parametros: TablaVariables { tabla: HashMap::new() } 
+          variables: TablaVariables { tabla: HashMap::new() },
+          parametros: vec![],
+          direccion: 0
         });
-        "Funcion agregada"
+        Ok(("Funcion agregada", nombre_func.clone()))
       }
     }
   }
 
-  pub fn buscar_funcion(&self, nombre_func: String) -> &str {
+  pub fn buscar_funcion(&self, nombre_func: String) -> Result<(&str, String), (&str, String)> {
     match self.tabla.contains_key(&nombre_func) {
-      true => "Funcion existente",
-      false =>  "Funcion no existente"
+      true => Ok(("Funcion existente", nombre_func.clone())),
+      false => Err(("Funcion no existente", nombre_func.clone()))
     }
   }
 
-  pub fn agregar_variable(&mut self, nombre_func: String, nombre_var: String, tipo_var: String) -> &str {
-    match self.tabla.get_mut(&nombre_func) {
-      Some(funcion) => funcion.parametros.agregar_variable(nombre_var, tipo_var),
-      None => "Funcion no existente"
+  pub fn agregar_variable(&mut self, nombre_func: String, nombre_var: String, tipo_var: String, dims: Vec<String>) -> Result<(&str, String), (&str, String)> {
+    match self.tabla.get_mut(&nombre_func) {  
+      Some(funcion) => funcion.variables.agregar_variable(nombre_var.clone(), tipo_var.clone(), dims),
+      None => Err(("Funcion no existente", nombre_func.clone()))
     }
   }
 
-  pub fn buscar_variable(&mut self, nombre_func: String, nombre_var: String) -> &str {
+  pub fn buscar_variable(&mut self, nombre_func: String, nombre_var: String) -> Result<(&str, String), (&str, String)> {
     match self.tabla.get(&nombre_func) {
-      Some(funcion) => funcion.parametros.buscar_variable(nombre_var),
-      None => "Funcion no existente"
+      Some(funcion) => funcion.variables.buscar_variable(nombre_var),
+      None => Err(("Funcion no existente", nombre_func.clone()))
     }
   }
+
+  pub fn agregar_parametro(&mut self, nombre_func: String, nombre_var: String, tipo_var: String, dims: Vec<String>) -> Result<(&str, String), (&str, String)> {
+    match self.tabla.get_mut(&nombre_func) {
+      Some(funcion) => {
+        match funcion.variables.agregar_variable(nombre_var.clone(), tipo_var.clone(), dims.clone()) {
+          Ok(res) => {
+            funcion.parametros.push(TipoVar {
+              nombre: nombre_var.clone(),
+              tipo: tipo_var.clone(),
+              dimensiones: dims,
+              direccion: 0
+            });
+            Ok(res)
+          },
+          Err(err) => Err(err)
+        }
+      },
+      None => Err(("Funcion no existente", nombre_func.clone()))
+    }
+  }
+
+  // pub fn buscar_parametro(&mut self, nombre_func: String, nombre_var: String) -> Result<(&str, String), (&str, String)> {
+  //   match self.tabla.get(&nombre_func) {
+  //     Some(funcion) => funcion.parametros.hash.buscar_variable(nombre_var),
+  //     None => Err(("Funcion no existente", nombre_func.clone()))
+  //   }
+  // }
 }
 
 #[cfg(test)]
@@ -62,13 +93,49 @@ mod tests {
   #[test]
   fn test_tabla_funciones() {
     let mut tabla : TablaFunciones = TablaFunciones { tabla: HashMap::new() };
-    assert_eq!(tabla.agregar_funcion("func".to_string(), "entero".to_string()), "Funcion agregada");
-    assert_eq!(tabla.agregar_funcion("func".to_string(), "entero".to_string()), "Nombre de funcion ocupado");
-    assert_eq!(tabla.buscar_funcion("func".to_string()), "Funcion existente");
-    assert_eq!(tabla.agregar_variable("func".to_string(), "variable".to_string(), "entero".to_string()), "Variable agregada");
-    assert_eq!(tabla.agregar_variable("func".to_string(), "variable".to_string(), "entero".to_string()), "Nombre de variable ocupado");
-    assert_eq!(tabla.buscar_variable("func".to_string(), "variable".to_string()), "Variable existente");
-    assert_eq!(tabla.buscar_variable("func".to_string(), "a".to_string()), "Variable no existente");
-    assert_eq!(tabla.buscar_variable("a".to_string(), "a".to_string()), "Funcion no existente");
+    let dims = vec![];
+    assert_eq!(
+      tabla.agregar_funcion("func".to_owned(), "entero".to_owned()), 
+      Ok(("Funcion agregada", "func".to_owned()))
+    );
+    assert_eq!(
+      tabla.agregar_funcion("func".to_owned(), "entero".to_owned()),
+      Err(("Nombre de funcion ocupado", "func".to_owned()))
+    );
+
+    assert_eq!(
+      tabla.buscar_funcion("func".to_owned()),
+      Ok(("Funcion existente", "func".to_owned()))
+    );
+    assert_eq!(
+      tabla.buscar_funcion("a".to_owned()),
+      Err(("Funcion no existente", "a".to_owned()))
+    );
+
+    assert_eq!(
+      tabla.agregar_variable("func".to_owned(), "variable".to_owned(), "entero".to_owned(), dims.clone()), 
+      Ok(("Variable agregada", "variable".to_owned()))
+    );
+    assert_eq!(
+      tabla.agregar_variable("func".to_owned(), "variable".to_owned(), "entero".to_owned(), dims.clone()),
+      Err(("Nombre de variable ocupado", "variable".to_owned()))
+    );
+    assert_eq!(
+      tabla.agregar_variable("a".to_owned(), "variable".to_owned(), "entero".to_owned(), dims.clone()),
+      Err(("Funcion no existente", "a".to_owned()))
+    );
+
+    assert_eq!(
+      tabla.buscar_variable("func".to_owned(), "variable".to_owned()), 
+      Ok(("Variable existente", "variable".to_owned()))
+    );
+    assert_eq!(
+      tabla.buscar_variable("func".to_owned(), "a".to_owned()), 
+      Err(("Variable no existente", "a".to_owned()))
+    );
+    assert_eq!(
+      tabla.buscar_variable("a".to_owned(), "a".to_owned()), 
+      Err(("Funcion no existente", "a".to_owned()))
+    );
   }
 }

@@ -4,18 +4,27 @@ extern crate nom;
 use compilador::parser::programa::*;
 
 fn main() {
-	println!("{:?}", programa("programa idPrograma; principal(){}"));
-	println!("{:?}", programa("a"));
+	// println!("{:?}", programa("programa idPrograma; principal(){}"));
+	// println!("{:?}", programa("a"));
 	println!("{:?}", programa("
 	programa idPrograma;
+
 	void funcion func (entero var) {
+		entero i;
 		id = 10;
 		regresa expresion;
 	}
+
 	entero num;
-	clase Estudiante <Persona> {
+	entero num;
+	entero i;
+
+	clase Persona {};
+
+	clase Estudiante {
 		char nombre[10], apellido[10];
 	};
+
 	principal() {
 		lee(var);
 		escribe(var);
