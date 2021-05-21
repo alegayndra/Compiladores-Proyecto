@@ -8,9 +8,7 @@ use crate::scanners::ws::*;
 use crate::scanners::operadores::*;
 use crate::parser::reglas_expresion::factor::*;
 
-// pub fn termino(input: &str) -> IResult<&str, Vec<(&str, &str)>> {
 pub fn termino(input: &str) -> IResult<&str, &str> {
-  // tuple((tag("factor"), many0(tuple((ws, op_multdiv, ws, tag("factor"))))))(input)
   tuple((factor, many0(tuple((ws, op_multdiv, ws, factor)))))(input)
   .map(|(next_input, res)| {
     (next_input, "termino")

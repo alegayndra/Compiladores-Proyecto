@@ -8,9 +8,12 @@ use crate::scanners::ws::*;
 use crate::scanners::operadores::*;
 use crate::parser::reglas_expresion::termino::*;
 
-// pub fn exp(input: &str) -> IResult<&str, Vec<(&str, &str)>> {
 pub fn exp(input: &str) -> IResult<&str, &str> {
-  // tuple((tag("termino"), many0(tuple((ws, op_sumsub, ws, tag("termino"))))))(input)
+  let mut next : &str = input;
+
+  next = match termino(next) {
+    Ok((next_input, termino))
+  }
   tuple((
     termino,
     many0(
@@ -19,14 +22,6 @@ pub fn exp(input: &str) -> IResult<&str, &str> {
   ))
   (input)
   .map(|(next_input, _res)| {
-    // let (termino, terminos) = res;
-    // let mut lista_terminos = Vec::new();
-    // lista_terminos.push(("+", termino));
-    // for term in terminos {
-    //   let (_, op, _, t) = term;
-    //   lista_terminos.push((op, t));
-    // }
-    // (next_input, lista_terminos)
     (next_input, "exp")
   })
 }

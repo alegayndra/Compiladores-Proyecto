@@ -27,62 +27,56 @@
     - = : 12
 */
 
-pub struct CuboSemantico {
-  pub lista: Vec<Vec<Vec<i64>>>
-}
+// pub struct CuboSemantico {
+//   pub lista: Vec<Vec<Vec<i64>>>
+// }
 
-impl CuboSemantico {
-  pub fn new() -> CuboSemantico {
+// static CUBO_SEMANTICO: Vec<Vec<Vec<i64>>> = vec![
+static CUBO_SEMANTICO: [[[i64; 13]; 5]; 5] = [
+  [ // Entero
+    // +  -  *  /  >  <  >=  <=  ==  !=  &  |  =
+    [  0, 0, 0, 0, 0, 0,  0,  0,  0,  0, 0, 0, 0], // Entero
+    [  1, 1, 1, 1, 0, 0,  0,  0,  0,  0, 0, 0, 0], // Flotante
+    [  3, 3, 3, 3, 3, 3,  3,  3,  3,  3, 3, 3, 3], // Char
+    [  3, 3, 3, 3, 3, 3,  3,  3,  3,  3, 3, 3, 3], // Error
+    [  3, 3, 3, 3, 3, 3,  3,  3,  3,  3, 3, 3, 3], // Objeto
+  ],
+  [ // Flotante
+    // +  -  *  /  >  <  >=  <=  ==  !=  &  |  =
+    [  1, 1, 1, 1, 0, 0,  0,  0,  0,  0, 0, 0, 1], // Entero
+    [  1, 1, 1, 1, 0, 0,  0,  0,  0,  0, 0, 0, 1], // Flotante
+    [  3, 3, 3, 3, 3, 3,  3,  3,  3,  3, 3, 3, 3], // Char
+    [  3, 3, 3, 3, 3, 3,  3,  3,  3,  3, 3, 3, 3], // Error
+    [  3, 3, 3, 3, 3, 3,  3,  3,  3,  3, 3, 3, 3], // Objeto
+  ],
+  [ // Char
+    // +  -  *  /  >  <  >=  <=  ==  !=  &  |  =
+    [  3, 3, 3, 3, 3, 3,  3,  3,  3,  3, 3, 3, 3], // Entero
+    [  3, 3, 3, 3, 3, 3,  3,  3,  3,  3, 3, 3, 3], // Flotante
+    [  3, 3, 3, 3, 0, 0,  0,  0,  0,  0, 0, 0, 2], // Char
+    [  3, 3, 3, 3, 3, 3,  3,  3,  3,  3, 3, 3, 3], // Error
+    [  3, 3, 3, 3, 3, 3,  3,  3,  3,  3, 3, 3, 3], // Objeto
+  ],
+  [ // Error
+    // +  -  *  /  >  <  >=  <=  ==  !=  &  |  =
+    [  3, 3, 3, 3, 3, 3,  3,  3,  3,  3, 3, 3, 3], // Entero
+    [  3, 3, 3, 3, 3, 3,  3,  3,  3,  3, 3, 3, 3], // Flotante
+    [  3, 3, 3, 3, 3, 3,  3,  3,  3,  3, 3, 3, 3], // Char
+    [  3, 3, 3, 3, 3, 3,  3,  3,  3,  3, 3, 3, 3], // Error
+    [  3, 3, 3, 3, 3, 3,  3,  3,  3,  3, 3, 3, 3], // Objeto
+  ],
+  [ // Objeto
+    // +  -  *  /  >  <  >=  <=  ==  !=  &  |  =
+    [  3, 3, 3, 3, 3, 3,  3,  3,  3,  3, 3, 3, 3], // Entero
+    [  3, 3, 3, 3, 3, 3,  3,  3,  3,  3, 3, 3, 3], // Flotante
+    [  3, 3, 3, 3, 3, 3,  3,  3,  3,  3, 3, 3, 3], // Char
+    [  3, 3, 3, 3, 3, 3,  3,  3,  3,  3, 3, 3, 3], // Error
+    [  3, 3, 3, 3, 3, 3,  3,  3,  3,  3, 3, 3, 3], // Objeto
+  ],
+];
 
-    CuboSemantico {
-      lista: vec![
-        vec![ // Entero
-          //    +  -  *  /  >  <  >=  <=  ==  !=  &  |  =
-          vec![ 0, 0, 0, 0, 0, 0,  0,  0,  0,  0, 0, 0, 0], // Entero
-          vec![ 1, 1, 1, 1, 0, 0,  0,  0,  0,  0, 0, 0, 0], // Flotante
-          vec![ 3, 3, 3, 3, 3, 3,  3,  3,  3,  3, 3, 3, 3], // Char
-          vec![ 3, 3, 3, 3, 3, 3,  3,  3,  3,  3, 3, 3, 3], // Error
-          vec![ 3, 3, 3, 3, 3, 3,  3,  3,  3,  3, 3, 3, 3], // Objeto
-        ],
-        vec![ // Flotante
-          //    +  -  *  /  >  <  >=  <=  ==  !=  &  |  =
-          vec![ 1, 1, 1, 1, 0, 0,  0,  0,  0,  0, 0, 0, 1], // Entero
-          vec![ 1, 1, 1, 1, 0, 0,  0,  0,  0,  0, 0, 0, 1], // Flotante
-          vec![ 3, 3, 3, 3, 3, 3,  3,  3,  3,  3, 3, 3, 3], // Char
-          vec![ 3, 3, 3, 3, 3, 3,  3,  3,  3,  3, 3, 3, 3], // Error
-          vec![ 3, 3, 3, 3, 3, 3,  3,  3,  3,  3, 3, 3, 3], // Objeto
-        ],
-        vec![ // Char
-          //    +  -  *  /  >  <  >=  <=  ==  !=  &  |  =
-          vec![ 3, 3, 3, 3, 3, 3,  3,  3,  3,  3, 3, 3, 3], // Entero
-          vec![ 3, 3, 3, 3, 3, 3,  3,  3,  3,  3, 3, 3, 3], // Flotante
-          vec![ 3, 3, 3, 3, 0, 0,  0,  0,  0,  0, 0, 0, 2], // Char
-          vec![ 3, 3, 3, 3, 3, 3,  3,  3,  3,  3, 3, 3, 3], // Error
-          vec![ 3, 3, 3, 3, 3, 3,  3,  3,  3,  3, 3, 3, 3], // Objeto
-        ],
-        vec![ // Error
-          //    +  -  *  /  >  <  >=  <=  ==  !=  &  |  =
-          vec![ 3, 3, 3, 3, 3, 3,  3,  3,  3,  3, 3, 3, 3], // Entero
-          vec![ 3, 3, 3, 3, 3, 3,  3,  3,  3,  3, 3, 3, 3], // Flotante
-          vec![ 3, 3, 3, 3, 3, 3,  3,  3,  3,  3, 3, 3, 3], // Char
-          vec![ 3, 3, 3, 3, 3, 3,  3,  3,  3,  3, 3, 3, 3], // Error
-          vec![ 3, 3, 3, 3, 3, 3,  3,  3,  3,  3, 3, 3, 3], // Objeto
-        ],
-        vec![ // Objeto
-          //    +  -  *  /  >  <  >=  <=  ==  !=  &  |  =
-          vec![ 3, 3, 3, 3, 3, 3,  3,  3,  3,  3, 3, 3, 3], // Entero
-          vec![ 3, 3, 3, 3, 3, 3,  3,  3,  3,  3, 3, 3, 3], // Flotante
-          vec![ 3, 3, 3, 3, 3, 3,  3,  3,  3,  3, 3, 3, 3], // Char
-          vec![ 3, 3, 3, 3, 3, 3,  3,  3,  3,  3, 3, 3, 3], // Error
-          vec![ 3, 3, 3, 3, 3, 3,  3,  3,  3,  3, 3, 3, 3], // Objeto
-        ],
-      ]
-    }
-  }
-
-  pub fn checar(&self, izq: usize, der: usize, op: usize) -> i64{
-    self.lista[izq][der][op]
-  }
+pub fn checar_cubo_semantico(op: usize, izq: usize, der: usize) -> i64{
+  CUBO_SEMANTICO[izq][der][op]
 }
 
 pub fn conseguir_num_operador(operador: &str) -> i64 {
@@ -120,10 +114,10 @@ mod tests {
 
   #[test]
   fn test_checar() {
-    let cubo : CuboSemantico = CuboSemantico::new();
-    assert_eq!(cubo.checar(0, 0, 0), 0);
-    assert_eq!(cubo.checar(0, 1, 1), 1);
-    assert_eq!(cubo.checar(3, 1, 5), 3);
+    assert_eq!(checar_cubo_semantico(0, 0, 0), 0);
+    assert_eq!(checar_cubo_semantico(0, 1, 1), 1);
+    assert_eq!(checar_cubo_semantico(3, 1, 4), 3);
+    assert_eq!(checar_cubo_semantico(0, 2, 0), 3);
   }
 
   #[test]
