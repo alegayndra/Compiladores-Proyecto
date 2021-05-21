@@ -25,8 +25,15 @@ lazy_static! {
     string
   };
 
+  pub static ref ID_PROGRAMA: Mutex<String> = {
+    let string = Mutex::new("".to_owned());
+    string
+  };
+
   pub static ref CONTEXTO_CLASE: Mutex<String> = {
     let string = Mutex::new("".to_owned());
     string
   };
 }
+
+pub static mut GLOBALES_ENTERAS : i64 = 1000;

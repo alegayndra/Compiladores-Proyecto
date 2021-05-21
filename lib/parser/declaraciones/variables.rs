@@ -162,10 +162,6 @@ fn variable_normal(input: &str) -> IResult<&str, &str> {
 }
 
 pub fn variables(input: &str) -> IResult<&str, &str> {
-  {
-    VARIABLES.lock().unwrap().tabla.drain();
-  }
-
   tuple((ws, alt((variable_normal, variable_compuesta)), tag(";"), ws))
   (input)
   .map(|(next_input, _res)| {

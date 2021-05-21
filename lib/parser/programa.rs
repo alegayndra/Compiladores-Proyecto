@@ -31,17 +31,23 @@ pub fn programa(input: &str) -> IResult<&str, &str> {
   let mut funcs1 = FUNCIONES.lock().unwrap();
 
   match funcs1.agregar_funcion(id_programa.to_owned(), "void".to_owned()) {
-    // Ok(res) => Ok(res),
-    Ok(_) => (),
-    // Err(err) => Err(err)
-    Err(_) => ()
+    Ok(res) => {
+      println!("{:?}", res);
+      ()
+    },
+    Err(err) => {
+      println!("{:?}", err);
+      ()
+    },
   };
   drop(funcs1);
 
   let mut contexto_funcion1 = CONTEXTO_FUNCION.lock().unwrap();
+  let mut id_programa_global = ID_PROGRAMA.lock().unwrap();
   *contexto_funcion1 = id_programa.to_owned();
+  *id_programa_global = id_programa.to_owned();
   drop(contexto_funcion1);
-  // Mutex::unlock(contexto_funcion1);
+  drop(id_programa_global);
 
   next = match tuple((ws, tag(";"), ws))(next) {
     Ok((next_input, _)) => next_input,
@@ -61,17 +67,20 @@ pub fn programa(input: &str) -> IResult<&str, &str> {
   let mut funcs2 = FUNCIONES.lock().unwrap();
 
   match funcs2.agregar_funcion("principal".to_owned(), "void".to_owned()) {
-    // Ok(res) => Ok(res),
-    Ok(_) => (),
-    // Err(err) => Err(err)
-    Err(_) => ()
+    Ok(res) => {
+      println!("{:?}", res);
+      ()
+    },
+    Err(err) => {
+      println!("{:?}", err);
+      ()
+    },
   };
   drop(funcs2);
 
   let mut contexto_funcion2 = CONTEXTO_FUNCION.lock().unwrap();
   *contexto_funcion2 = "principal".to_owned();
   drop(contexto_funcion2);
-  // Mutex::unlock(contexto_funcion2);
 
   next = match bloque(next) {
     Ok((next_input, _)) => next_input,

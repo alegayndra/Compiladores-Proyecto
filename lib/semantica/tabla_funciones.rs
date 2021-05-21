@@ -3,17 +3,12 @@ use std::collections::HashMap;
 use crate::semantica::tabla_variables::*;
 
 #[derive(Debug, PartialEq, Eq, Clone)]
-pub struct Parametros {
-  pub hash: TablaVariables,
-  pub vec: Vec<TipoVar>,
-}
-
-#[derive(Debug, PartialEq, Eq, Clone)]
 pub struct TipoFunc {
   pub nombre: String,
   pub tipo: String,
   pub variables: TablaVariables,
-  pub parametros: Parametros
+  pub direccion: i64,
+  pub parametros: Vec<TipoVar>
 }
 
 #[derive(Debug, PartialEq, Eq, Clone)]
@@ -30,10 +25,8 @@ impl TablaFunciones {
           nombre: nombre_func.clone(),
           tipo: tipo_func.clone(),
           variables: TablaVariables { tabla: HashMap::new() },
-          parametros: Parametros {
-            hash: TablaVariables { tabla: HashMap::new() },
-            vec: vec![]
-          }
+          parametros: vec![],
+          direccion: 0
         });
         Ok(("Funcion agregada", nombre_func.clone()))
       }
@@ -63,27 +56,30 @@ impl TablaFunciones {
 
   pub fn agregar_parametro(&mut self, nombre_func: String, nombre_var: String, tipo_var: String, dims: Vec<String>) -> Result<(&str, String), (&str, String)> {
     match self.tabla.get_mut(&nombre_func) {
-      // Some(funcion) => match funcion.parametros_hash.buscar_variable(nombre_var.clone()) {
-      //   Ok(_) => {
-      //     funcion.parametros_vec.push(TipoVar {
-      //       nombre: nombre_var.clone(),
-      //       tipo: tipo_var.clone()
-      //     });
-      //     funcion.parametros_hash.agregar_variable(nombre_var.clone(), tipo_var.clone())
-      //   },
-      //   Err(err) => Err(err)
-      // },
-      Some(funcion) => funcion.parametros.hash.agregar_variable(nombre_var.clone(), tipo_var.clone(), dims),
+      Some(funcion) => {
+        match funcion.variables.agregar_variable(nombre_var.clone(), tipo_var.clone(), dims.clone()) {
+          Ok(res) => {
+            funcion.parametros.push(TipoVar {
+              nombre: nombre_var.clone(),
+              tipo: tipo_var.clone(),
+              dimensiones: dims,
+              direccion: 0
+            });
+            Ok(res)
+          },
+          Err(err) => Err(err)
+        }
+      },
       None => Err(("Funcion no existente", nombre_func.clone()))
     }
   }
 
-  pub fn buscar_parametro(&mut self, nombre_func: String, nombre_var: String) -> Result<(&str, String), (&str, String)> {
-    match self.tabla.get(&nombre_func) {
-      Some(funcion) => funcion.parametros.hash.buscar_variable(nombre_var),
-      None => Err(("Funcion no existente", nombre_func.clone()))
-    }
-  }
+  // pub fn buscar_parametro(&mut self, nombre_func: String, nombre_var: String) -> Result<(&str, String), (&str, String)> {
+  //   match self.tabla.get(&nombre_func) {
+  //     Some(funcion) => funcion.parametros.hash.buscar_variable(nombre_var),
+  //     None => Err(("Funcion no existente", nombre_func.clone()))
+  //   }
+  // }
 }
 
 #[cfg(test)]

@@ -82,32 +82,35 @@ impl TablaClases {
   pub fn agregar_parametro_metodo(&mut self, nombre_clase: String, nombre_func: String, nombre_var: String, tipo_var: String, dims: Vec<String>) -> Result<(&str, String), (&str, String)> {
     match self.tabla.get_mut(&nombre_clase) {
       Some(clase) => match clase.metodos.tabla.get_mut(&nombre_func) {
-        // Some(metodo) => match metodo.parametros_hash.buscar_variable(nombre_var.clone()) {
-        //   Ok(_) => {
-        //     metodo.parametros_vec.push(TipoVar {
-        //       nombre: nombre_var.clone(),
-        //       tipo: tipo_var.clone()
-        //     });
-        //     metodo.parametros_hash.agregar_variable(nombre_var.clone(), tipo_var.clone())
-        //   },
-        //   Err(err) => Err(err)
-        // },
-        Some(metodo) => metodo.parametros.hash.agregar_variable(nombre_var.clone(), tipo_var.clone(), dims),
+        Some(metodo) => {
+          match metodo.variables.agregar_variable(nombre_var.clone(), tipo_var.clone(), dims.clone()) {
+            Ok(res) => {
+              metodo.parametros.push(TipoVar {
+                nombre: nombre_var.clone(),
+                tipo: tipo_var.clone(),
+                dimensiones: dims.clone(),
+                direccion: 0
+              });
+              Ok(res)
+            },
+            Err(err) => Err(err)
+          }
+        },
         None => Err(("Metodo no existente", nombre_func.clone()))
       },
       None => Err(("Clase no existente", nombre_clase.clone()))
     }
   }
 
-  pub fn buscar_parametro_metodo(&self, nombre_clase: String, nombre_func: String, nombre_var: String) -> Result<(&str, String), (&str, String)> {
-    match self.tabla.get(&nombre_clase) {
-      Some(clase) => match clase.metodos.tabla.get(&nombre_func) {
-        Some(metodo) => metodo.parametros.hash.buscar_variable(nombre_var),
-        None => Err(("Metodo no existente", nombre_func.clone()))
-      },
-      None => Err(("Clase no existente", nombre_clase.clone()))
-    }
-  }
+  // pub fn buscar_parametro_metodo(&self, nombre_clase: String, nombre_func: String, nombre_var: String) -> Result<(&str, String), (&str, String)> {
+  //   match self.tabla.get(&nombre_clase) {
+  //     Some(clase) => match clase.metodos.tabla.get(&nombre_func) {
+  //       Some(metodo) => metodo.parametros.hash.buscar_variable(nombre_var),
+  //       None => Err(("Metodo no existente", nombre_func.clone()))
+  //     },
+  //     None => Err(("Clase no existente", nombre_clase.clone()))
+  //   }
+  // }
 
   pub fn agregar_atributo(&mut self, nombre_clase: String, nombre_var: String, tipo_var: String, dims: Vec<String>) -> Result<(&str, String), (&str, String)> {
     match self.tabla.get_mut(&nombre_clase) {
@@ -190,22 +193,22 @@ mod tests {
       tabla.agregar_parametro_metodo("Estudiante".to_owned(), "a".to_owned(), "variable".to_owned(), "entero".to_owned(), dims.clone()),
       Err(("Clase no existente", "Estudiante".to_owned()))
     );
-    assert_eq!(
-      tabla.buscar_parametro_metodo("Persona".to_owned(), "func".to_owned(), "variable".to_owned()),
-      Ok(("Variable existente", "variable".to_owned()))
-    );
-    assert_eq!(
-      tabla.buscar_parametro_metodo("Persona".to_owned(), "func".to_owned(), "a".to_owned()),
-      Err(("Variable no existente", "a".to_owned()))
-    );
-    assert_eq!(
-      tabla.buscar_parametro_metodo("Persona".to_owned(), "a".to_owned(), "variable".to_owned()),
-       Err(("Metodo no existente", "a".to_owned()))
-      );
-    assert_eq!(
-      tabla.buscar_parametro_metodo("Estudiante".to_owned(), "a".to_owned(), "variable".to_owned()),
-      Err(("Clase no existente", "Estudiante".to_owned()))
-    );
+    // assert_eq!(
+    //   tabla.buscar_parametro_metodo("Persona".to_owned(), "func".to_owned(), "variable".to_owned()),
+    //   Ok(("Variable existente", "variable".to_owned()))
+    // );
+    // assert_eq!(
+    //   tabla.buscar_parametro_metodo("Persona".to_owned(), "func".to_owned(), "a".to_owned()),
+    //   Err(("Variable no existente", "a".to_owned()))
+    // );
+    // assert_eq!(
+    //   tabla.buscar_parametro_metodo("Persona".to_owned(), "a".to_owned(), "variable".to_owned()),
+    //    Err(("Metodo no existente", "a".to_owned()))
+    //   );
+    // assert_eq!(
+    //   tabla.buscar_parametro_metodo("Estudiante".to_owned(), "a".to_owned(), "variable".to_owned()),
+    //   Err(("Clase no existente", "Estudiante".to_owned()))
+    // );
 
     assert_eq!(
       tabla.agregar_atributo("Persona".to_owned(), "variable".to_owned(), "entero".to_owned(), dims.clone()),

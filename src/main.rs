@@ -17,6 +17,7 @@ fn main() {
 
 	entero num;
 	entero num;
+	entero i;
 
 	clase Estudiante <Persona> {
 		char nombre[10], apellido[10];

@@ -3,6 +3,7 @@ use std::collections::HashMap;
 #[derive(Debug, PartialEq, Eq, Clone, Hash)]
 pub struct TipoVar {
   pub nombre: String,
+  pub direccion: i64,
   pub tipo: String,
   pub dimensiones: Vec<String>
 }
@@ -20,7 +21,8 @@ impl TablaVariables {
         self.tabla.insert(nombre_var.clone(), TipoVar {
           nombre: nombre_var.clone(),
           tipo: tipo_var.clone(),
-          dimensiones: dims
+          dimensiones: dims,
+          direccion: 0
         });
         Ok(("Variable agregada", nombre_var.clone()))
       }
