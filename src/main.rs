@@ -21,7 +21,7 @@ fn main() {
 
 	clase Persona {};
 
-	clase Estudiante <Persona> {
+	clase Estudiante {
 		char nombre[10], apellido[10];
 	};
 

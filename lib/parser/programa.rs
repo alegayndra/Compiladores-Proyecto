@@ -128,7 +128,7 @@ mod tests {
 
     assert_eq!(programa("
       programa idPrograma;
-      clase Estudiante <Persona> {
+      clase Estudiante {
         char nombre[10], apellido[10];
       };
       principal() {}"
@@ -150,7 +150,7 @@ mod tests {
         regresa expresion;
       }
       entero num;
-      clase Estudiante <Persona> {
+      clase Estudiante {
         char nombre[10], apellido[10];
       };
       principal() {}"
@@ -163,7 +163,7 @@ mod tests {
         regresa expresion;
       }
       entero num;
-      clase Estudiante <Persona> {
+      clase Estudiante {
         char nombre[10], apellido[10];
       };
       principal() {
