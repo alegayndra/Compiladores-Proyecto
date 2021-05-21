@@ -1,5 +1,4 @@
 use nom::{
-  branch::alt,
   bytes::complete::{tag, take_while1},
   multi::many0,
   IResult,

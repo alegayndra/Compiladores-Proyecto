@@ -24,8 +24,6 @@ pub fn decision(input: &str) -> IResult<&str, &str> {
   tuple((tag("si"), ws, tag("("), ws, expresion, ws, tag(")"), ws, bloque, sino))
   (input)
   .map(|(next_input, __res)| {
-    // let (_, _, _, _, exp, _, _, _, _, _sino) = res;
-    // (next_input, exp)
     (next_input, "decision")
   })
 }

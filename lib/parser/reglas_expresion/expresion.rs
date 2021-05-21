@@ -1,7 +1,6 @@
 use nom::{
   IResult,
   sequence::tuple,
-  branch::alt,
   combinator::opt,
 };
   
@@ -24,13 +23,9 @@ fn exp_opcional(input: &str) -> IResult<&str, (&str, &str)> {
   }
 }
 
-// pub fn expresion(input: &str) -> IResult<&str, (&str, &str, &str)> {
-  pub fn expresion(input: &str) -> IResult<&str, &str> {
+pub fn expresion(input: &str) -> IResult<&str, &str> {
   tuple((exp, exp_opcional))(input)
   .map(|(next_input, _res)| {
-    // let (exp, exp_op) = res;
-    // let (op, exp2) = exp_op;
-    // (next_input, (exp, op, exp2))
     (next_input, "expresion")
   })
 }
@@ -45,8 +40,6 @@ mod tests {
 
   #[test]
   fn test_expresion() {
-    // assert_eq!(expresion("exp"), Ok(("", ("exp", "", ""))));
-    // assert_eq!(expresion("exp & exp"), Ok(("", ("exp", "&", "exp"))));
     assert_eq!(expresion("termino > termino"),                                        Ok(("", "expresion")));
     assert_eq!(expresion("termino"),                                                  Ok(("", "expresion")));
     assert_eq!(expresion("id + num_entero * id2 - num_entero - termino"),             Ok(("", "expresion")));

@@ -4,23 +4,19 @@ use nom::{
   bytes::complete::tag
 };
 
-use std::collections::HashMap;
-
 use crate::scanners::ws::*;
 use crate::scanners::id::*;
 use crate::parser::declaraciones::declaraciones::*;
 use crate::parser::bloque::*;
-use crate::semantica::tabla_funciones::*;
+use crate::semantica::globales::*;
 
 pub fn programa(input: &str) -> IResult<&str, &str> {
   let mut next: &str;
   
   next = match tuple((ws, tag("programa"), necessary_ws))(input) {
     Ok((next_input, _)) => next_input,
-    Err(err) => return Err(err), 
+    Err(err) => return Err(err),
   };
-
-  let mut funciones: TablaFunciones = TablaFunciones {tabla: HashMap::new()};
 
   let id_programa: &str;
 
@@ -32,20 +28,34 @@ pub fn programa(input: &str) -> IResult<&str, &str> {
     Err(err) => return Err(err),
   };
 
-  funciones.agregar_funcion(id_programa.to_owned(), "programa".to_owned());
+  let mut funcs1 = FUNCIONES.lock().unwrap();
+
+  match funcs1.agregar_funcion(id_programa.to_owned(), "void".to_owned()) {
+    Ok(res) => {
+      println!("{:?}", res);
+      ()
+    },
+    Err(err) => {
+      println!("{:?}", err);
+      ()
+    },
+  };
+  drop(funcs1);
+
+  let mut contexto_funcion1 = CONTEXTO_FUNCION.lock().unwrap();
+  let mut id_programa_global = ID_PROGRAMA.lock().unwrap();
+  *contexto_funcion1 = id_programa.to_owned();
+  *id_programa_global = id_programa.to_owned();
+  drop(contexto_funcion1);
+  drop(id_programa_global);
 
   next = match tuple((ws, tag(";"), ws))(next) {
     Ok((next_input, _)) => next_input,
     Err(err) => return Err(err),
   };
 
-  let decl: Vec<&str>;
-
-  match (declaraciones)(next) {
-    Ok((next_input, de)) => {
-      next = next_input;
-      decl = de;
-    },
+  next = match (declaraciones)(next) {
+    Ok((next_input, _)) => next_input,
     Err(err) => return Err(err),
   };
 
@@ -54,15 +64,32 @@ pub fn programa(input: &str) -> IResult<&str, &str> {
     Err(err) => return Err(err),
   };
 
-  let blo: &str;
+  let mut funcs2 = FUNCIONES.lock().unwrap();
 
-  match bloque(next) {
-    Ok((next_input, b)) => {
-      next = next_input;
-      blo = b;
+  match funcs2.agregar_funcion("principal".to_owned(), "void".to_owned()) {
+    Ok(res) => {
+      println!("{:?}", res);
+      ()
     },
+    Err(err) => {
+      println!("{:?}", err);
+      ()
+    },
+  };
+  drop(funcs2);
+
+  let mut contexto_funcion2 = CONTEXTO_FUNCION.lock().unwrap();
+  *contexto_funcion2 = "principal".to_owned();
+  drop(contexto_funcion2);
+
+  next = match bloque(next) {
+    Ok((next_input, _)) => next_input,
     Err(err) => return Err(err),
   };
+
+  println!("{:?}", FUNCIONES.lock().unwrap());
+  println!("{:?}", CLASES.lock().unwrap());
+  println!("{:?}", VARIABLES.lock().unwrap());
 
   match ws(next) {
     Ok((_, _)) => Ok(("", "programa")),
@@ -73,7 +100,7 @@ pub fn programa(input: &str) -> IResult<&str, &str> {
 #[cfg(test)]
 mod tests {
   use super::*;
-  use crate::semantica::tabla_variables::*;
+  // use crate::semantica::tabla_variables::*;
   // use nom::{
   //     error::{ErrorKind, VerboseError, VerboseErrorKind},
   //     Err,
@@ -81,16 +108,6 @@ mod tests {
 
   #[test]
   fn test_programa() {
-    // let funciones: TablaFunciones = TablaFunciones {tabla: vec![
-    //   TipoFunc {
-    //     nombre: "idPrograma".to_owned(),
-    //     tipo:  "programa".to_owned(),
-    //     variables: TablaVariables {
-    //       tabla: vec![]
-    //     },
-    //   }
-    // ]};
-
     assert_eq!(programa("
       programa idPrograma;
       principal() {}"
@@ -111,7 +128,7 @@ mod tests {
 
     assert_eq!(programa("
       programa idPrograma;
-      clase Estudiante <Persona> {
+      clase Estudiante {
         char nombre[10], apellido[10];
       };
       principal() {}"
@@ -133,7 +150,7 @@ mod tests {
         regresa expresion;
       }
       entero num;
-      clase Estudiante <Persona> {
+      clase Estudiante {
         char nombre[10], apellido[10];
       };
       principal() {}"
@@ -146,7 +163,7 @@ mod tests {
         regresa expresion;
       }
       entero num;
-      clase Estudiante <Persona> {
+      clase Estudiante {
         char nombre[10], apellido[10];
       };
       principal() {
