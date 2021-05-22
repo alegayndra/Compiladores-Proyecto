@@ -16,8 +16,10 @@ fn diferentes_declaraciones(input: &str) -> IResult<&str, &str> {
   match alt((clase, funcion, variables))(input) {
     Ok((next_input, res)) => {
       // Reset de variables globales de semantica
-      let mut contexto_funcion1 = CONTEXTO_FUNCION.lock().unwrap();
-      *contexto_funcion1 = ID_PROGRAMA.lock().unwrap().to_string();
+      let mut contexto_funcion = CONTEXTO_FUNCION.lock().unwrap();
+      *contexto_funcion = ID_PROGRAMA.lock().unwrap().to_string();
+      let mut contexto_clase = CONTEXTO_CLASE.lock().unwrap();
+      *contexto_clase = "".to_owned();
       
       VARIABLES.lock().unwrap().tabla.drain();
       Ok((next_input, res))
