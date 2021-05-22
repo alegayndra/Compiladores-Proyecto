@@ -90,6 +90,7 @@ pub fn programa(input: &str) -> IResult<&str, &str> {
   println!("{:?}", FUNCIONES.lock().unwrap());
   println!("{:?}", CLASES.lock().unwrap());
   println!("{:?}", VARIABLES.lock().unwrap());
+  println!("{:?}", CUADRUPLOS.lock().unwrap());
 
   match ws(next) {
     Ok((_, _)) => Ok(("", "programa")),

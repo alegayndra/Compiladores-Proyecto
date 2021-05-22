@@ -1,18 +1,91 @@
 use nom::{
   IResult,
-  sequence::tuple,
-  multi::many0
+  sequence::delimited,
+  combinator::opt
 };
   
 use crate::scanners::ws::*;
 use crate::scanners::operadores::*;
 use crate::parser::reglas_expresion::factor::*;
+use crate::semantica::globales::*;
+
+fn checar_lista_operadores() {
+  let mut lista_operadores = PILA_OPERADORS.lock().unwrap();
+  match lista_operadores.pop() {
+    Some(op) => {
+      match op_multdiv(&op) {
+        Ok(_) => {
+          let mut pila_val = PILA_VALORES.lock().unwrap();
+          let der = match pila_val.pop() {
+            Some(val) => val,
+            _ => {
+              println!("Stack de valores vacío en TERMINO");
+              return;
+            }
+          };
+          let izq = match pila_val.pop() {
+            Some(val) => val,
+            _ => {
+              println!("Stack de valores vacío en TERMINO");
+              return;
+            }
+          };
+
+          match CUADRUPLOS.lock().unwrap().agregar_cuadruplo(&op, izq, der) {
+            Ok(res) => {
+              println!("{:?}", res);
+              ()
+            },
+            Err(err) => {
+              println!("{:?}", err);
+              ()
+            }
+          };
+        },
+        Err(_) => {
+          lista_operadores.push(op);
+          ()
+        }
+      }
+      ()
+    },
+    _ => {
+      println!("Stack de operadores vacío en TERMINO");
+      ()
+    }
+  }
+}
 
 pub fn termino(input: &str) -> IResult<&str, &str> {
-  tuple((factor, many0(tuple((ws, op_multdiv, ws, factor)))))(input)
-  .map(|(next_input, _)| {
-    (next_input, "termino")
-  })
+  let mut next : &str = input;
+
+  next = match factor(next) {
+    Ok((next_input, _)) => {
+      checar_lista_operadores();
+      next_input
+    },
+    Err(err) => return Err(err)
+  };
+
+  loop {
+    next = match opt(delimited(ws, op_multdiv, ws))(next) {
+      Ok((next_input, Some(operador))) => {
+        PILA_OPERADORS.lock().unwrap().push(operador.to_owned());
+        next_input
+      },
+      _ => {
+        return Ok((next, "termino"));
+      }
+    };
+
+    next = match factor(next) {
+      Ok((next_input, _)) => {
+        checar_lista_operadores();
+        next_input
+      },
+      Err(err) => return Err(err)
+    };
+  };
 }
 
 #[cfg(test)]
@@ -25,16 +98,6 @@ mod tests {
 
   #[test]
   fn test_termino() {
-    // assert_eq!(termino("factor"), Ok(("", vec![("+", "factor")])));
-    // assert_eq!(termino("factor * factor * factor / factor"), Ok(("", 
-    //   vec![
-    //     ("+", "factor"),
-    //     ("*", "factor"),
-    //     ("*", "factor"),
-    //     ("/", "factor")
-    //   ]
-    // )));
-
     assert_eq!(termino("factor"),                            Ok(("", "termino")));
     assert_eq!(termino("factor * factor * factor / factor"), Ok(("", "termino")));
     assert_eq!(termino("num_entero"),                        Ok(("", "termino")));

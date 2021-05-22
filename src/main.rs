@@ -25,8 +25,7 @@ fn main() {
 
 		void funcion func (entero var) {
 			entero i;
-			id = 10;
-			regresa expresion;
+			regresa 10 + 10;
 		}
 
 		entero num;
@@ -45,7 +44,7 @@ fn main() {
 			id();
 			id(param);
 			id.metodo();
-			mientras ( id > 10 + 20 ) {
+			mientras ( id > 10 + 20 * 10 ) {
 				escribe(id);
 			}
 

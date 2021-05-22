@@ -108,6 +108,16 @@ pub fn conseguir_num_tipo(tipo: &str) -> i64 {
   }
 }
 
+pub fn conseguir_tipo_num(tipo: i64) -> String {
+  match tipo {
+    0 => "entero",
+    1 => "flotante",
+    2 => "char",
+    3 => "error",
+    _ => "clase",
+  }.to_owned()
+}
+
 #[cfg(test)]
 mod tests {
   use super::*;

@@ -1,10 +1,13 @@
 use crate::semantica::tabla_variables::*;
 use crate::semantica::cubo_semantico::*;
+use crate::semantica::globales::*;
 
 #[derive(Debug, PartialEq, Eq, Clone)]
 pub struct ListaCuadruplos {
   pub lista: Vec<(i64, i64, i64, i64)>
 }
+
+static mut NUM_TEMPORAL: i64 = 0;
 
 impl ListaCuadruplos {
   pub fn agregar_cuadruplo<'a>(&mut self, operador: &'a str, izq: TipoVar, der: TipoVar) -> Result<(&'a str, (&'a str, String, String)), (&'a str, (&'a str, String, String))>{
@@ -14,8 +17,25 @@ impl ListaCuadruplos {
 
     match checar_cubo_semantico(op_num as usize, izq_num as usize, der_num as usize) {
       3 => Err(("Tipos incompatibles", (operador, izq.tipo, der.tipo))),
-      _ => {
+      n => {
         // Crear temporal
+        let mut tabla_variables = VARIABLES.lock().unwrap();
+        let tipo_temporal = conseguir_tipo_num(n);
+        unsafe {
+          loop {
+            let nombre_temporal = format!("temporal{}", NUM_TEMPORAL);
+            match tabla_variables.agregar_variable(nombre_temporal.clone(), tipo_temporal.clone(), vec![], 1000) {
+              Ok(_) => {
+                println!("Temporal agregado: {:?}", nombre_temporal);
+                break;
+              },
+              Err(_) => {
+                NUM_TEMPORAL += 1;
+                ()
+              }
+            }
+          }
+        }
         self.lista.push((op_num, izq.direccion, der.direccion, 0));
         Ok(("Tipos compatibles", (operador, izq.tipo, der.tipo)))
       }
