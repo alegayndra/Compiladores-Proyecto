@@ -1,3 +1,4 @@
+use crate::semantica::tabla_variables::*;
 use crate::semantica::cubo_semantico::*;
 
 #[derive(Debug, PartialEq, Eq, Clone)]
@@ -6,17 +7,17 @@ pub struct ListaCuadruplos {
 }
 
 impl ListaCuadruplos {
-  pub fn agregar_cuadruplo<'a>(&mut self, operador: &'a str, izq: &'a str, der: &'a str) -> Result<(&'a str, (&'a str, &'a str, &'a str)), (&'a str, (&'a str, &'a str, &'a str))>{
+  pub fn agregar_cuadruplo<'a>(&mut self, operador: &'a str, izq: TipoVar, der: TipoVar) -> Result<(&'a str, (&'a str, String, String)), (&'a str, (&'a str, String, String))>{
     let op_num = conseguir_num_operador(operador);
-    let izq_num = conseguir_num_tipo(izq);
-    let der_num = conseguir_num_tipo(der);
+    let izq_num = conseguir_num_tipo(izq.tipo.as_str());
+    let der_num = conseguir_num_tipo(der.tipo.as_str());
 
     match checar_cubo_semantico(op_num as usize, izq_num as usize, der_num as usize) {
-      3 => Err(("Tipos incompatibles", (operador, izq, der))),
+      3 => Err(("Tipos incompatibles", (operador, izq.tipo, der.tipo))),
       _ => {
         // Crear temporal
-        self.lista.push((op_num, izq_num, der_num, 0));
-        Ok(("Tipos compatibles", (operador, izq, der)))
+        self.lista.push((op_num, izq.direccion, der.direccion, 0));
+        Ok(("Tipos compatibles", (operador, izq.tipo, der.tipo)))
       }
     }
   }
@@ -29,8 +30,29 @@ mod tests {
   #[test]
   fn test_checar() {
     let mut cuadruplos = ListaCuadruplos { lista: vec![] };
-    assert_eq!(cuadruplos.agregar_cuadruplo("+", "entero", "entero"),   Ok(("Tipos compatibles", ("+", "entero", "entero"))));
-    assert_eq!(cuadruplos.agregar_cuadruplo("+", "entero", "flotante"), Ok(("Tipos compatibles", ("+", "entero", "flotante"))));
-    assert_eq!(cuadruplos.agregar_cuadruplo("+", "entero", "char"),     Err(("Tipos incompatibles", ("+", "entero", "char"))));
+    let var_entera = TipoVar {
+      nombre: "a".to_owned(),
+      direccion: 1000,
+      tipo: "entero".to_owned(),
+      dimensiones: vec![]
+    };
+
+    let var_flotante = TipoVar {
+      nombre: "a".to_owned(),
+      direccion: 2000,
+      tipo: "flotante".to_owned(),
+      dimensiones: vec![]
+    };
+
+    let var_char = TipoVar {
+      nombre: "a".to_owned(),
+      direccion: 3000,
+      tipo: "char".to_owned(),
+      dimensiones: vec![]
+    };
+
+    assert_eq!(cuadruplos.agregar_cuadruplo("+", var_entera.clone(), var_entera.clone()),   Ok(("Tipos compatibles", ("+", "entero".to_owned(), "entero".to_owned()))));
+    assert_eq!(cuadruplos.agregar_cuadruplo("+", var_entera.clone(), var_flotante.clone()), Ok(("Tipos compatibles", ("+", "entero".to_owned(), "flotante".to_owned()))));
+    assert_eq!(cuadruplos.agregar_cuadruplo("+", var_entera.clone(), var_char.clone()),     Err(("Tipos incompatibles", ("+", "entero".to_owned(), "char".to_owned()))));
   }
 }
