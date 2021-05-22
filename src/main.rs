@@ -6,20 +6,20 @@ use compilador::parser::programa::*;
 fn main() {
 	// println!("{:?}", programa("programa idPrograma; principal(){}"));
 	// println!("{:?}", programa("a"));
-	println!("{:?}", programa("
-		programa idPrograma;
+	// println!("{:?}", programa("
+	// 	programa idPrograma;
 		
-		clase Estudiante {
-			entero num;
-			void funcion agregar(entero n, entero m) {
-				entero o;
-			}
-		};
+	// 	clase Estudiante {
+	// 		entero num;
+	// 		void funcion agregar(entero n, entero m) {
+	// 			entero o;
+	// 		}
+	// 	};
 
-		entero a;
-		principal() {
-		}"
-	));
+	// 	entero a;
+	// 	principal() {
+	// 	}"
+	// ));
 	println!("{:?}", programa("
 		programa idPrograma;
 
@@ -45,7 +45,7 @@ fn main() {
 			id();
 			id(param);
 			id.metodo();
-			mientras ( id > 10 ) {
+			mientras ( id > 10 + 20 ) {
 				escribe(id);
 			}
 

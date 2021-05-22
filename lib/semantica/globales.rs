@@ -46,7 +46,7 @@ lazy_static! {
     operadores
   };
 
-  pub static ref PILA_VALORES: Mutex<Vec<String>> = {
+  pub static ref PILA_VALORES: Mutex<Vec<TipoVar>> = {
     let operadores = Mutex::new(vec![]);
     operadores
   };

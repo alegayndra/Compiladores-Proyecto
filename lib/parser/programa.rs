@@ -30,7 +30,7 @@ pub fn programa(input: &str) -> IResult<&str, &str> {
 
   let mut funcs1 = FUNCIONES.lock().unwrap();
 
-  match funcs1.agregar_funcion(id_programa.to_owned(), "void".to_owned()) {
+  match funcs1.agregar_funcion(id_programa.to_owned(), "void".to_owned(), 14000) {
     Ok(res) => {
       println!("{:?}", res);
       ()
@@ -66,7 +66,7 @@ pub fn programa(input: &str) -> IResult<&str, &str> {
 
   let mut funcs2 = FUNCIONES.lock().unwrap();
 
-  match funcs2.agregar_funcion("principal".to_owned(), "void".to_owned()) {
+  match funcs2.agregar_funcion("principal".to_owned(), "void".to_owned(), 14000) {
     Ok(res) => {
       println!("{:?}", res);
       ()

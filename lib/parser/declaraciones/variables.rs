@@ -64,7 +64,7 @@ fn agregar_variable_a_tabla(var: &str, tipo_var: &str, dims: Vec<&str>) {
   for dim in dims {
     dims_string.push(dim.to_owned());
   }
-  match VARIABLES.lock().unwrap().agregar_variable(var.to_owned(), tipo_var.to_owned(), dims_string.clone()) {
+  match VARIABLES.lock().unwrap().agregar_variable(var.to_owned(), tipo_var.to_owned(), dims_string.clone(), 1000) {
     Ok(_) => (),
     Err(err) => {
       println!("{:?}", err);
@@ -77,7 +77,7 @@ fn agregar_variable_a_tabla(var: &str, tipo_var: &str, dims: Vec<&str>) {
 
   if contexto_clase.clone() != "".to_owned() {
     if contexto_funcion.clone() != "".to_owned() {
-      match CLASES.lock().unwrap().agregar_atributo(contexto_clase.to_string(), var.to_owned(), tipo_var.to_owned(), dims_string.clone()) {
+      match CLASES.lock().unwrap().agregar_atributo(contexto_clase.to_string(), var.to_owned(), tipo_var.to_owned(), dims_string.clone(), 20000) {
         Ok(res) => {
           println!("{:?}", res);
           ()
@@ -88,7 +88,7 @@ fn agregar_variable_a_tabla(var: &str, tipo_var: &str, dims: Vec<&str>) {
         },
       }
     } else {
-      match CLASES.lock().unwrap().agregar_variable_metodo(contexto_clase.to_string(), contexto_funcion.to_string(), var.to_owned(), tipo_var.to_owned(), dims_string.clone()) {
+      match CLASES.lock().unwrap().agregar_variable_metodo(contexto_clase.to_string(), contexto_funcion.to_string(), var.to_owned(), tipo_var.to_owned(), dims_string.clone(), 25000) {
         Ok(res) => {
           println!("{:?}", res);
           ()
@@ -100,7 +100,7 @@ fn agregar_variable_a_tabla(var: &str, tipo_var: &str, dims: Vec<&str>) {
       }
     }
   } else {
-    match FUNCIONES.lock().unwrap().agregar_variable(contexto_funcion.to_string(), var.to_owned(), tipo_var.to_owned(), dims_string.clone()) {
+    match FUNCIONES.lock().unwrap().agregar_variable(contexto_funcion.to_string(), var.to_owned(), tipo_var.to_owned(), dims_string.clone(), 15000) {
       Ok(res) => {
         println!("{:?}", res);
         ()
