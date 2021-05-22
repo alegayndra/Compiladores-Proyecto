@@ -86,6 +86,8 @@ pub fn clase(input: &str) -> IResult<&str, &str> {
     match CLASES.lock().unwrap().agregar_clase(id_clase.to_owned(), id_padre.to_owned()) {
       Ok(res) => {
         println!("{:?}", res);
+        let mut contexto_clase = CONTEXTO_CLASE.lock().unwrap();
+        *contexto_clase = id_clase.to_owned();
         ()
       },
       Err(err) => {

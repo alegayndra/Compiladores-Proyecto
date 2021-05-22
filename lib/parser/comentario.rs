@@ -7,9 +7,8 @@ use nom::{
 pub fn comentario(input: &str) -> IResult<&str, &str> {
   tuple((tag("%%"), take_while(|c: char| c != '%'), tag("%%")))
   (input)
-  .map(|(next_input, res)| {
-    let (_, com, _,) = res;
-    (next_input, com)
+  .map(|(next_input, _)| {
+    (next_input, "comentario")
   })
 }
 
@@ -23,9 +22,11 @@ mod tests {
 
   #[test]
   fn test_comentario() {
-    assert_eq!(comentario("%%%%"),      Ok(("", "")));
-    assert_eq!(comentario("%%  %%"),    Ok(("", "  ")));
-    assert_eq!(comentario("%% aaa %%"), Ok(("", " aaa ")));
-    // assert_eq!(leer("lee()"), Ok(("", vec![])));
+    assert_eq!(comentario("%%%%"),      Ok(("", "comentario")));
+    assert_eq!(comentario("%%  %%"),    Ok(("", "comentario")));
+    assert_eq!(comentario("%% aaa %%"), Ok(("", "comentario")));
+    assert_eq!(comentario("%%
+      aaa
+    %%"), Ok(("", "comentario")));
   }
 }
