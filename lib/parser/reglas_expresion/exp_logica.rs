@@ -16,6 +16,7 @@ fn checar_lista_operadores() {
       match op_logica(&op) {
         Ok(_) => {
           let mut pila_val = PILA_VALORES.lock().unwrap();
+
           let der = match pila_val.pop() {
             Some(val) => val,
             _ => {
@@ -30,6 +31,8 @@ fn checar_lista_operadores() {
               return;
             }
           };
+
+          drop(pila_val);
 
           match CUADRUPLOS.lock().unwrap().agregar_cuadruplo(&op, izq, der) {
             Ok(res) => {
@@ -54,6 +57,8 @@ fn checar_lista_operadores() {
       ()
     }
   }
+
+  drop(lista_operadores);
 }
 
 pub fn exp_logica(input: &str) -> IResult<&str, &str> {
@@ -97,12 +102,8 @@ mod tests {
   // };
 
   #[test]
-  fn test_exp() {
-    assert_eq!(exp_logica("abr  "),                               Ok(("  ", "exp_logica")));
-    assert_eq!(exp_logica("num_entero"),                          Ok(("", "exp_logica")));
+  fn test_exp_logica() {
     assert_eq!(exp_logica("id"),                                  Ok(("", "exp_logica")));
-    assert_eq!(exp_logica("id  "),                                Ok(("  ", "exp_logica")));
-    assert_eq!(exp_logica("10  "),                                Ok(("  ", "exp_logica")));
     assert_eq!(exp_logica("id & num_entero"),                     Ok(("", "exp_logica")));
     assert_eq!(exp_logica("id | num_entero"),                     Ok(("", "exp_logica")));
     assert_eq!(exp_logica("id | id > 2 * ( - num_entero + id )"), Ok(("", "exp_logica")));

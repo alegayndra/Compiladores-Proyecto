@@ -7,16 +7,14 @@ use nom::{
 };
 
 use crate::scanners::ws::*;
-use crate::parser::reglas_expresion::expresion::*;
+use crate::parser::reglas_expresion::exp::*;
 
 fn expresiones_vacias(input: &str) -> IResult<&str, Vec<&str>> {
   Ok((input, vec![]))
 }
 
 fn lista_expresiones(input: &str) -> IResult<&str, Vec<&str>> {
-  tuple((
-    expresion, many0(tuple((ws, tag(","), ws, expresion)))
-  ))(input)
+  tuple((exp, many0(tuple((ws, tag(","), ws, exp)))))(input)
    //Llama al no terminal expresion
    .map(|(next_input, res)| {
     let (exp, expresiones) = res;
@@ -30,13 +28,17 @@ fn lista_expresiones(input: &str) -> IResult<&str, Vec<&str>> {
   })
 }
 
-pub fn func_params(input: &str) -> IResult<&str, (&str, Vec<&str>)> {
+pub fn func_params(input: &str) -> IResult<&str, &str> {
   tuple((tag("("), ws, alt((lista_expresiones, expresiones_vacias)), ws, tag(")")))(input)
   .map(|(next_input, res)| {
     let (_, _, expresiones, _, _) = res;
-    (next_input, ("expresiones", expresiones))
+    (next_input, "expresiones")
   })
 }
+
+/*
+  funcino(param, param2, param2)
+*/
 
 #[cfg(test)]
 mod tests {
@@ -48,8 +50,8 @@ mod tests {
 
   #[test]
   fn test_func_params() {
-    assert_eq!(func_params("(expresion)"), Ok(("", ("expresiones",vec!["expresion"]))));
-    assert_eq!(func_params("(  expresion , expresion,expresion )"), Ok(("", ("expresiones",vec!["expresion","expresion","expresion"]))));
-    assert_eq!(func_params("()"), Ok(("", ("expresiones",vec![]))));
+    assert_eq!(func_params("(expresion)"),                          Ok(("", "expresiones")));
+    assert_eq!(func_params("(  expresion, expresion, expresion )"), Ok(("", "expresiones")));
+    assert_eq!(func_params("()"),                                   Ok(("", "expresiones")));
   }
 }

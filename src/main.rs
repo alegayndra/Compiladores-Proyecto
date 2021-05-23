@@ -55,7 +55,10 @@ fn main() {
 			si (id > 2) {
 				escribe(id);
 			}
-			si (id > 2) {
+
+			a = 10;
+
+			si (id & id) {
 				escribe(id);
 			} sino {
 				escribe(id);

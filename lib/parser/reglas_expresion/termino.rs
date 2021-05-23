@@ -31,6 +31,8 @@ fn checar_lista_operadores() {
             }
           };
 
+          drop(pila_val);
+
           match CUADRUPLOS.lock().unwrap().agregar_cuadruplo(&op, izq, der) {
             Ok(res) => {
               println!("{:?}", res);
@@ -42,10 +44,7 @@ fn checar_lista_operadores() {
             }
           };
         },
-        Err(_) => {
-          lista_operadores.push(op);
-          ()
-        }
+        Err(_) => { lista_operadores.push(op); () }
       }
       ()
     },
@@ -54,6 +53,8 @@ fn checar_lista_operadores() {
       ()
     }
   }
+
+  drop(lista_operadores);
 }
 
 pub fn termino(input: &str) -> IResult<&str, &str> {

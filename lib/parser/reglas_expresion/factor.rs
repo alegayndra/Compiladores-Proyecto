@@ -12,12 +12,33 @@ use crate::parser::reglas_expresion::valor::*;
 use crate::parser::reglas_expresion::exp_logica::*;
 use crate::semantica::globales::*;
 
+fn checar_pila_operadores() {
+  let mut lista_operadores = PILA_OPERADORS.lock().unwrap();
+  match lista_operadores.pop() {
+    Some(op) => {
+      match op.as_str() {
+        "(" => (),
+        _ => {
+          println!("No se encontró ( al final del stack de operadores en FACTOR");
+          lista_operadores.push(op);
+          ()
+        }
+      }
+    },
+    None => { println!("Stack de operadores vacío en EXP_LOGICA"); () }
+  };
+  drop(lista_operadores);
+}
+
 fn retorna_expresion(input: &str) -> IResult<&str, &str> {
   let mut next : &str = input;
 
   next = match tag("(")(next) {
     Ok((next_input, _)) => {
-      PILA_OPERADORS.lock().unwrap().push("(".to_owned());
+      let mut lista_operadores = PILA_OPERADORS.lock().unwrap();
+      lista_operadores.push("(".to_owned());
+      drop(lista_operadores);
+      
       next_input
     },
     Err(err) => return Err(err)
@@ -30,23 +51,8 @@ fn retorna_expresion(input: &str) -> IResult<&str, &str> {
 
   match tag(")")(next) {
     Ok((next_input, _)) => {
-      let mut lista_operadores = PILA_OPERADORS.lock().unwrap();
-      match lista_operadores.pop() {
-        Some(op) => {
-          match op.as_str() {
-            "(" => Ok((next_input, "retorna_expresion")),
-            _ => {
-              println!("No se encontró ( al final del stack de operadores en FACTOR");
-              lista_operadores.push(op);
-              Err(nom::Err::Error(nom::error::Error{ input: next, code: ErrorKind::Tag }))
-            }
-          }
-        },
-        None => {
-          println!("Stack de operadores vacío en EXP_LOGICA");
-          Err(nom::Err::Error(nom::error::Error{ input: next, code: ErrorKind::Tag }))
-        }
-      }
+      checar_pila_operadores();
+      Ok((next_input, "retorna_expresion"))
     },
     Err(err) => Err(err)
   }
@@ -131,13 +137,13 @@ mod tests {
 
   #[test]
   fn test_factor() {
-    assert_eq!(factor("- num_entero"),          Ok(("", "factor")));
-    assert_eq!(factor("+ \"s\""),               Ok(("", "factor")));
-    assert_eq!(factor("+ Nombre . metodo()"),   Ok(("", "factor")));
-    assert_eq!(factor("( expresion )"),         Ok(("", "factor")));
-    assert_eq!(factor("( num_entero )"),        Ok(("", "factor")));
-    assert_eq!(factor("( num_entero * id )"),   Ok(("", "factor")));
-    assert_eq!(factor("( num_entero & id )"),   Ok(("", "factor")));
-    assert_eq!(factor("( 1 | 0 )"),             Ok(("", "factor")));
+    assert_eq!(factor("- num_entero"),        Ok(("", "factor")));
+    assert_eq!(factor("+ \"s\""),             Ok(("", "factor")));
+    assert_eq!(factor("+ Nombre . metodo()"), Ok(("", "factor")));
+    assert_eq!(factor("( expresion )"),       Ok(("", "factor")));
+    assert_eq!(factor("( 10 )"),              Ok(("", "factor")));
+    assert_eq!(factor("( 10 * id )"),         Ok(("", "factor")));
+    assert_eq!(factor("( 11 & id )"),         Ok(("", "factor")));
+    assert_eq!(factor("( 1 | 0 )"),           Ok(("", "factor")));
   }
 }

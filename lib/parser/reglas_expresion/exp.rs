@@ -31,6 +31,8 @@ fn checar_lista_operadores() {
             }
           };
 
+          drop(pila_val);
+
           match CUADRUPLOS.lock().unwrap().agregar_cuadruplo(&op, izq, der) {
             Ok(res) => {
               println!("{:?}", res);
@@ -54,6 +56,7 @@ fn checar_lista_operadores() {
       ()
     }
   }
+  drop(lista_operadores);
 }
 
 pub fn exp(input: &str) -> IResult<&str, &str> {
@@ -70,7 +73,10 @@ pub fn exp(input: &str) -> IResult<&str, &str> {
   loop {
     next = match opt(delimited(ws, op_sumsub, ws))(next) {
       Ok((next_input, Some(operador))) => {
-        PILA_OPERADORS.lock().unwrap().push(operador.to_owned());
+        let mut lista_operadores = PILA_OPERADORS.lock().unwrap();
+        lista_operadores.push(operador.to_owned());
+        drop(lista_operadores);
+
         next_input
       },
       _ => {

@@ -36,6 +36,22 @@ impl TablaVariables {
       None => Err(("Variable no existente", nombre_var.clone()))
     }
   }
+  
+  pub fn agregar_constante(&mut self, nombre_var: String, tipo_var: String, dir: i64) -> TipoVar {
+    match self.tabla.get(&nombre_var) {
+      Some(var) => var.clone(),
+      None => {
+        let var = TipoVar {
+          nombre: nombre_var.clone(),
+          tipo: tipo_var.clone(),
+          dimensiones: vec![],
+          direccion: dir
+        };
+        self.tabla.insert(nombre_var.clone(), var.clone());
+        var
+      }
+    }
+  }
 }
 
 #[cfg(test)]

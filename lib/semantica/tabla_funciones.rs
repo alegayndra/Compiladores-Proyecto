@@ -51,7 +51,7 @@ impl TablaFunciones {
     }
   }
 
-  pub fn buscar_variable(&mut self, nombre_func: String, nombre_var: String) -> Result<(&str, String, TipoVar), (&str, String, String)> {
+  pub fn buscar_variable(&self, nombre_func: String, nombre_var: String) -> Result<(&str, String, TipoVar), (&str, String, String)> {
     match self.tabla.get(&nombre_func) {
       Some(funcion) => match funcion.variables.buscar_variable(nombre_var.clone()) {
         Ok((_, var)) => Ok(("Variable existente en funcion", nombre_func.clone(), var.clone())),
