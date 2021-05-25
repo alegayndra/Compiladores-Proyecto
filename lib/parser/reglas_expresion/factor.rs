@@ -2,8 +2,7 @@ use nom::{
   branch::alt,
   bytes::complete::tag,
   IResult,
-  sequence::{delimited, preceded},
-  error::ErrorKind
+  sequence::{delimited, preceded}
 };
   
 use crate::scanners::ws::*;

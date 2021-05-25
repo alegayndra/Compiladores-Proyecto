@@ -81,20 +81,29 @@ pub fn checar_cubo_semantico(op: usize, izq: usize, der: usize) -> i64{
 
 pub fn conseguir_num_operador(operador: &str) -> i64 {
   match operador {
-    "+"   => 0,
-    "-"   => 1,
-    "*"   => 2,
-    "/"   => 3,
-    ">"   => 4,
-    "<"   => 5,
-    ">="  => 6,
-    "<="  => 7,
-    "=="  => 8,
-    "!="  => 9,
-    "&"   => 10,
-    "|"   => 11,
-    "="   => 12,
-    _     => -1,
+    "+"       => 0,
+    "-"       => 1,
+    "*"       => 2,
+    "/"       => 3,
+    ">"       => 4,
+    "<"       => 5,
+    ">="      => 6,
+    "<="      => 7,
+    "=="      => 8,
+    "!="      => 9,
+    "&"       => 10,
+    "|"       => 11,
+    "="       => 12,
+    "ESCRIBE" => 13,
+    "LEE"     => 14,
+    "GOTO"    => 15,
+    "GOTOT"   => 16,
+    "GOTOF"   => 17,
+    "GOSUB"   => 18,
+    "ERA"     => 19,
+    "RETURN"  => 20,
+    "PARAM"   => 21,
+    _         => -1,
   }
 }
 
@@ -104,7 +113,8 @@ pub fn conseguir_num_tipo(tipo: &str) -> i64 {
     "flotante"  => 1,
     "char"      => 2,
     "error"     => 3,
-    _           => 4,
+    "texto"     => 5,
+    _           => 4, // objeto
   }
 }
 
@@ -114,6 +124,7 @@ pub fn conseguir_tipo_num(tipo: i64) -> String {
     1 => "flotante",
     2 => "char",
     3 => "error",
+    5 => "texto",
     _ => "clase",
   }.to_owned()
 }

@@ -30,15 +30,10 @@ fn lista_expresiones(input: &str) -> IResult<&str, Vec<&str>> {
 
 pub fn func_params(input: &str) -> IResult<&str, &str> {
   tuple((tag("("), ws, alt((lista_expresiones, expresiones_vacias)), ws, tag(")")))(input)
-  .map(|(next_input, res)| {
-    let (_, _, expresiones, _, _) = res;
+  .map(|(next_input, _)| {
     (next_input, "expresiones")
   })
 }
-
-/*
-  funcino(param, param2, param2)
-*/
 
 #[cfg(test)]
 mod tests {

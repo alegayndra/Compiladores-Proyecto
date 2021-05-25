@@ -31,7 +31,7 @@ fn buscar_variable(id_valor: &str) {
   let tabla_clases = CLASES.lock().unwrap();
 
   match tabla_variables.buscar_variable(id_valor.to_owned()) {
-    Ok(_) => (),
+    Ok(_) => { return; },
     Err(_) => ()
   };
 

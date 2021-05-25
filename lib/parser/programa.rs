@@ -64,33 +64,25 @@ pub fn programa(input: &str) -> IResult<&str, &str> {
     Err(err) => return Err(err),
   };
 
-  let mut funcs2 = FUNCIONES.lock().unwrap();
-
-  match funcs2.agregar_funcion("principal".to_owned(), "void".to_owned(), 14000) {
-    Ok(res) => {
-      println!("{:?}", res);
-      ()
-    },
-    Err(err) => {
-      println!("{:?}", err);
-      ()
-    },
-  };
-  drop(funcs2);
 
   let mut contexto_funcion2 = CONTEXTO_FUNCION.lock().unwrap();
-  *contexto_funcion2 = "principal".to_owned();
+  let id_programa_global2 = ID_PROGRAMA.lock().unwrap();
+  *contexto_funcion2 = id_programa_global2.to_owned();
   drop(contexto_funcion2);
+  drop(id_programa_global2);
 
   next = match bloque(next) {
     Ok((next_input, _)) => next_input,
     Err(err) => return Err(err),
   };
 
-  println!("{:?}", FUNCIONES.lock().unwrap());
-  println!("{:?}", CLASES.lock().unwrap());
-  println!("{:?}", VARIABLES.lock().unwrap());
-  println!("{:?}", CUADRUPLOS.lock().unwrap());
+  {
+    println!("{:?}", FUNCIONES.lock().unwrap());
+    println!("{:?}", CLASES.lock().unwrap());
+    println!("{:?}", VARIABLES.lock().unwrap());
+    println!("{:?}", CONSTANTES.lock().unwrap());
+    println!("{:?}", CUADRUPLOS.lock().unwrap());
+  }
 
   match ws(next) {
     Ok((_, _)) => Ok(("", "programa")),

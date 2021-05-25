@@ -41,6 +41,33 @@ impl ListaCuadruplos {
       }
     }
   }
+
+  pub fn agregar_cuadruplo_asignacion<'a>(&mut self, valor: TipoVar, destino: TipoVar) -> Result<(&'a str, (String, String)), (&'a str, (String, String))>{
+    let op_num = conseguir_num_operador("=");
+    let valor_num = conseguir_num_tipo(valor.tipo.as_str());
+    let destino_num = conseguir_num_tipo(destino.tipo.as_str());
+
+    match checar_cubo_semantico(op_num as usize, valor_num as usize, destino_num as usize) {
+      3 => Err(("Asignacion incompatible", (valor.tipo, destino.tipo))),
+      _ => {
+        // Crear temporal
+        self.lista.push((op_num, valor.direccion, -1, destino.direccion));
+        Ok(("Asignacion compatible", (valor.tipo, destino.tipo)))
+      }
+    }
+  }
+
+  pub fn agregar_cuadruplo_escritura<'a>(&mut self, valor: TipoVar) -> Result<(&'a str, String), (&'a str, String)>{
+    let op_num = conseguir_num_operador("ESCRIBE");
+    self.lista.push((op_num, -1, -1, valor.direccion));
+    Ok(("Print bueno", valor.tipo))
+  }
+
+  pub fn agregar_cuadruplo_lectura<'a>(&mut self, valor: TipoVar) -> Result<(&'a str, String), (&'a str, String)>{
+    let op_num = conseguir_num_operador("LEE");
+    self.lista.push((op_num, -1, -1, valor.direccion));
+    Ok(("Read bueno", valor.tipo))
+  }
 }
 
 #[cfg(test)]

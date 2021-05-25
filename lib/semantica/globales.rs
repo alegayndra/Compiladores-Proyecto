@@ -59,7 +59,7 @@ lazy_static! {
   };
 }
 
-pub static mut DIRECCIONES_GLOBALES: [[[[i64 ; 2] ; 2] ; 3] ; 3] = [
+pub static mut DIRECCIONES: [[[[i64 ; 2] ; 2] ; 3] ; 3] = [
   [ // Globales
     [ // Enteras
       // Val    Inicio
