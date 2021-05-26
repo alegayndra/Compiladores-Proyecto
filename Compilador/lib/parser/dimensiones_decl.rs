@@ -2,7 +2,7 @@ use nom::{
   branch::alt,
   bytes::complete::tag,
   IResult,
-  sequence::tuple,
+  sequence::{tuple, delimited},
 };
 
 use crate::scanners::ws::*;
@@ -10,10 +10,9 @@ use crate::scanners::constantes::*;
 use crate::parser::dimensiones::*;
 
 pub fn dimension_decl(input: &str) -> IResult<&str, Vec<&str>> {
-  tuple((tag("["), ws, num_entero, ws, tag("]")))(input)
+  delimited(tuple((tag("["), ws)), num_entero, tuple((ws, tag("]"))))(input)
   .map(|(next_input, res)| {
-    let (_, _, dimension, _, _) = res;
-    (next_input, vec![dimension])
+    (next_input, vec![res.0])
   })
 }
 

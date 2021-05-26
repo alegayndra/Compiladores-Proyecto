@@ -6,7 +6,7 @@ use nom::{
 };
 
 use crate::scanners::ws::*;
-use crate::parser::reglas_expresion::expresion::*;
+use crate::parser::reglas_expresion::exp_logica::*;
 use crate::parser::bloque::*;
 
 fn sino(input: &str) -> IResult<&str, &str> {
@@ -21,11 +21,9 @@ fn sino(input: &str) -> IResult<&str, &str> {
 }
 
 pub fn decision(input: &str) -> IResult<&str, &str> {
-  tuple((tag("si"), ws, tag("("), ws, expresion, ws, tag(")"), ws, bloque, sino))
+  tuple((tag("si"), ws, tag("("), ws, exp_logica, ws, tag(")"), ws, bloque, sino))
   (input)
   .map(|(next_input, __res)| {
-    // let (_, _, _, _, exp, _, _, _, _, _sino) = res;
-    // (next_input, exp)
     (next_input, "decision")
   })
 }

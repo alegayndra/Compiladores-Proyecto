@@ -4,82 +4,107 @@ use nom::{
   multi::many0,
   IResult,
   sequence::tuple,
+  // combinator::opt,
 };
 
 use crate::scanners::ws::*;
 use crate::scanners::id::*;
 use crate::parser::declaraciones::funcion::*;
 use crate::parser::declaraciones::variables::*;
+use crate::semantica::globales::*;
 
-fn herencia(input: &str) -> IResult<&str, &str> {
-  tuple((tag("<"), ws, id, ws, tag(">")))(input)
-  .map(|(next_input, res)| {
-    let (_, _, id, _, _,) = res;
-    (next_input, id)
-  })
-}
+// fn herencia(input: &str) -> IResult<&str, &str> {
+//   tuple((tag("<"), ws, id, ws, tag(">")))(input)
+//   .map(|(next_input, res)| {
+//     let (_, _, id, _, _,) = res;
+//     (next_input, id)
+//   })
+// }
 
-fn posible_herencia(input: &str) -> IResult<&str, &str> {
-  alt((herencia, ws))(input)
-}
-
-// fn atributos(input: &str) -> IResult<&str, (&str, &str, Vec<(&str, (&str, Vec<&str>))>)> {
-fn atributos(input: &str) -> IResult<&str, (&str, &str, &str)> {
+fn atributos(input: &str) -> IResult<&str, &str> {
   variables(input)
   .map(|(next_input, _res)| {
-    // (next_input, ("null", "variables", vec![res]))
-    (next_input, ("null", "variables", "variables"))
+    (next_input, "atributos")
   })
 }
 
-// fn metodos(input: &str) -> IResult<&str, (&str, &str, Vec<(&str, (&str, Vec<&str>))>)> {
-fn metodos(input: &str) -> IResult<&str, (&str, &str, &str)> {
+fn metodos(input: &str) -> IResult<&str, &str> {
   funcion(input)
   .map(|(next_input, _res)| {
-    // let (tipo, id, params) = res;
-    // let mut lista_params = Vec::new();
-    // for par in params {
-    //   let (tipo_param, param) = par;
-    //   lista_params.push((tipo_param, vec![param]))
-    // } 
-    // (next_input, (tipo, id, lista_params))
-    // (next_input, (tipo, id, "funcion"))
-    (next_input, ("tipo", "id", "funcion"))
+    (next_input, "metodos")
   })
 }
 
-// fn variable_funcion(input: &str) -> IResult<&str, (&str, &str, Vec<(&str, (&str, Vec<&str>))>)> {
-fn variable_funcion(input: &str) -> IResult<&str, (&str, &str, &str)> {
+fn variable_funcion(input: &str) -> IResult<&str,  &str> {
   alt((atributos, metodos))(input)
 }
 
-fn lista_variable_funcion(input: &str) -> IResult<&str, Vec<(&str, &str, &str)>> {
+fn lista_variable_funcion(input: &str) -> IResult<&str, &str> {
   many0(tuple((variable_funcion, ws)))(input)
-  .map(|(next_input, res)| {
-    let mut lista = Vec::new();
-    for r in res {
-      let (cont, _) = r;
-      lista.push(cont);
-    }
-    // (next_input, (id, padre, declaraciones))
-    (next_input, lista)
+  .map(|(next_input, _)| {
+    (next_input, "lista_variable_funcion")
   })
 }
 
-// pub fn clase(input: &str) -> IResult<&str, (&str, &str, (&str, &str, Vec<(&str, (&str, Vec<&str>))>))> {
-// pub fn clase(input: &str) -> IResult<&str, (&str, &str, Vec<(&str, &str, &str)>)> {
 pub fn clase(input: &str) -> IResult<&str, &str> {
-  tuple((
-    ws, tag("clase"), necessary_ws,
-    id, ws, posible_herencia, ws,
-    tag("{"), ws, lista_variable_funcion, ws, tag("}"), ws, tag(";"), ws
-  ))
-  (input)
-  .map(|(next_input, _res)| {
-    // let (_, _, id, _, padre, _, _, _, declaraciones, _, _, _, _) = res;
-    // (next_input, (id, padre, declaraciones))
-    (next_input, "clase")
-  })
+  let mut next : &str = input;
+  let id_clase : &str;
+  let id_padre : &str = "";
+  
+  next = match tuple((ws, tag("clase"), necessary_ws))(next) {
+    Ok((next_input, _)) => next_input,
+    Err(err) => return Err(err)
+  };
+
+  next = match id(next) {
+    Ok((next_input, id_c)) => {
+      id_clase = id_c;
+      next_input
+    },
+    Err(err) => return Err(err)
+  };
+
+  next = match ws(next) {
+    Ok((next_input, _)) => next_input,
+    Err(err) => return Err(err)
+  };
+
+  // next = match opt(herencia)(input) {
+  //   Ok((next_input, Some(id_p))) => {
+  //     id_padre = id_p;
+  //     next_input
+  //   },
+  //   _ => {
+  //     id_padre = "";
+  //     next
+  //   }
+  // };
+
+  // if id_clase == id_padre {
+  //   println!("{:?}", ("ID de clase y de padre iguales.", id_padre));
+  // } else {
+    match CLASES.lock().unwrap().agregar_clase(id_clase.to_owned(), id_padre.to_owned()) {
+      Ok(res) => {
+        println!("{:?}", res);
+        let mut contexto_clase = CONTEXTO_CLASE.lock().unwrap();
+        *contexto_clase = id_clase.to_owned();
+        ()
+      },
+      Err(err) => {
+        println!("{:?}", err);
+        ()
+      },
+    }
+  // }
+
+  match tuple((ws, tag("{"), ws, lista_variable_funcion, ws, tag("}"), ws, tag(";"), ws))(next) {
+    Ok((next_input, _)) => {
+      let mut contexto_clase = CONTEXTO_CLASE.lock().unwrap();
+      *contexto_clase = "".to_owned();
+      Ok((next_input, "clase"))
+    },
+    Err(err) => Err(err)
+  }
 }
 
 #[cfg(test)]
@@ -90,52 +115,41 @@ mod tests {
   //     Err,
   // };
 
-  #[test]
-  fn test_herencia() {
-    assert_eq!(herencia("<Persona>"),   Ok(("", "Persona")));
-    assert_eq!(herencia("< Persona >"), Ok(("", "Persona")));
-  }
-
-  #[test]
-  fn test_posible_herencia() {
-    assert_eq!(posible_herencia("<Persona>"),   Ok(("", "Persona")));
-    assert_eq!(posible_herencia("< Persona >"), Ok(("", "Persona")));
-    assert_eq!(posible_herencia("< Persona"),   Ok(("< Persona", "")));
-    assert_eq!(posible_herencia(":{}"),         Ok((":{}", "")));
-  }
+  // #[test]
+  // fn test_herencia() {
+  //   assert_eq!(herencia("<Persona>"),   Ok(("", "Persona")));
+  //   assert_eq!(herencia("< Persona >"), Ok(("", "Persona")));
+  // }
 
   #[test]
   fn test_atributos() {
-    assert_eq!(atributos("Persona id, id;"),   Ok(("", ("null", "variables", "variables"))));
-    assert_eq!(atributos("entero id[10][7];"), Ok(("", ("null", "variables", "variables"))));
+    assert_eq!(atributos("Persona id, id;"),   Ok(("", "atributos")));
+    assert_eq!(atributos("entero id[10][7];"), Ok(("", "atributos")));
   }
 
   #[test]
   fn test_metodos() {
-    // assert_eq!(atributos("Persona id, id;"), Ok(("",    ("Persona", vec![("id", vec![]), ("id", vec![])]))));
-    // assert_eq!(atributos("entero id[id][id];"), Ok(("", ("entero",  vec![("id", vec!["id","id"])]))));
-    // assert_eq!(metodos("void funcion func (entero var): { estatuto; regresa expresion ; }"), Ok(("", ("void", "func", "funcion"))));
-    assert_eq!(metodos("void funcion func (entero var) {  regresa expresion ; }"), Ok(("", ("tipo", "id", "funcion"))));
+    assert_eq!(metodos("void funcion func (entero var) {  regresa expresion ; }"), Ok(("", "metodos")));
   }
 
   #[test]
   fn test_variable_funcion() {
-    assert_eq!(variable_funcion("Persona id, id;"),                                    Ok(("", ("null", "variables", "variables"))));
-    assert_eq!(variable_funcion("void funcion func (entero var){regresa expresion;}"), Ok(("", ("tipo", "id", "funcion"))));
+    assert_eq!(variable_funcion("Persona id, id;"),                                    Ok(("", "atributos")));
+    assert_eq!(variable_funcion("void funcion func (entero var){regresa expresion;}"), Ok(("", "metodos")));
   }
 
   #[test]
   fn test_lista_variable_funcion() {
-    assert_eq!(lista_variable_funcion("Persona id, id;"),                                    Ok(("", vec![("null", "variables", "variables")])));
-    assert_eq!(lista_variable_funcion("void funcion func (entero var){regresa expresion;}"), Ok(("", vec![("tipo", "id", "funcion")])));
+    assert_eq!(lista_variable_funcion("Persona id, id;"),                                    Ok(("", "lista_variable_funcion")));
+    assert_eq!(lista_variable_funcion("void funcion func (entero var){regresa expresion;}"), Ok(("", "lista_variable_funcion")));
   }
 
   #[test]
   fn test_clase() {
     assert_eq!(clase("clase Estudiante {};"),           Ok(("", "clase")));
-    assert_eq!(clase("clase Estudiante <Persona> {};"), Ok(("", "clase")));
+    assert_eq!(clase("clase Estudiante {};"), Ok(("", "clase")));
     assert_eq!(clase(
-      "clase Estudiante <Persona> {
+      "clase Estudiante {
         char nombre[10], apellido[10];
       };"
     ), Ok(("", "clase")));

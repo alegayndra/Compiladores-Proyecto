@@ -9,7 +9,7 @@ use crate::parser::reglas_expresion::exp::*;
 
 pub fn regresa(input: &str) -> IResult<&str, &str> {
   tuple((tag("regresa"), ws, exp, ws, tag(";")))(input)
-  .map(|(next_input, res)| {
+  .map(|(next_input, _)| {
     (next_input, "regresa")
   })
 }
