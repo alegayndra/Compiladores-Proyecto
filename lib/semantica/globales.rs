@@ -57,6 +57,11 @@ lazy_static! {
     let operadores = Mutex::new(vec![]);
     operadores
   };
+
+  pub static ref PILA_SALTOS: Mutex<Vec<i64>> = {
+    let saltos = Mutex::new(vec![]);
+    saltos
+  };
 }
 
 pub static mut DIRECCIONES: [[[[i64 ; 2] ; 2] ; 3] ; 3] = [

@@ -1,5 +1,5 @@
 use nom::{
-  branch::alt,
+  combinator::opt,
   bytes::complete::tag,
   IResult,
   sequence::tuple,
@@ -10,11 +10,8 @@ use crate::parser::reglas_expresion::exp_logica::*;
 use crate::parser::bloque::*;
 
 fn sino(input: &str) -> IResult<&str, &str> {
-  alt((
-    tuple((ws, tag("sino"), ws, bloque)),
-    tuple((ws, ws, ws, ws))
-  ))(input)
-  .map(|(next_input, _res)| {
+  opt(tuple((ws, tag("sino"), ws, bloque)))(input)
+  .map(|(next_input, _)| {
     (next_input, "sino")
   })
 

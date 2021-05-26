@@ -68,6 +68,18 @@ impl ListaCuadruplos {
     self.lista.push((op_num, -1, -1, valor.direccion));
     Ok(("Read bueno", valor.tipo))
   }
+
+  pub fn agregar_cuadruplo_goto<'a>(&mut self) -> Result<&'a str, &'a str>{
+    let op_num = conseguir_num_operador("GOTO");
+    self.lista.push((op_num, -1, -1, -1));
+    Ok("Goto bueno")
+  }
+
+  pub fn modificar_cuadruplo_goto<'a>(&mut self, num_cuadruplo: usize) -> Result<(&'a str, usize, i64), (&'a str, usize, i64)>{
+    let direccion_cuadruplo = (self.lista.len()) as i64;
+    self.lista[num_cuadruplo].3 = direccion_cuadruplo;
+    Ok(("Goto modificado", num_cuadruplo, direccion_cuadruplo))
+  }
 }
 
 #[cfg(test)]

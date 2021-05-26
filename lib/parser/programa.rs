@@ -28,8 +28,8 @@ pub fn programa(input: &str) -> IResult<&str, &str> {
     Err(err) => return Err(err),
   };
 
+  // Crear tabla de variables globales
   let mut funcs1 = FUNCIONES.lock().unwrap();
-
   match funcs1.agregar_funcion(id_programa.to_owned(), "void".to_owned(), 14000) {
     Ok(res) => {
       println!("{:?}", res);
@@ -42,6 +42,18 @@ pub fn programa(input: &str) -> IResult<&str, &str> {
   };
   drop(funcs1);
 
+  // Agregar el GOTO al main
+  let mut cuadruplos1 = CUADRUPLOS.lock().unwrap();
+  let mut saltos1 = PILA_SALTOS.lock().unwrap();
+  match cuadruplos1.agregar_cuadruplo_goto() {
+    Ok(_) => (),
+    Err(_) => ()
+  };
+  saltos1.push((cuadruplos1.lista.len() - 1) as i64);
+  drop(cuadruplos1);
+  drop(saltos1);
+
+  // Actualizar contexto global y guardar id del programa
   let mut contexto_funcion1 = CONTEXTO_FUNCION.lock().unwrap();
   let mut id_programa_global = ID_PROGRAMA.lock().unwrap();
   *contexto_funcion1 = id_programa.to_owned();
@@ -49,27 +61,34 @@ pub fn programa(input: &str) -> IResult<&str, &str> {
   drop(contexto_funcion1);
   drop(id_programa_global);
 
-  next = match tuple((ws, tag(";"), ws))(next) {
+  next = match tuple((ws, tag(";"), ws, declaraciones, ws, tag("principal()"), ws))(next) {
     Ok((next_input, _)) => next_input,
     Err(err) => return Err(err),
   };
 
-  next = match (declaraciones)(next) {
-    Ok((next_input, _)) => next_input,
-    Err(err) => return Err(err),
-  };
-
-  next = match tuple((ws, tag("principal()"), ws))(next) {
-    Ok((next_input, _)) => next_input,
-    Err(err) => return Err(err),
-  };
-
-
+  // Marcar que el contexto actual es el global
   let mut contexto_funcion2 = CONTEXTO_FUNCION.lock().unwrap();
   let id_programa_global2 = ID_PROGRAMA.lock().unwrap();
   *contexto_funcion2 = id_programa_global2.to_owned();
   drop(contexto_funcion2);
   drop(id_programa_global2);
+
+  // Agregar el GOTO al main
+  let mut cuadruplos1 = CUADRUPLOS.lock().unwrap();
+  let mut saltos1 = PILA_SALTOS.lock().unwrap();
+  match saltos1.pop() {
+    Some(valor) => {
+      match cuadruplos1.modificar_cuadruplo_goto(valor as usize) {
+        Ok(_) => (),
+        Err(_) => ()
+      };
+      ()
+    },
+    _ => { println!("Pila de saltos vacía en PRINCIPAL"); () }
+  }
+  
+  drop(cuadruplos1);
+  drop(saltos1);
 
   next = match bloque(next) {
     Ok((next_input, _)) => next_input,
