@@ -77,11 +77,11 @@ pub fn programa(input: &str) -> IResult<&str, &str> {
   };
 
   {
-    println!("{:?}", FUNCIONES.lock().unwrap());
-    println!("{:?}", CLASES.lock().unwrap());
-    println!("{:?}", VARIABLES.lock().unwrap());
-    println!("{:?}", CONSTANTES.lock().unwrap());
-    println!("{:?}", CUADRUPLOS.lock().unwrap());
+    println!("Funciones  {:?}", FUNCIONES.lock().unwrap());
+    println!("Clases     {:?}", CLASES.lock().unwrap());
+    // println!("Variables {:?}", VARIABLES.lock().unwrap());
+    println!("Constantes {:?}", CONSTANTES.lock().unwrap());
+    println!("Cuadruplos {:?}", CUADRUPLOS.lock().unwrap());
   }
 
   match ws(next) {

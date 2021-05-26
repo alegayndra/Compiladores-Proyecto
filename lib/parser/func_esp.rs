@@ -114,6 +114,16 @@ pub fn leer(input: &str) -> IResult<&str, &str> {
   }
 }
 
+fn agregar_texto_a_tabla(valor: &str) {
+  let mut pila_valores = PILA_VALORES.lock().unwrap();
+  let dir = match conseguir_direccion("texto", "constante", 0) {
+    Ok(num) => num,
+    Err(err) => { println!("{:?}", err); return;}
+  };
+  pila_valores.push(CONSTANTES.lock().unwrap().agregar_constante(valor.to_owned(), "texto".to_owned(), dir));
+  drop(pila_valores);
+}
+
 pub fn escribir(input: &str) -> IResult<&str, &str> {
   let mut next : &str = input;
 
@@ -125,9 +135,7 @@ pub fn escribir(input: &str) -> IResult<&str, &str> {
   next = match texto(next) {
     Ok((next_i, texto_const)) => {
       // Agregar constante
-      let mut constantes = CONSTANTES.lock().unwrap();
-      generar_cuadruplo_escritura(constantes.agregar_constante(texto_const.to_owned(), "texto".to_owned(), 5600));
-      drop(constantes);
+      agregar_texto_a_tabla(texto_const);
       next_i
     },
     Err(_) => {

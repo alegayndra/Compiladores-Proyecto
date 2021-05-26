@@ -12,12 +12,20 @@ use crate::parser::dimensiones::*;
 use crate::parser::func_params::*;
 use crate::semantica::globales::*;
 
+fn agregar_constante_a_tabla(valor: &str, tipo: &str) {
+  let mut pila_valores = PILA_VALORES.lock().unwrap();
+  let dir = match conseguir_direccion(tipo, "constante", 0) {
+    Ok(num) => num,
+    Err(err) => { println!("{:?}", err); return;}
+  };
+  pila_valores.push(CONSTANTES.lock().unwrap().agregar_constante(valor.to_owned(), tipo.to_owned(), dir));
+  drop(pila_valores);
+}
+
 fn valor_cte(input: &str) -> IResult<&str, &str> {
   alt((num_flotante, num_entero, caracter))(input)
   .map(|(next_input, res)| {
-    let mut pila_valores = PILA_VALORES.lock().unwrap();
-    pila_valores.push(CONSTANTES.lock().unwrap().agregar_constante(res.0.to_owned(), res.1.to_owned(), 5600));
-    drop(pila_valores);
+    agregar_constante_a_tabla(res.0, res.1);
     (next_input, "valor_cte")
   })
 }

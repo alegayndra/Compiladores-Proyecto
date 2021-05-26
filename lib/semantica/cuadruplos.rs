@@ -21,10 +21,17 @@ impl ListaCuadruplos {
         // Crear temporal
         let mut tabla_variables = VARIABLES.lock().unwrap();
         let tipo_temporal = conseguir_tipo_num(n);
+        let dir = match conseguir_direccion(tipo_temporal.as_str(), "variable", 1) {
+          Ok(num) => num,
+          Err(err) => {
+            println!("{:?}", err); 
+            return Err(("Error al conseguir direccion de variable temporal", ("", "".to_owned(), "".to_owned())));
+          }
+        };
         unsafe {
           loop {
             let nombre_temporal = format!("temporal{}", NUM_TEMPORAL);
-            match tabla_variables.agregar_variable(nombre_temporal.clone(), tipo_temporal.clone(), vec![], 1000) {
+            match tabla_variables.agregar_variable(nombre_temporal.clone(), tipo_temporal.clone(), vec![], dir) {
               Ok(_) => {
                 println!("Temporal agregado: {:?}", nombre_temporal);
                 break;
@@ -36,7 +43,7 @@ impl ListaCuadruplos {
             }
           }
         }
-        self.lista.push((op_num, izq.direccion, der.direccion, 0));
+        self.lista.push((op_num, izq.direccion, der.direccion, dir));
         Ok(("Tipos compatibles", (operador, izq.tipo, der.tipo)))
       }
     }
