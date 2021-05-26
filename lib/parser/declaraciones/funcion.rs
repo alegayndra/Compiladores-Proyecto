@@ -26,7 +26,7 @@ fn parametros_vacios(input: &str) -> IResult<&str, &str> {
 
 fn agregar_param(tipo_param: &str, id_param: &str) {
   let dims_string : Vec<String> = vec![];
-  match VARIABLES.lock().unwrap().agregar_variable(id_param.to_owned(), tipo_param.to_owned(), dims_string.clone()) {
+  match VARIABLES.lock().unwrap().agregar_variable(id_param.to_owned(), tipo_param.to_owned(), dims_string.clone(), 1000) {
     Ok(_) => (),
     Err(err) => {
       println!("{:?}", err);
@@ -38,7 +38,7 @@ fn agregar_param(tipo_param: &str, id_param: &str) {
   let contexto_funcion = CONTEXTO_FUNCION.lock().unwrap();
 
   if contexto_clase.clone() != "".to_owned() {
-    match CLASES.lock().unwrap().agregar_parametro_metodo(contexto_clase.to_string(), contexto_funcion.to_string(), id_param.to_owned(), tipo_param.to_owned(), dims_string.clone()) {
+    match CLASES.lock().unwrap().agregar_parametro_metodo(contexto_clase.to_string(), contexto_funcion.to_string(), id_param.to_owned(), tipo_param.to_owned(), dims_string.clone(), 26000) {
       Ok(res) => {
         println!("{:?}", res);
         ()
@@ -49,7 +49,7 @@ fn agregar_param(tipo_param: &str, id_param: &str) {
       },
     };
   } else {
-    match FUNCIONES.lock().unwrap().agregar_parametro(contexto_funcion.to_string(), id_param.to_owned(), tipo_param.to_owned(), dims_string.clone()) {
+    match FUNCIONES.lock().unwrap().agregar_parametro(contexto_funcion.to_string(), id_param.to_owned(), tipo_param.to_owned(), dims_string.clone(), 16000) {
       Ok(res) => {
         println!("{:?}", res);
         ()
@@ -124,7 +124,7 @@ pub fn funcion(input: &str) -> IResult<&str, &str> {
       let contexto_clase = CONTEXTO_CLASE.lock().unwrap();
 
       if contexto_clase.clone() != "".to_owned() {
-        match CLASES.lock().unwrap().agregar_metodo(contexto_clase.to_string(), id_f.to_owned(), tipo_func.to_owned()) {
+        match CLASES.lock().unwrap().agregar_metodo(contexto_clase.to_string(), id_f.to_owned(), tipo_func.to_owned(), 24000) {
           Ok(res) => {
             println!("{:?}", res);
             ()
@@ -135,7 +135,7 @@ pub fn funcion(input: &str) -> IResult<&str, &str> {
           }
         };
       } else {
-        match FUNCIONES.lock().unwrap().agregar_funcion(id_f.to_owned(), tipo_func.to_owned()) {
+        match FUNCIONES.lock().unwrap().agregar_funcion(id_f.to_owned(), tipo_func.to_owned(), 14000) {
           Ok(res) => {
             println!("{:?}", res);
             ()
