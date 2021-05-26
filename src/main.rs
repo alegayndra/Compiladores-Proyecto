@@ -8,7 +8,7 @@ use compilador::parser::programa::*;
 use compilador::semantica::globales::*;
 
 fn escribir_archivo() {
-	let path = Path::new("killer_queen.txt");
+	let path = Path::new("cuadruplos/killer_queen.txt");
 	let display = path.display();
 
 	// Open a file in write-only mode, returns `io::Result<File>`
