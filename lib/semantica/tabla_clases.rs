@@ -198,7 +198,12 @@ mod tests {
       tipo: "entero".to_owned(),
       variables: TablaVariables { tabla: HashMap::new() },
       parametros: vec![],
-      direccion: 14000
+      direccion: 14000, 
+      era: vec![
+        (0, 0),
+        (0, 0),
+        (0, 0)
+      ]
     };
 
     let dir_var = 1000;

@@ -121,13 +121,14 @@ fn agregar_variable_a_pila(id_valor: &str, dims: Vec<String>) {
     };
   }
 
+  drop(pila_valores);
+  
   drop(contexto_funcion);
   drop(contexto_clase);
 
   drop(tabla_variables);
   drop(tabla_funciones);
   drop(tabla_clases);
-  drop(pila_valores);
 }
 
 fn valor_id(input: &str) -> IResult<&str, &str> {

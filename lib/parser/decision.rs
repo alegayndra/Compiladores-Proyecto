@@ -64,6 +64,7 @@ fn generar_gotof() {
     },
     _ => ()
   }
+  drop(lista_valores);
   saltos.push((cuadruplos.lista.len() - 1) as i64);
   drop(cuadruplos);
   drop(saltos);
@@ -117,7 +118,7 @@ mod tests {
 
   #[test]
   fn test_decision() {
-    assert_eq!(decision("si ( expresion ) {} "),        Ok(("", "decision")));
+    assert_eq!(decision("si ( expresion ) {}"),        Ok(("", "decision")));
     assert_eq!(decision("si ( expresion ) {} sino {}"), Ok(("", "decision")));
   }
 }

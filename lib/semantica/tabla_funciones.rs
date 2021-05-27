@@ -127,7 +127,12 @@ mod tests {
       tipo: "entero".to_owned(),
       variables: TablaVariables { tabla: HashMap::new() },
       parametros: vec![],
-      direccion: 14000
+      direccion: 14000,
+      era: vec![
+        (0, 0),
+        (0, 0),
+        (0, 0)
+      ]
     };
 
     let dir_var = 1000;
@@ -157,15 +162,15 @@ mod tests {
     );
 
     assert_eq!(
-      tabla.agregar_variable("func".to_owned(), "variable".to_owned(), "entero".to_owned(), dims.clone(), dir_var), 
+      tabla.agregar_variable("func".to_owned(), "variable".to_owned(), "entero".to_owned(), dims.clone(), dir_var, 0), 
       Ok(("Variable agregada a funcion", "func".to_owned(), var_entera.clone()))
     );
     assert_eq!(
-      tabla.agregar_variable("func".to_owned(), "variable".to_owned(), "entero".to_owned(), dims.clone(), dir_var),
+      tabla.agregar_variable("func".to_owned(), "variable".to_owned(), "entero".to_owned(), dims.clone(), dir_var, 0),
       Err(("Nombre de variable ocupado en funcion", "func".to_owned(), "variable".to_owned()))
     );
     assert_eq!(
-      tabla.agregar_variable("a".to_owned(), "variable".to_owned(), "entero".to_owned(), dims.clone(), dir_var),
+      tabla.agregar_variable("a".to_owned(), "variable".to_owned(), "entero".to_owned(), dims.clone(), dir_var, 0),
       Err(("Funcion no existente", "a".to_owned(), "".to_owned()))
     );
 

@@ -143,6 +143,7 @@ pub fn conseguir_direccion(tipo_var: &str, contexto: &str, temporal: usize) -> R
 
   tipo_num = match conseguir_num_tipo(tipo_var) {
     3 => return Err("Variable de tipo error".to_owned()),
+    4 => return Err("Variable de tipo objeto".to_owned()),
     5 => 2 as usize,
     n => n as usize
   };
