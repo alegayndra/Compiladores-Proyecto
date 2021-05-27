@@ -101,16 +101,9 @@ fn escribir_archivo() {
 	let mut cuadruplos = CUADRUPLOS.lock().unwrap();
 	let mut lista_cuadruplos: String = "".to_owned();
 
-	loop {
-		match cuadruplos.lista.pop() {
-			Some(cuad) => {
-				let cuad_string: String = format!("({}, {}, {}, {})", cuad.0, cuad.1, cuad.2, cuad.3);
-				lista_cuadruplos = format!("{}{}\n", lista_cuadruplos, cuad_string);
-			},
-			_ => {
-				break;
-			}
-		}
+	for cuad in cuadruplos.lista.iter() {
+		let cuad_string: String = format!("({}, {}, {}, {})", cuad.0, cuad.1, cuad.2, cuad.3);
+		lista_cuadruplos = format!("{}{}\n", lista_cuadruplos, cuad_string);
 	}
 
 	texto_archivo = format!("{}CUADRUPLOS\n{}FIN_CUADRUPLOS\n", texto_archivo, lista_cuadruplos);
@@ -126,22 +119,10 @@ fn main() {
 	println!("{:?}", programa("
 		programa idPrograma;
 
-		void funcion func (entero var) {
-			entero i;
-			i = 10;
-			char j;
-			lee(j);
-			regresa 10 + i;
-		}
-
 		entero num;
 		entero i;
 		char id;
 		flotante promedio;
-
-		clase Estudiante {
-			char nombre[10], apellido[10];
-		};
 
 		principal() {
 			num = 10 * 2;
@@ -149,6 +130,7 @@ fn main() {
 			%% id = \"a\"; %%
 			%% comentario %%
 			lee(i);
+			lee(id);
 			escribe(10);
 			escribe(\"aaa\");
 			si (10 & 10) {

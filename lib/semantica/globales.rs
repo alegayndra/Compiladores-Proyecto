@@ -135,7 +135,7 @@ pub fn conseguir_direccion(tipo_var: &str, contexto: &str, temporal: usize) -> R
   let tipo_num: usize;
   if contexto == "constante" {
     contexto_num = 2;
-  } else if ID_PROGRAMA.lock().unwrap().to_string() == CONTEXTO_CLASE.lock().unwrap().to_string() { // contexto global
+  } else if ID_PROGRAMA.lock().unwrap().to_string() == CONTEXTO_FUNCION.lock().unwrap().to_string() { // contexto global
     contexto_num = 0;
   } else {
     contexto_num = 1;
