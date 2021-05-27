@@ -23,6 +23,11 @@ fn escribir_archivo() {
 	let constantes = CONSTANTES.lock().unwrap();
 	let mut texto_constantes: String = "".to_owned();
 
+	unsafe {
+		let era_constantes = format!("({}, {}, {}, {})", ERA_CONSTANTES.0, ERA_CONSTANTES.1, ERA_CONSTANTES.2, ERA_CONSTANTES.3);
+		texto_constantes = format!("{}{}\n", texto_constantes, era_constantes);
+	}
+
 	for (_key, val) in constantes.tabla.iter() {
 		let const_string: String = format!("({}, {}, {})", val.nombre, val.direccion, val.tipo);
 		texto_constantes = format!("{}{}\n", texto_constantes, const_string);
@@ -36,9 +41,17 @@ fn escribir_archivo() {
 	let id_programa = ID_PROGRAMA.lock().unwrap();
 	let mut texto_globales: String = "".to_owned();
 
-	for (_key, val) in tabla_funciones.tabla.get(&id_programa.to_string()).unwrap().variables.tabla.iter() {
-		let globales_string: String = format!("({}, {}, {})", val.nombre, val.direccion, val.tipo); // Faltan dimensiones
-		texto_globales = format!("{}{}\n", texto_globales, globales_string);
+	match tabla_funciones.tabla.get(&id_programa.to_string()) {
+		Some(vars) => {
+			let mut globales_string: String = "".to_owned(); // Faltan dimensiones
+			for tam in vars.era.iter() {
+				let tam_string: String = format!("({}, {})", tam.0, tam.1);
+				globales_string = format!("{}{}\n", globales_string, tam_string);
+			}
+			texto_globales = format!("{}{}", texto_globales, globales_string);
+			()
+		},
+		None => ()
 	}
 
 	texto_archivo = format!("{}GLOBALES\n{}FIN_GLOBALES\n", texto_archivo, texto_globales);
@@ -138,6 +151,14 @@ fn main() {
 			lee(i);
 			escribe(10);
 			escribe(\"aaa\");
+			si (10 & 10) {
+				i = 11;
+			}
+			si (10 > 10) {
+				i = 11;
+			} sino {
+				i = 12;
+			}
 		}"
 	));
 

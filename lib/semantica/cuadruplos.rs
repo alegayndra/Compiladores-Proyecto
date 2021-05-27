@@ -9,6 +9,30 @@ pub struct ListaCuadruplos {
 
 static mut NUM_TEMPORAL: i64 = 0;
 
+fn agregar_temporal_a_tabla(var: String, tipo_var: String, dir: i64) {
+  let contexto_clase = CONTEXTO_CLASE.lock().unwrap();
+  let contexto_funcion = CONTEXTO_FUNCION.lock().unwrap();
+
+  if contexto_clase.clone() != "".to_owned() {
+    if contexto_funcion.clone() != "".to_owned() {
+      match CLASES.lock().unwrap().agregar_atributo(contexto_clase.to_string(), var, tipo_var, vec![], 20000) {
+        Ok(res) => { println!("{:?}", res); () },
+        Err(err) => { println!("{:?}", err); () },
+      }
+    } else {
+      match CLASES.lock().unwrap().agregar_variable_metodo(contexto_clase.to_string(), contexto_funcion.to_string(), var, tipo_var, vec![], 25000, 1) {
+        Ok(res) => { println!("{:?}", res); () },
+        Err(err) => { println!("{:?}", err); () },
+      }
+    }
+  } else {
+    match FUNCIONES.lock().unwrap().agregar_variable(contexto_funcion.to_string(), var, tipo_var, vec![], dir, 1) {
+      Ok(res) => { println!("{:?}", res); () },
+        Err(err) => { println!("{:?}", err); () },
+    }
+  }
+}
+
 impl ListaCuadruplos {
   pub fn agregar_cuadruplo<'a>(&mut self, operador: &'a str, izq: TipoVar, der: TipoVar) -> Result<(&'a str, (&'a str, String, String)), (&'a str, (&'a str, String, String))>{
     let op_num = conseguir_num_operador(operador);
@@ -32,8 +56,10 @@ impl ListaCuadruplos {
           loop {
             let nombre_temporal = format!("temporal{}", NUM_TEMPORAL);
             match tabla_variables.agregar_variable(nombre_temporal.clone(), tipo_temporal.clone(), vec![], dir) {
-              Ok(_) => {
+              Ok((_, var)) => {
                 println!("Temporal agregado: {:?}", nombre_temporal);
+                PILA_VALORES.lock().unwrap().push(var);
+                agregar_temporal_a_tabla(nombre_temporal.clone(), tipo_temporal.clone(), dir);
                 break;
               },
               Err(_) => {
@@ -87,6 +113,23 @@ impl ListaCuadruplos {
     self.lista[num_cuadruplo].3 = direccion_cuadruplo;
     Ok(("Goto modificado", num_cuadruplo, direccion_cuadruplo))
   }
+
+  pub fn agregar_cuadruplo_gotof<'a>(&mut self, resultado: TipoVar) -> Result<&'a str, &'a str>{
+    let op_num = conseguir_num_operador("GOTOF");
+    match conseguir_num_tipo(resultado.tipo.as_str()) {
+      0 => 0,
+      1 => 1,
+      _ => { println!("Tipo incompatible en GOTOF: {:?}", resultado); return Err("GOTOF incompatible"); }
+    };
+    self.lista.push((op_num, resultado.direccion, -1, -1));
+    Ok("GOTOF bueno")
+  }
+
+  // pub fn modificar_cuadruplo_gotof<'a>(&mut self, num_cuadruplo: usize) -> Result<(&'a str, usize, i64), (&'a str, usize, i64)>{
+  //   let direccion_cuadruplo = (self.lista.len()) as i64;
+  //   self.lista[num_cuadruplo].3 = direccion_cuadruplo;
+  //   Ok(("Goto modificado", num_cuadruplo, direccion_cuadruplo))
+  // }
 }
 
 #[cfg(test)]

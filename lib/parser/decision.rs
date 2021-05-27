@@ -1,5 +1,4 @@
 use nom::{
-  combinator::opt,
   bytes::complete::tag,
   IResult,
   sequence::tuple,
@@ -8,21 +7,104 @@ use nom::{
 use crate::scanners::ws::*;
 use crate::parser::reglas_expresion::exp_logica::*;
 use crate::parser::bloque::*;
+use crate::semantica::globales::*;
+
+fn generar_goto() {
+  let mut cuadruplos = CUADRUPLOS.lock().unwrap();
+  let mut saltos = PILA_SALTOS.lock().unwrap();
+  match cuadruplos.agregar_cuadruplo_goto() {
+    Ok(_) => (),
+    Err(_) => ()
+  };
+  saltos.push((cuadruplos.lista.len() - 1) as i64);
+
+  match saltos.pop() {
+    Some(valor) => {
+      match cuadruplos.modificar_cuadruplo_goto(valor as usize) {
+        Ok(_) => (),
+        Err(_) => ()
+      };
+      ()
+    },
+    _ => { println!("Pila de saltos vacía en PRINCIPAL"); () }
+  }
+  
+  drop(cuadruplos);
+  drop(saltos);
+}
 
 fn sino(input: &str) -> IResult<&str, &str> {
-  opt(tuple((ws, tag("sino"), ws, bloque)))(input)
-  .map(|(next_input, _)| {
-    (next_input, "sino")
-  })
+  let mut next: &str = input;
 
+  next = match tuple((ws, tag("sino")))(next) {
+    Ok((next_input, _)) => {
+      generar_goto();
+      next_input
+    },
+    Err(_) => return Ok((input, "sino"))
+  };
+
+  match tuple((ws, bloque))(next) {
+    Ok((next_input, _)) => Ok((next_input, "sino")),
+    Err(err) => Err(err)
+  }
+}
+
+fn generar_gotof() {
+  let mut cuadruplos = CUADRUPLOS.lock().unwrap();
+  let mut lista_valores = PILA_VALORES.lock().unwrap();
+
+  let mut saltos = PILA_SALTOS.lock().unwrap();
+  match lista_valores.pop() {
+    Some(var) => {
+      match cuadruplos.agregar_cuadruplo_gotof(var) {
+        Ok(_) => (),
+        Err(err) => { println!("{:?}", err); () }
+      };
+    },
+    _ => ()
+  }
+  saltos.push((cuadruplos.lista.len() - 1) as i64);
+  drop(cuadruplos);
+  drop(saltos);
+}
+
+fn actualizar_gotof() {
+  let mut cuadruplos = CUADRUPLOS.lock().unwrap();
+  let mut saltos = PILA_SALTOS.lock().unwrap();
+  match saltos.pop() {
+    Some(valor) => {
+      match cuadruplos.modificar_cuadruplo_goto(valor as usize) {
+        Ok(_) => (),
+        Err(err) => { println!("{:?}", err); () }
+      };
+      ()
+    },
+    _ => { println!("Pila de saltos vacía en PRINCIPAL"); () }
+  }
+  
+  drop(cuadruplos);
+  drop(saltos);
 }
 
 pub fn decision(input: &str) -> IResult<&str, &str> {
-  tuple((tag("si"), ws, tag("("), ws, exp_logica, ws, tag(")"), ws, bloque, sino))
-  (input)
-  .map(|(next_input, __res)| {
-    (next_input, "decision")
-  })
+  let mut next: &str = input;
+
+  next = match tuple((tag("si"), ws, tag("("), ws, exp_logica, ws, tag(")")))(next) {
+    Ok((next_input, _)) => {
+      generar_gotof();
+      next_input
+    },
+    Err(err) => return Err(err)
+  };
+
+  match tuple((ws, bloque, sino))(next) {
+    Ok((next_input, _)) => {
+      actualizar_gotof();
+      Ok((next_input, "decision"))
+    },
+    Err(err) => Err(err)
+  }
 }
 
 #[cfg(test)]
@@ -35,10 +117,7 @@ mod tests {
 
   #[test]
   fn test_decision() {
-    // assert_eq!(decision("si ( expresion ) bloque "), Ok(("", "expresion")));
-    // assert_eq!(decision("si ( expresion ) bloque sino bloque"), Ok(("", "expresion")));
-
-    assert_eq!(decision("si ( expresion ) {} "),            Ok(("", "decision")));
+    assert_eq!(decision("si ( expresion ) {} "),        Ok(("", "decision")));
     assert_eq!(decision("si ( expresion ) {} sino {}"), Ok(("", "decision")));
   }
 }

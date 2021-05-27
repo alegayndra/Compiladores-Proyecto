@@ -11,14 +11,20 @@ use crate::scanners::constantes::*;
 use crate::parser::dimensiones::*;
 use crate::parser::func_params::*;
 use crate::semantica::globales::*;
+use crate::semantica::cubo_semantico::*;
 
 fn agregar_constante_a_tabla(valor: &str, tipo: &str) {
   let mut pila_valores = PILA_VALORES.lock().unwrap();
-  let dir = match conseguir_direccion(tipo, "constante", 0) {
-    Ok(num) => num,
-    Err(err) => { println!("{:?}", err); return;}
-  };
-  pila_valores.push(CONSTANTES.lock().unwrap().agregar_constante(valor.to_owned(), tipo.to_owned(), dir));
+  pila_valores.push(CONSTANTES.lock().unwrap().agregar_constante(valor.to_owned(), tipo.to_owned()));
+  unsafe {
+    match conseguir_num_tipo(tipo) {
+      0 => ERA_CONSTANTES.0 += 1,
+      1 => ERA_CONSTANTES.1 += 1,
+      2 => ERA_CONSTANTES.2 += 1,
+      5 => ERA_CONSTANTES.3 += 1,
+      _ => (),
+    }
+  }
   drop(pila_valores);
 }
 

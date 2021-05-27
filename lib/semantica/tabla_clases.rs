@@ -73,12 +73,16 @@ impl TablaClases {
     nombre_var: String,
     tipo_var: String,
     dims: Vec<String>,
-    dir: i64
+    dir: i64,
+    temporal: i8
   ) -> Result<(&str, String, String, TipoVar), (&str, String, String, String)> {
     match self.tabla.get_mut(&nombre_clase) {
       Some(clase) => match clase.metodos.tabla.get_mut(&nombre_func) {
         Some(metodo) => match metodo.variables.agregar_variable(nombre_var.clone(), tipo_var.clone(), dims.clone(), dir) {
-          Ok((_, var)) => Ok(("Variable agregada a metodo", nombre_clase.clone(), nombre_func.clone(), var)),
+          Ok((_, var)) => {
+            metodo.modificar_era(tipo_var.clone(), temporal);
+            Ok(("Variable agregada a metodo", nombre_clase.clone(), nombre_func.clone(), var))
+          },
           Err((_, nom_var)) => Err(("Nombre de variable ocupado en metodo", nombre_clase.clone(), nombre_func.clone(), nom_var))
         },
         None => Err(("Metodo no existente en clase", nombre_clase.clone(), nombre_func.clone(), "".to_owned()))

@@ -65,6 +65,8 @@ lazy_static! {
   };
 }
 
+pub static mut ERA_CONSTANTES: (i64, i64, i64, i64) = (0, 0, 0, 0);
+
 pub static mut DIRECCIONES: [[[[i64 ; 3] ; 2] ; 3] ; 3] = [
   [ // Globales
     [ // Enteras
@@ -152,6 +154,6 @@ pub fn conseguir_direccion(tipo_var: &str, contexto: &str, temporal: usize) -> R
     }
 
     DIRECCIONES[contexto_num][tipo_num][temporal][0] = dir_nueva + 1;
-    return Ok(dir_nueva + 1)
+    return Ok(dir_nueva)
   }
 }

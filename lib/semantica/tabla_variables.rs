@@ -1,4 +1,5 @@
 use std::collections::HashMap;
+use crate::semantica::globales::conseguir_direccion;
 
 #[derive(Debug, PartialEq, Eq, Clone, Hash)]
 pub struct TipoVar {
@@ -37,10 +38,14 @@ impl TablaVariables {
     }
   }
   
-  pub fn agregar_constante(&mut self, nombre_var: String, tipo_var: String, dir: i64) -> TipoVar {
+  pub fn agregar_constante(&mut self, nombre_var: String, tipo_var: String) -> TipoVar {
     match self.tabla.get(&nombre_var) {
       Some(var) => var.clone(),
       None => {
+        let dir = match conseguir_direccion(tipo_var.clone().as_str(), "constante", 0) {
+          Ok(num) => num,
+          Err(err) => { println!("{:?}", err); -1}
+        };
         let var = TipoVar {
           nombre: nombre_var.clone(),
           tipo: tipo_var.clone(),

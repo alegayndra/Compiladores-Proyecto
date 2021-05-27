@@ -1,6 +1,7 @@
 use std::collections::HashMap;
 
 use crate::semantica::tabla_variables::*;
+use crate::semantica::cubo_semantico::*;
 
 #[derive(Debug, PartialEq, Eq, Clone)]
 pub struct TipoFunc {
@@ -8,12 +9,27 @@ pub struct TipoFunc {
   pub tipo: String,
   pub variables: TablaVariables,
   pub direccion: i64,
-  pub parametros: Vec<TipoVar>
+  pub parametros: Vec<TipoVar>,
+  pub era: Vec<(i64, i64)>
 }
 
 #[derive(Debug, PartialEq, Eq, Clone)]
 pub struct TablaFunciones {
   pub tabla: HashMap<String, TipoFunc>
+}
+
+impl TipoFunc {
+  pub fn modificar_era(&mut self, tipo_var: String, temporal: i8) {
+    let posicion = conseguir_num_tipo(tipo_var.as_str());
+    match temporal {
+      1 => {
+        self.era[posicion as usize].1 += 1;
+      },
+      _ => {
+        self.era[posicion as usize].0 += 1;
+      }
+    };
+  }
 }
 
 impl TablaFunciones {
@@ -26,7 +42,12 @@ impl TablaFunciones {
           tipo: tipo_func.clone(),
           variables: TablaVariables { tabla: HashMap::new() },
           parametros: vec![],
-          direccion: dir
+          direccion: dir,
+          era: vec![
+            (0, 0),
+            (0, 0),
+            (0, 0)
+          ]
         };
         self.tabla.insert(nombre_func.clone(), func.clone());
         Ok(("Funcion agregada", func.clone()))
@@ -41,10 +62,13 @@ impl TablaFunciones {
     }
   }
 
-  pub fn agregar_variable(&mut self, nombre_func: String, nombre_var: String, tipo_var: String, dims: Vec<String>, dir: i64) -> Result<(&str, String, TipoVar), (&str, String, String)> {
+  pub fn agregar_variable(&mut self, nombre_func: String, nombre_var: String, tipo_var: String, dims: Vec<String>, dir: i64, temporal: i8) -> Result<(&str, String, TipoVar), (&str, String, String)> {
     match self.tabla.get_mut(&nombre_func) {  
       Some(funcion) => match funcion.variables.agregar_variable(nombre_var.clone(), tipo_var.clone(), dims, dir) {
-        Ok((_, var)) => Ok(("Variable agregada a funcion", nombre_func.clone(), var)),
+        Ok((_, var)) => {
+          funcion.modificar_era(tipo_var.clone(), temporal);
+          Ok(("Variable agregada a funcion", nombre_func.clone(), var))
+        },
         Err((_, nombre_var)) => Err(("Nombre de variable ocupado en funcion", nombre_func.clone(), nombre_var))
       },
       None => Err(("Funcion no existente", nombre_func.clone(), "".to_owned()))
