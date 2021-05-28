@@ -1,7 +1,6 @@
 use nom::{
   branch::alt,
   bytes::complete::tag,
-  multi::many0,
   IResult,
   combinator::opt,
   sequence::{tuple, delimited},
@@ -115,7 +114,7 @@ fn buscar_variable(id_valor: &str) -> TipoVar {
 
   match tabla_variables.buscar_variable(id_valor.to_owned()) {
     Ok((res, variable)) => { println!("{:?}", res); return variable;},
-    Err(err) => ()
+    Err(_) => ()
   };
 
   if contexto_clase.clone() != "".to_owned() {
@@ -148,7 +147,6 @@ fn buscar_variable(id_valor: &str) -> TipoVar {
 }
 
 pub fn desde_id(input: &str) -> IResult<&str, TipoVar> {
-  // tuple((id, many0(tuple((ws, tag("."), ws, id))), con_dim))(input)
   match tuple((id, opt(tuple((ws, tag("."), ws, id))), con_dim))(input) {
     Ok((next_input, (id, _, _))) => {
       println!("id for loop {:?}", id);
@@ -211,25 +209,21 @@ mod tests {
 
   #[test]
   fn test_mientras() {
-    assert_eq!(mientras("mientras(expresion)"),    Ok(("", "mientras")));
-    assert_eq!(mientras("mientras ( expresion )"), Ok(("", "mientras")));
+    assert_eq!(mientras("mientras(expresion) {}"),    Ok(("", "mientras")));
+    assert_eq!(mientras("mientras ( expresion ) {}"), Ok(("", "mientras")));
   }
 
   #[test]
   fn test_desde() {
-    assert_eq!(desde("desde id = 10 hasta 20"),         Ok(("", "desde")));
-    // assert_eq!(desde("desde id = num_entero hasta num_entero"), Ok(("", "desde")));
-    assert_eq!(desde("desde id[id] = 10 hasta 20"),     Ok(("", "desde")));
-    assert_eq!(desde("desde id[id][id] = 10 hasta 20"), Ok(("", "desde")));
-    assert_eq!(desde("desde id.id[id] = 10 hasta 20"),  Ok(("", "desde")));
-    assert_eq!(desde("desde id.id = 15 hasta 25"),      Ok(("", "desde")));
+    assert_eq!(desde("desde id = 10 hasta 20 {}"),         Ok(("", "desde")));
+    assert_eq!(desde("desde id[id] = 10 hasta 20 {}"),     Ok(("", "desde")));
+    assert_eq!(desde("desde id[id][id] = 10 hasta 20 {}"), Ok(("", "desde")));
+    assert_eq!(desde("desde id.id[id] = 10 hasta 20 {}"),  Ok(("", "desde")));
+    assert_eq!(desde("desde id.id = 15 hasta 25 {}"),      Ok(("", "desde")));
   }
 
   #[test]
   fn test_repeticion() {
-    // assert_eq!(repeticion("mientras(expresion) bloque"), Ok(("", ("mientras", "bloque"))));
-    // assert_eq!(repeticion("desde id = num_entero hasta num_entero bloque"), Ok(("", ("desde", "bloque"))));
-
     assert_eq!(repeticion("mientras(expresion) {}"),    Ok(("", "repeticion")));
     assert_eq!(repeticion("desde id = 10 hasta 20 {}"), Ok(("", "repeticion")));
   }
