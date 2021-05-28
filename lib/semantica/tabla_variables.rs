@@ -1,5 +1,6 @@
 use std::collections::HashMap;
-use crate::semantica::globales::conseguir_direccion;
+use crate::semantica::globales::*;
+use crate::semantica::cubo_semantico::*;
 
 #[derive(Debug, PartialEq, Eq, Clone, Hash)]
 pub struct TipoVar {
@@ -52,6 +53,15 @@ impl TablaVariables {
           dimensiones: vec![],
           direccion: dir
         };
+        unsafe {
+          match conseguir_num_tipo(tipo_var.as_str()) {
+            0 => ERA_CONSTANTES.0 += 1,
+            1 => ERA_CONSTANTES.1 += 1,
+            2 => ERA_CONSTANTES.2 += 1,
+            5 => ERA_CONSTANTES.3 += 1,
+            _ => (),
+          }
+        }
         self.tabla.insert(nombre_var.clone(), var.clone());
         var
       }

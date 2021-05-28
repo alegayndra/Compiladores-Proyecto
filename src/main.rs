@@ -98,7 +98,7 @@ fn escribir_archivo() {
 	texto_archivo = format!("{}CLASES\n{}FIN_CLASES\n", texto_archivo, texto_clases);
 
 	// Escritura cuadruplos
-	let mut cuadruplos = CUADRUPLOS.lock().unwrap();
+	let cuadruplos = CUADRUPLOS.lock().unwrap();
 	let mut lista_cuadruplos: String = "".to_owned();
 
 	for cuad in cuadruplos.lista.iter() {
@@ -140,6 +140,10 @@ fn main() {
 				i = 11;
 			} sino {
 				i = 12;
+			}
+
+			desde i = 10 hasta 20 {
+				escribe(i);
 			}
 		}"
 	));
