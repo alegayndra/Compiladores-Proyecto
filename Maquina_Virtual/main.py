@@ -298,16 +298,17 @@ def switchCubo(cuadruplo):
     num_cuadruplo[0] = cuadruplo[3] - 1
     return
   elif cuadruplo[0] == 16: # GotoT
-    if extaerMemoria(cuadruplo[3]):
+    if extaerMemoria(cuadruplo[1]):
       num_cuadruplo[0] = cuadruplo[3] - 1
     return
   elif cuadruplo[0] == 17: # GotoF
     # print(type(cuadruplo[3]))
     # print(cuadruplo[3])
     # print(mapa_memoria[0][0])
+    print(extaerMemoria[cuadruplo[1]])
     if not extaerMemoria(cuadruplo[1]):
       print("entramos")
-      num_cuadruplo[0] = cuadruplo[1] - 1
+      num_cuadruplo[0] = cuadruplo[3] - 1
     else:
       print("No entramos")
     return
@@ -321,12 +322,13 @@ def switchCubo(cuadruplo):
     return
 
 def ejecutar_programa():
+  print(len(lista_cuadruplos))
   while num_cuadruplo[0] < len(lista_cuadruplos):
     print("Ejecutamos el cuadruplo #", num_cuadruplo[0])
     print(lista_cuadruplos[num_cuadruplo[0]])
     switchCubo(lista_cuadruplos[num_cuadruplo[0]]) 
+    print("Ahorita vamos en el cuadruplo --> ",num_cuadruplo)
     num_cuadruplo[0] += 1
-
 
 '''
  Funciones que guardan los valores del .txt en memoria
