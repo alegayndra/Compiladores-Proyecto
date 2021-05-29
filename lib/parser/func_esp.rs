@@ -32,18 +32,18 @@ fn generar_cuadruplo_lectura(id_valor: &str, _dims: Vec<&str>) {
         if contexto_funcion.clone() != "".to_owned() {
           variable = match tabla_clases.buscar_variable_metodo(contexto_clase.clone(), contexto_funcion.clone(), id_valor.to_owned()) {
             Ok((_, _, _, var)) => var,
-            Err(err) => { println!("{:?}", err); return;}
+            Err(_err) => { /*println!("{:?}", _err);*/ return;}
           };
         } else {
           variable = match tabla_clases.buscar_atributo(contexto_clase.clone(), id_valor.to_owned()) {
             Ok((_, _, var)) => var,
-            Err(err) => { println!("{:?}", err); return;}
+            Err(_err) => { /*println!("{:?}", _err);*/ return;}
           };
         }
       } else {
         variable =match tabla_funciones.buscar_variable(contexto_funcion.clone(), id_valor.to_owned()) {
           Ok((_, _, var)) => var,
-          Err(err) => { println!("{:?}", err); return;}
+          Err(_err) => { /*println!("{:?}", _err);*/ return;}
         };
       }
       ()
@@ -51,8 +51,8 @@ fn generar_cuadruplo_lectura(id_valor: &str, _dims: Vec<&str>) {
   };
 
   match cuadruplos.agregar_cuadruplo_lectura(variable) {
-    Ok(res) => { println!("{:?}", res); () },
-    Err(err) => { println!("{:?}", err); () },
+    Ok(_res) => { /*println!("{:?}", _res);*/ () },
+    Err(_err) => { /*println!("{:?}", _err);*/ () },
   };
 
   drop(contexto_funcion);
@@ -68,8 +68,8 @@ fn generar_cuadruplo_escritura(variable: TipoVar) {
   let mut cuadruplos = CUADRUPLOS.lock().unwrap();
 
   match cuadruplos.agregar_cuadruplo_escritura(variable) {
-    Ok(res) => { println!("{:?}", res); () },
-    Err(err) => { println!("{:?}", err); () },
+    Ok(_res) => { /*println!("{:?}", _res);*/ () },
+    Err(_err) => { /*println!("{:?}", _err);*/ () },
   };
 
   drop(cuadruplos);

@@ -113,26 +113,44 @@ fn buscar_variable(id_valor: &str) -> TipoVar {
   };
 
   match tabla_variables.buscar_variable(id_valor.to_owned()) {
-    Ok((res, variable)) => { println!("{:?}", res); return variable;},
+    Ok((_res, variable)) => {
+      // println!("{:?}", _res);
+      return variable;
+    },
     Err(_) => ()
   };
 
   if contexto_clase.clone() != "".to_owned() {
     if contexto_funcion.clone() != "".to_owned() {
       match tabla_clases.buscar_variable_metodo(contexto_clase.clone(), contexto_funcion.clone(), id_valor.to_owned()) {
-        Ok((res, res2, res3, variable)) => { println!("{:?} {:?} {:?}", res, res2, res3); return variable; },
-        Err(err) => { println!("{:?}", err); (); }
+        Ok((_res, _res2, _res3, variable)) => {
+          // println!("{:?} {:?} {:?}", _res, _res2, _res3);
+          return variable; 
+        },
+        Err(_err) => {
+          // println!("{:?}", _err);
+        }
       };
     } else {
       match tabla_clases.buscar_atributo(contexto_clase.clone(), id_valor.to_owned()) {
-        Ok((res, res2, variable)) => { println!("{:?} {:?}", res, res2); return variable; },
-        Err(err) => { println!("{:?}", err); () }
+        Ok((_res, _res2, variable)) => {
+          // println!("{:?} {:?}", _res, _res2);
+          return variable;
+        },
+        Err(_err) => {
+          // println!("{:?}", _err);
+        }
       };
     }
   } else {
     match tabla_funciones.buscar_variable(contexto_funcion.clone(), id_valor.to_owned()) {
-      Ok((res, res2, variable)) => { println!("{:?} {:?}", res, res2); return variable; },
-      Err(err) => { println!("{:?}", err); () }
+      Ok((_res, _res2, variable)) => {
+        // println!("{:?} {:?}", _res, _res2);
+        return variable;
+      },
+      Err(_err) => {
+        // println!("{:?}", _err);
+      }
     };
   }
 
