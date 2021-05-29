@@ -9,34 +9,9 @@ use crate::parser::reglas_expresion::exp_logica::*;
 use crate::parser::bloque::*;
 use crate::semantica::globales::*;
 
-fn generar_goto() {
-  let mut cuadruplos = CUADRUPLOS.lock().unwrap();
-  let mut saltos = PILA_SALTOS.lock().unwrap();
-  match cuadruplos.agregar_cuadruplo_goto() {
-    Ok(_res) => { /*println!("{:?}", _res);*/ () },
-    Err(_err) => { /*println!("{:?}", _err);*/ () },
-  };
-  saltos.push((cuadruplos.lista.len() - 1) as i64);
-
-  match saltos.pop() {
-    Some(valor) => {
-      match cuadruplos.modificar_cuadruplo_goto(valor as usize) {
-        Ok(_res) => { /*println!("{:?}", _res);*/ () },
-        Err(_err) => { /*println!("{:?}", _err);*/ () },
-      };
-      ()
-    },
-    _ => { /*println!("Pila de saltos vacía en PRINCIPAL");*/ () }
-  }
-  
-  drop(cuadruplos);
-  drop(saltos);
-}
-
 fn generar_goto_sino() {
   let mut cuadruplos = CUADRUPLOS.lock().unwrap();
   let mut saltos = PILA_SALTOS.lock().unwrap();
-  println!("Saltos {:?}", saltos);
   match saltos.pop() {
     Some(valor) => {
       match cuadruplos.modificar_cuadruplo_goto(valor as usize) {
@@ -54,9 +29,6 @@ fn generar_goto_sino() {
     Ok(_) => (),
     Err(_) => ()
   };
-  
-  println!("Saltos {:?}", saltos);
-
   
   drop(cuadruplos);
   drop(saltos);

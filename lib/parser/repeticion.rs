@@ -23,11 +23,27 @@ fn agregar_cuadruplo_a_pila_saltos() {
   drop(saltos);
 }
 
-fn generar_gotof() {
+fn generar_cuadruplo_asignacion(variable: TipoVar) {
+  let mut pila_valores = PILA_VALORES.lock().unwrap();
+  let mut cuadruplos = CUADRUPLOS.lock().unwrap();
+
+  match pila_valores.pop() {
+    Some(valor) => {
+      match cuadruplos.agregar_cuadruplo_asignacion(valor, variable) {
+        Ok(_res) => { /*println!("{:?}", _res);*/ () },
+        Err(_err) => { /*println!("{:?}", _err);*/ () },
+      };
+      return;
+    },
+    _ => { println!("Stack de valores vacío en EXP_LOGICA"); return; }
+  };
+}
+
+fn generar_gotof_mientras() {
   let mut cuadruplos = CUADRUPLOS.lock().unwrap();
   let mut lista_valores = PILA_VALORES.lock().unwrap();
-
   let mut saltos = PILA_SALTOS.lock().unwrap();
+
   match lista_valores.pop() {
     Some(var) => {
       match cuadruplos.agregar_cuadruplo_gotof(var) {
@@ -36,7 +52,41 @@ fn generar_gotof() {
       };
     },
     _ => ()
-  }
+  };
+
+  drop(lista_valores);
+  saltos.push((cuadruplos.lista.len() - 1) as i64);
+  drop(cuadruplos);
+  drop(saltos);
+}
+
+fn generar_gotof_desde(variable: TipoVar) {
+  let mut cuadruplos = CUADRUPLOS.lock().unwrap();
+  let mut lista_valores = PILA_VALORES.lock().unwrap();
+
+  let mut saltos = PILA_SALTOS.lock().unwrap();
+  match lista_valores.pop() {
+    Some(var) => {
+      drop(lista_valores);
+      match cuadruplos.agregar_cuadruplo("<=", variable.clone(), var.clone()) {
+        Ok(_) => (),
+        Err(err) => { println!("{:?}", err); () }
+      };      
+    },
+    _ => ()
+  };
+
+  let mut lista_valores = PILA_VALORES.lock().unwrap();
+  match lista_valores.pop() {
+    Some(var) => {
+      match cuadruplos.agregar_cuadruplo_gotof(var) {
+        Ok(_) => (),
+        Err(err) => { println!("{:?}", err); () }
+      };
+    },
+    _ => ()
+  };
+
   drop(lista_valores);
   saltos.push((cuadruplos.lista.len() - 1) as i64);
   drop(cuadruplos);
@@ -82,7 +132,7 @@ pub fn mientras(input: &str) -> IResult<&str, &str> {
 
   next = match tuple((ws, tag("("), ws, exp_logica, ws, tag(")")))(next) {
     Ok((next_input, _)) => {
-      generar_gotof();
+      generar_gotof_mientras();
       next_input
     },
     Err(err) => return Err(err)
@@ -181,6 +231,7 @@ pub fn desde(input: &str) -> IResult<&str, &str> {
   next = match delimited(tuple((tag("desde"), necessary_ws)), desde_id, tuple((ws, tag("="), ws, exp)))(next) {
     Ok((next_input, var)) => {
       variable = var;
+      generar_cuadruplo_asignacion(variable.clone());
       agregar_cuadruplo_a_pila_saltos();
       next_input
     },
@@ -189,7 +240,7 @@ pub fn desde(input: &str) -> IResult<&str, &str> {
 
   next = match tuple((necessary_ws, tag("hasta"), necessary_ws, exp))(next) {
     Ok((next_input, _)) => {
-      generar_gotof();
+      generar_gotof_desde(variable.clone());
       next_input
     },
     Err(err) => return Err(err)

@@ -85,7 +85,7 @@ impl ListaCuadruplos {
       4 => Err(("Variable objetivo no es un número", objetivo.nombre.clone(), objetivo.tipo.clone())),
       5 => Err(("Variable objetivo no es un número", objetivo.nombre.clone(), objetivo.tipo.clone())),
       _ => {
-        self.lista.push((op_num, CONSTANTES.lock().unwrap().agregar_constante("1".to_owned(), "entero".to_owned()).direccion, -1, objetivo.direccion));
+        self.lista.push((op_num, CONSTANTES.lock().unwrap().agregar_constante("1".to_owned(), "entero".to_owned()).direccion, objetivo.direccion, objetivo.direccion));
         Ok(("Incremento de for creado", objetivo.tipo.clone()))
       }
     }
