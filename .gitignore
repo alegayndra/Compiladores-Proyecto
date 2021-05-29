@@ -11,4 +11,6 @@ Cargo.lock
 
 cuadruplos/
 
+*.eo
+
 *.zip

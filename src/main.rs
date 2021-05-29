@@ -3,6 +3,8 @@ extern crate compilador;
 use std::fs::File;
 use std::io::prelude::*;
 use std::path::Path;
+use std::env;
+use std::fs;
 
 use compilador::parser::programa::*;
 use compilador::semantica::globales::*;
@@ -110,36 +112,11 @@ fn escribir_archivo() {
 }
 
 fn main() {
-	println!("{:?}", programa("
-		programa idPrograma;
-
-		void funcion func (entero var) {
-			entero i;
-			i = 10;
-			char j;
-			lee(j);
-			regresa 10 + i;
-		}
-
-		entero num;
-		entero i;
-		char id;
-		flotante promedio;
-
-		clase Estudiante {
-			char nombre[10], apellido[10];
-		};
-
-		principal() {
-			num = 10 * 2;
-			promedio = 10.1;
-			%% id = \"a\"; %%
-			%% comentario %%
-			lee(i);
-			escribe(10);
-			escribe(\"aaa\");
-		}"
-	));
+  let args: Vec<String> = env::args().collect();
+  let nombre_archivo = &args[1];
+  println!("Leyendo archivo {}", nombre_archivo);
+  let contents = fs::read_to_string(nombre_archivo).expect("Something went wrong reading the file");
+  programa(&contents);
 
 	escribir_archivo();
 }
