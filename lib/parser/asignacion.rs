@@ -17,7 +17,7 @@ fn generar_cuadruplo_asignacion(id_valor: &str, _dims: Vec<&str>) {
   let tabla_variables = VARIABLES.lock().unwrap();
   let tabla_funciones = FUNCIONES.lock().unwrap();
   let tabla_clases = CLASES.lock().unwrap();
-  let mut pila_valores = PILA_VALORES.lock().unwrap();
+  
   let mut cuadruplos = CUADRUPLOS.lock().unwrap();
 
   match tabla_variables.buscar_variable(id_valor.to_owned()) {
@@ -44,6 +44,15 @@ fn generar_cuadruplo_asignacion(id_valor: &str, _dims: Vec<&str>) {
       ()
     }
   };
+
+  drop(contexto_funcion);
+  drop(contexto_clase);
+
+  drop(tabla_variables);
+  drop(tabla_funciones);
+  drop(tabla_clases);
+
+  let mut pila_valores = PILA_VALORES.lock().unwrap();
 
   match pila_valores.pop() {
     Some(valor) => {

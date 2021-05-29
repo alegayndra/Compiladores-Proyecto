@@ -25,6 +25,11 @@ fn escribir_archivo() {
 	let constantes = CONSTANTES.lock().unwrap();
 	let mut texto_constantes: String = "".to_owned();
 
+	unsafe {
+		let era_constantes = format!("({}, {}, {}, {})", ERA_CONSTANTES.0, ERA_CONSTANTES.1, ERA_CONSTANTES.2, ERA_CONSTANTES.3);
+		texto_constantes = format!("{}{}\n", texto_constantes, era_constantes);
+	}
+
 	for (_key, val) in constantes.tabla.iter() {
 		let const_string: String = format!("({}, {}, {})", val.nombre, val.direccion, val.tipo);
 		texto_constantes = format!("{}{}\n", texto_constantes, const_string);
@@ -38,9 +43,17 @@ fn escribir_archivo() {
 	let id_programa = ID_PROGRAMA.lock().unwrap();
 	let mut texto_globales: String = "".to_owned();
 
-	for (_key, val) in tabla_funciones.tabla.get(&id_programa.to_string()).unwrap().variables.tabla.iter() {
-		let globales_string: String = format!("({}, {}, {})", val.nombre, val.direccion, val.tipo); // Faltan dimensiones
-		texto_globales = format!("{}{}\n", texto_globales, globales_string);
+	match tabla_funciones.tabla.get(&id_programa.to_string()) {
+		Some(vars) => {
+			let mut globales_string: String = "".to_owned(); // Faltan dimensiones
+			for tam in vars.era.iter() {
+				let tam_string: String = format!("({}, {})", tam.0, tam.1);
+				globales_string = format!("{}{}\n", globales_string, tam_string);
+			}
+			texto_globales = format!("{}{}", texto_globales, globales_string);
+			()
+		},
+		None => ()
 	}
 
 	texto_archivo = format!("{}GLOBALES\n{}FIN_GLOBALES\n", texto_archivo, texto_globales);
@@ -87,19 +100,12 @@ fn escribir_archivo() {
 	texto_archivo = format!("{}CLASES\n{}FIN_CLASES\n", texto_archivo, texto_clases);
 
 	// Escritura cuadruplos
-	let mut cuadruplos = CUADRUPLOS.lock().unwrap();
+	let cuadruplos = CUADRUPLOS.lock().unwrap();
 	let mut lista_cuadruplos: String = "".to_owned();
 
-	loop {
-		match cuadruplos.lista.pop() {
-			Some(cuad) => {
-				let cuad_string: String = format!("({}, {}, {}, {})", cuad.0, cuad.1, cuad.2, cuad.3);
-				lista_cuadruplos = format!("{}{}\n", lista_cuadruplos, cuad_string);
-			},
-			_ => {
-				break;
-			}
-		}
+	for cuad in cuadruplos.lista.iter() {
+		let cuad_string: String = format!("({}, {}, {}, {})", cuad.0, cuad.1, cuad.2, cuad.3);
+		lista_cuadruplos = format!("{}{}\n", lista_cuadruplos, cuad_string);
 	}
 
 	texto_archivo = format!("{}CUADRUPLOS\n{}FIN_CUADRUPLOS\n", texto_archivo, lista_cuadruplos);
@@ -116,6 +122,7 @@ fn main() {
   let nombre_archivo = &args[1];
   println!("Leyendo archivo {}", nombre_archivo);
   let contents = fs::read_to_string(nombre_archivo).expect("Something went wrong reading the file");
+  println!("Archivo leído correctamente");
   programa(&contents);
 
 	escribir_archivo();

@@ -14,11 +14,7 @@ use crate::semantica::globales::*;
 
 fn agregar_constante_a_tabla(valor: &str, tipo: &str) {
   let mut pila_valores = PILA_VALORES.lock().unwrap();
-  let dir = match conseguir_direccion(tipo, "constante", 0) {
-    Ok(num) => num,
-    Err(err) => { println!("{:?}", err); return;}
-  };
-  pila_valores.push(CONSTANTES.lock().unwrap().agregar_constante(valor.to_owned(), tipo.to_owned(), dir));
+  pila_valores.push(CONSTANTES.lock().unwrap().agregar_constante(valor.to_owned(), tipo.to_owned()));
   drop(pila_valores);
 }
 
@@ -115,13 +111,14 @@ fn agregar_variable_a_pila(id_valor: &str, dims: Vec<String>) {
     };
   }
 
+  drop(pila_valores);
+  
   drop(contexto_funcion);
   drop(contexto_clase);
 
   drop(tabla_variables);
   drop(tabla_funciones);
   drop(tabla_clases);
-  drop(pila_valores);
 }
 
 fn valor_id(input: &str) -> IResult<&str, &str> {
