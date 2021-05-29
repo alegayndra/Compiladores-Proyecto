@@ -122,6 +122,7 @@ fn main() {
 		entero num;
 		entero i;
 		char id;
+    char letra;
 		flotante promedio;
 
 		principal() {
