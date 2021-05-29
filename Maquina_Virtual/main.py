@@ -78,7 +78,7 @@ mapa_memoria = [
       [],  [] # Normales
     ]
   ],
-  [ # Locales
+  [ #000 Locales
    # Aqui se van a pushear stacks de memoria
   ],
   [ # Constantes
@@ -98,6 +98,7 @@ mapa_memoria = [
 ]
 
 lista_cuadruplos = []
+num_cuadruplo = [0]
 
 def extaerMemoria(direccion):
   contexto = len(dir_memoria) - 1
@@ -294,10 +295,21 @@ def switchCubo(cuadruplo):
     lee(cuadruplo[3])
     return
   elif cuadruplo[0] == 15: # Goto
+    num_cuadruplo[0] = cuadruplo[3] - 1
     return
   elif cuadruplo[0] == 16: # GotoT
+    if extaerMemoria(cuadruplo[3]):
+      num_cuadruplo[0] = cuadruplo[3] - 1
     return
   elif cuadruplo[0] == 17: # GotoF
+    # print(type(cuadruplo[3]))
+    # print(cuadruplo[3])
+    # print(mapa_memoria[0][0])
+    if not extaerMemoria(cuadruplo[1]):
+      print("entramos")
+      num_cuadruplo[0] = cuadruplo[1] - 1
+    else:
+      print("No entramos")
     return
   elif cuadruplo[0] == 18: # GoSub
     return
@@ -307,7 +319,19 @@ def switchCubo(cuadruplo):
     return
   elif cuadruplo[0] == 21: # Param
     return
-  
+
+def ejecutar_programa():
+  while num_cuadruplo[0] < len(lista_cuadruplos):
+    print("Ejecutamos el cuadruplo #", num_cuadruplo[0])
+    print(lista_cuadruplos[num_cuadruplo[0]])
+    switchCubo(lista_cuadruplos[num_cuadruplo[0]]) 
+    num_cuadruplo[0] += 1
+
+
+'''
+ Funciones que guardan los valores del .txt en memoria
+'''
+
 def leerCuadruplos(txt_cuadruplos):
   readStr = 0
   while readStr < len(txt_cuadruplos):
@@ -320,11 +344,10 @@ def leerCuadruplos(txt_cuadruplos):
     cantidades = cantidades[ cantidades.find(',') + 2:]
     guardar = int(cantidades[ :cantidades.find( ')' ) ] )
 
-    switchCubo((operador, varIzq, varDer, guardar))  
-
     lista_cuadruplos.append((operador, varIzq, varDer, guardar))
     
     readStr = txt_cuadruplos.find('\n', readStr) + 1
+  ejecutar_programa()
 
 def guardarMapaGlobs(direcciones_globs):
   readStr = 0
@@ -353,7 +376,7 @@ def guardarMapaGlobs(direcciones_globs):
   mapa_memoria[0][2][0] = [None] * int(cntCharNormal)
   mapa_memoria[0][2][1] = [None] * int(cntCharTemp)
 
-def gaurdarMapaCons(direcciones_const):
+def guardarMapaCons(direcciones_const):
   readStr = 0
   cantidades = direcciones_const[readStr:direcciones_const.find('\n', readStr)]
   cntInt = cantidades[1:cantidades.find(',')]
@@ -398,12 +421,36 @@ def leer_obj():
   stringTxt = file_opened.read()
 
   #Registro de valores para constantes en mapa de memoria
-  gaurdarMapaCons(stringTxt[stringTxt.find("CONSTANTES") + 11:stringTxt.find("FIN_CONSTANTES")])
+  guardarMapaCons(stringTxt[stringTxt.find("CONSTANTES") + 11:stringTxt.find("FIN_CONSTANTES")])
 
   #Registro de valores para globales en mapa de memoria
   guardarMapaGlobs(stringTxt[stringTxt.find("GLOBALES") + 9:stringTxt.find("FIN_GLOBALES")])
 
   leerCuadruplos(stringTxt[stringTxt.find("CUADRUPLOS") + 11:stringTxt.find("FIN_CUADRUPLOS")])
-  print(mapa_memoria)
+  print("Aqui estan las variables globales")
+  print(mapa_memoria[0])
+  print("")
+  print("Aqui estan las variables normales globales")
+  print(mapa_memoria[0][0][0], mapa_memoria[0][1][0], mapa_memoria[0][2][0])
+  print("")
+  print("Aqui estan las variables temporales globales")
+  print(mapa_memoria[0][0][1], mapa_memoria[0][1][1], mapa_memoria[0][2][1])
+  print("")
+
+  print("Aqui estan las variables locales")
+  print(mapa_memoria[1])
+  
+  print("Aqui estan las variables constantes")
+  print(mapa_memoria[2])
+  print("")
+  print("Aqui estan las variables INT constantes")
+  print(mapa_memoria[2][0])
+  print("")
+  print("Aqui estan las variables FLOAT globales")
+  print(mapa_memoria[2][1])
+  print("")
+  print("Aqui estan las variables CHAR globales")
+  print(mapa_memoria[2][2])
 
 leer_obj()
+ejecutar_programa()
