@@ -58,7 +58,14 @@ lazy_static! {
     let operadores = Mutex::new(vec![]);
     operadores
   };
+
+  pub static ref PILA_SALTOS: Mutex<Vec<i64>> = {
+    let saltos = Mutex::new(vec![]);
+    saltos
+  };
 }
+
+pub static mut ERA_CONSTANTES: (i64, i64, i64, i64) = (0, 0, 0, 0);
 
 pub static mut DIRECCIONES: [[[[i64 ; 3] ; 2] ; 3] ; 3] = [
   [ // Globales
@@ -128,7 +135,7 @@ pub fn conseguir_direccion(tipo_var: &str, contexto: &str, temporal: usize) -> R
   let tipo_num: usize;
   if contexto == "constante" {
     contexto_num = 2;
-  } else if ID_PROGRAMA.lock().unwrap().to_string() == CONTEXTO_CLASE.lock().unwrap().to_string() { // contexto global
+  } else if ID_PROGRAMA.lock().unwrap().to_string() == CONTEXTO_FUNCION.lock().unwrap().to_string() { // contexto global
     contexto_num = 0;
   } else {
     contexto_num = 1;
@@ -136,6 +143,7 @@ pub fn conseguir_direccion(tipo_var: &str, contexto: &str, temporal: usize) -> R
 
   tipo_num = match conseguir_num_tipo(tipo_var) {
     3 => return Err("Variable de tipo error".to_owned()),
+    4 => return Err("Variable de tipo objeto".to_owned()),
     5 => 2 as usize,
     n => n as usize
   };
@@ -147,6 +155,6 @@ pub fn conseguir_direccion(tipo_var: &str, contexto: &str, temporal: usize) -> R
     }
 
     DIRECCIONES[contexto_num][tipo_num][temporal][0] = dir_nueva + 1;
-    return Ok(dir_nueva + 1)
+    return Ok(dir_nueva)
   }
 }

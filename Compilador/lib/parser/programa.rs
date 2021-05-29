@@ -28,8 +28,8 @@ pub fn programa(input: &str) -> IResult<&str, &str> {
     Err(err) => return Err(err),
   };
 
+  // Crear tabla de variables globales
   let mut funcs1 = FUNCIONES.lock().unwrap();
-
   match funcs1.agregar_funcion(id_programa.to_owned(), "void".to_owned(), 14000) {
     Ok(res) => {
       println!("{:?}", res);
@@ -42,34 +42,53 @@ pub fn programa(input: &str) -> IResult<&str, &str> {
   };
   drop(funcs1);
 
-  let mut contexto_funcion1 = CONTEXTO_FUNCION.lock().unwrap();
+  // Agregar el GOTO al main
+  let mut cuadruplos = CUADRUPLOS.lock().unwrap();
+  let mut saltos = PILA_SALTOS.lock().unwrap();
+  match cuadruplos.agregar_cuadruplo_goto() {
+    Ok(_) => (),
+    Err(_) => ()
+  };
+  saltos.push((cuadruplos.lista.len() - 1) as i64);
+  drop(cuadruplos);
+  drop(saltos);
+
+  // Actualizar contexto global y guardar id del programa
+  let mut contexto_funcion = CONTEXTO_FUNCION.lock().unwrap();
   let mut id_programa_global = ID_PROGRAMA.lock().unwrap();
-  *contexto_funcion1 = id_programa.to_owned();
+  *contexto_funcion = id_programa.to_owned();
   *id_programa_global = id_programa.to_owned();
-  drop(contexto_funcion1);
+  drop(contexto_funcion);
   drop(id_programa_global);
 
-  next = match tuple((ws, tag(";"), ws))(next) {
+  next = match tuple((ws, tag(";"), ws, declaraciones, ws, tag("principal()"), ws))(next) {
     Ok((next_input, _)) => next_input,
     Err(err) => return Err(err),
   };
 
-  next = match (declaraciones)(next) {
-    Ok((next_input, _)) => next_input,
-    Err(err) => return Err(err),
-  };
+  // Marcar que el contexto actual es el global
+  let mut contexto_funcion = CONTEXTO_FUNCION.lock().unwrap();
+  let id_programa_global = ID_PROGRAMA.lock().unwrap();
+  *contexto_funcion = id_programa_global.to_owned();
+  drop(contexto_funcion);
+  drop(id_programa_global);
 
-  next = match tuple((ws, tag("principal()"), ws))(next) {
-    Ok((next_input, _)) => next_input,
-    Err(err) => return Err(err),
-  };
-
-
-  let mut contexto_funcion2 = CONTEXTO_FUNCION.lock().unwrap();
-  let id_programa_global2 = ID_PROGRAMA.lock().unwrap();
-  *contexto_funcion2 = id_programa_global2.to_owned();
-  drop(contexto_funcion2);
-  drop(id_programa_global2);
+  // Actualicar el GOTO al main
+  let mut cuadruplos = CUADRUPLOS.lock().unwrap();
+  let mut saltos = PILA_SALTOS.lock().unwrap();
+  match saltos.pop() {
+    Some(valor) => {
+      match cuadruplos.modificar_cuadruplo_goto(valor as usize) {
+        Ok(_) => (),
+        Err(_) => ()
+      };
+      ()
+    },
+    _ => { println!("Pila de saltos vacía en PRINCIPAL"); () }
+  }
+  
+  drop(cuadruplos);
+  drop(saltos);
 
   next = match bloque(next) {
     Ok((next_input, _)) => next_input,

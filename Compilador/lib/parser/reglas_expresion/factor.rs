@@ -73,6 +73,8 @@ fn checar_lista_operadores(op_valor: &str) {
         }
       };
 
+      drop(pila_val);
+
       match CUADRUPLOS.lock().unwrap().agregar_cuadruplo(op_valor, valor.clone(), valor.clone()) {
         Ok(res) => {
           println!("{:?}", res);
