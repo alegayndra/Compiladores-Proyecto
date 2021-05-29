@@ -31,6 +31,8 @@ fn checar_lista_operadores() {
             }
           };
 
+          drop(pila_val);
+
           match CUADRUPLOS.lock().unwrap().agregar_cuadruplo(&op, izq, der) {
             Ok(res) => {
               println!("{:?}", res);
