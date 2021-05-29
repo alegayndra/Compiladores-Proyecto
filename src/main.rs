@@ -3,12 +3,16 @@ extern crate compilador;
 use std::fs::File;
 use std::io::prelude::*;
 use std::path::Path;
+use std::env;
+use std::fs;
 
 use compilador::parser::programa::*;
 use compilador::semantica::globales::*;
 
-fn escribir_archivo() {
-	let path = Path::new("cuadruplos/killer_queen.txt");
+fn escribir_archivo(nombre_archivo: &str) {
+  let arch = format!("cuadruplos/{}.txt", nombre_archivo);
+	let path = Path::new(&arch);
+
 	let display = path.display();
 
 	// Open a file in write-only mode, returns `io::Result<File>`
@@ -116,38 +120,18 @@ fn escribir_archivo() {
 }
 
 fn main() {
-	println!("{:?}", programa("
-		programa idPrograma;
-
-		entero num;
-		entero i;
-		char id;
-    char letra;
-		flotante promedio;
-
-		principal() {
-			num = 10 * 2;
-			promedio = 10.1;
-			%% id = \"a\"; %%
-			%% comentario %%
-			lee(i);
-			lee(id);
-			escribe(10);
-			escribe(\"aaa\");
-			si (10 & 10) {
-				i = 11;
-			}
-			si (10 > 10) {
-				i = 11;
-			} sino {
-				i = 12;
-			}
-
-			desde i = 10 hasta 20 {
-				escribe(i);
-			}
-		}"
-	));
-
-	escribir_archivo();
+  let args: Vec<String> = env::args().collect();
+  let nombre_archivo = &args[1];
+  let arch = format!("{}.eo", nombre_archivo);
+  println!("Leyendo archivo {}", arch.clone());
+  let contents = fs::read_to_string(&arch).expect("Something went wrong reading the file");
+  println!("Archivo leído correctamente");
+  match programa(&contents) {
+    Ok(_) => {
+      escribir_archivo(nombre_archivo);
+    },
+    Err(err) => {
+      println!("{:?}", err);
+    }
+  };
 }
