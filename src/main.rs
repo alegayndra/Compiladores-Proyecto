@@ -9,8 +9,10 @@ use std::fs;
 use compilador::parser::programa::*;
 use compilador::semantica::globales::*;
 
-fn escribir_archivo() {
-	let path = Path::new("cuadruplos/killer_queen.txt");
+fn escribir_archivo(nombre_archivo: &str) {
+  let arch = format!("cuadruplos/{}.txt", nombre_archivo);
+	let path = Path::new(&arch);
+
 	let display = path.display();
 
 	// Open a file in write-only mode, returns `io::Result<File>`
@@ -120,12 +122,13 @@ fn escribir_archivo() {
 fn main() {
   let args: Vec<String> = env::args().collect();
   let nombre_archivo = &args[1];
-  println!("Leyendo archivo {}", nombre_archivo);
-  let contents = fs::read_to_string(nombre_archivo).expect("Something went wrong reading the file");
+  let arch = format!("{}.eo", nombre_archivo);
+  println!("Leyendo archivo {}", arch.clone());
+  let contents = fs::read_to_string(&arch).expect("Something went wrong reading the file");
   println!("Archivo leído correctamente");
   match programa(&contents) {
     Ok(_) => {
-      escribir_archivo();
+      escribir_archivo(nombre_archivo);
     },
     Err(err) => {
       println!("{:?}", err);
