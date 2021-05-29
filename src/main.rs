@@ -123,7 +123,12 @@ fn main() {
   println!("Leyendo archivo {}", nombre_archivo);
   let contents = fs::read_to_string(nombre_archivo).expect("Something went wrong reading the file");
   println!("Archivo leído correctamente");
-  programa(&contents);
-
-	escribir_archivo();
+  match programa(&contents) {
+    Ok(_) => {
+      escribir_archivo();
+    },
+    Err(err) => {
+      println!("{:?}", err);
+    }
+  };
 }
