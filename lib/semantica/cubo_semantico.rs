@@ -113,10 +113,11 @@ pub fn conseguir_num_operador(operador: &str) -> i64 {
     "GOTO"    => 15,
     "GOTOT"   => 16,
     "GOTOF"   => 17,
-    "GOSUB"   => 18,
-    "ERA"     => 19,
-    "RETURN"  => 20,
+    "ENDFUNC" => 18,
+    "RETURN"  => 19,
+    "ERA"     => 20,
     "PARAM"   => 21,
+    "GOSUB"   => 22,
     _         => -1,
   }
 }

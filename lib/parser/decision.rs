@@ -15,8 +15,11 @@ fn generar_goto_sino() {
   match saltos.pop() {
     Some(valor) => {
       match cuadruplos.modificar_cuadruplo_goto(valor as usize) {
-        Ok(_res) => { /*println!("{:?}", _res);*/ () },
-        Err(_err) => { /*println!("{:?}", _err);*/ () },
+        Ok(_) => (),
+        Err(err) => {
+          println!("{:?}", err);
+          ()
+        },
       };
       ()
     },
@@ -27,7 +30,10 @@ fn generar_goto_sino() {
 
   match cuadruplos.agregar_cuadruplo_goto() {
     Ok(_) => (),
-    Err(_) => ()
+    Err(err) => {
+      println!("{:?}", err);
+      ()
+    },
   };
   
   drop(cuadruplos);
@@ -59,8 +65,11 @@ fn generar_gotof() {
   match lista_valores.pop() {
     Some(var) => {
       match cuadruplos.agregar_cuadruplo_gotof(var) {
-        Ok(_res) => { /*println!("{:?}", _res);*/ () },
-        Err(_err) => { /*println!("{:?}", _err);*/ () },
+        Ok(_res) => (),
+        Err(err) => {
+          println!("{:?}", err);
+          ()
+        },
       };
     },
     _ => ()
@@ -77,8 +86,11 @@ fn actualizar_gotof() {
   match saltos.pop() {
     Some(valor) => {
       match cuadruplos.modificar_cuadruplo_goto(valor as usize) {
-        Ok(_res) => { /*println!("{:?}", _res);*/ () },
-        Err(_err) => { /*println!("{:?}", _err);*/ () },
+        Ok(_res) => (),
+        Err(err) => {
+          println!("{:?}", err);
+          ()
+        },
       };
       ()
     },

@@ -58,7 +58,7 @@ impl TablaVariables {
             0 => ERA_CONSTANTES.0 += 1,
             1 => ERA_CONSTANTES.1 += 1,
             2 => ERA_CONSTANTES.2 += 1,
-            5 => ERA_CONSTANTES.3 += 1,
+            5 => ERA_CONSTANTES.2 += 1,
             _ => (),
           }
         }
