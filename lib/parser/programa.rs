@@ -15,7 +15,7 @@ pub fn programa(input: &str) -> IResult<&str, &str> {
   
   next = match tuple((ws, tag("programa"), necessary_ws))(input) {
     Ok((next_input, _)) => next_input,
-    Err(err) => return Err(err),
+    Err(err) => return Err(err)
   };
 
   let id_programa: &str;
@@ -25,19 +25,18 @@ pub fn programa(input: &str) -> IResult<&str, &str> {
       next = next_input;
       id_programa = id;
     },
-    Err(err) => return Err(err),
+    Err(err) => return Err(err)
   };
 
   // Crear tabla de variables globales
-  let mut funcs1 = FUNCIONES.lock().unwrap();
-  match funcs1.agregar_funcion(id_programa.to_owned(), "void".to_owned(), -5, 0) {
-    Ok(_) => (),
-    Err(err) => {
-      println!("{:?}", err);
-      ()
-    },
-  };
-  drop(funcs1);
+  {
+    match FUNCIONES.lock().unwrap().agregar_funcion(id_programa.to_owned(), "void".to_owned(), -5, 0) {
+      Ok(_) => (),
+      Err(err) => {
+        println!("{:?}", err);
+      },
+    };
+  }
 
   // Agregar el GOTO al main
   let mut cuadruplos = CUADRUPLOS.lock().unwrap();
@@ -46,7 +45,6 @@ pub fn programa(input: &str) -> IResult<&str, &str> {
     Ok(_) => (),
     Err(err) => {
       println!("{:?}", err);
-      ()
     },
   };
   saltos.push((cuadruplos.lista.len() - 1) as i64);
@@ -54,54 +52,42 @@ pub fn programa(input: &str) -> IResult<&str, &str> {
   drop(saltos);
 
   // Actualizar contexto global y guardar id del programa
-  let mut contexto_funcion = CONTEXTO_FUNCION.lock().unwrap();
-  let mut id_programa_global = ID_PROGRAMA.lock().unwrap();
-  *contexto_funcion = id_programa.to_owned();
-  *id_programa_global = id_programa.to_owned();
-  drop(contexto_funcion);
-  drop(id_programa_global);
+  {
+    *CONTEXTO_FUNCION.lock().unwrap() = id_programa.to_owned();
+    *ID_PROGRAMA.lock().unwrap() = id_programa.to_owned();
+  }
 
   next = match tuple((ws, tag(";"), ws, declaraciones, ws, tag("principal()"), ws))(next) {
     Ok((next_input, _)) => next_input,
-    Err(err) => return Err(err),
+    Err(err) => return Err(err)
   };
 
   // Marcar que el contexto actual es el global
-  let mut contexto_funcion = CONTEXTO_FUNCION.lock().unwrap();
-  let id_programa_global = ID_PROGRAMA.lock().unwrap();
-  *contexto_funcion = id_programa_global.to_owned();
-  drop(contexto_funcion);
-  drop(id_programa_global);
+  {
+    *CONTEXTO_FUNCION.lock().unwrap() = ID_PROGRAMA.lock().unwrap().to_string();
+  }
 
   // Actualicar el GOTO al main
-  let mut cuadruplos = CUADRUPLOS.lock().unwrap();
-  let mut saltos = PILA_SALTOS.lock().unwrap();
-  match saltos.pop() {
-    Some(valor) => {
-      match cuadruplos.modificar_cuadruplo_goto(valor as usize) {
-        Ok(_) => (),
-        Err(_) => ()
-      };
-      ()
-    },
-    _ => { /* println!("Pila de saltos vacía en PRINCIPAL"); */ () }
+  {
+    match PILA_SALTOS.lock().unwrap().pop() {
+      Some(valor) => {
+        match CUADRUPLOS.lock().unwrap().modificar_cuadruplo_goto(valor as usize) {
+          Ok(_) => (),
+          Err(err) => {
+            println!("{:?}", err);
+          }
+        };
+      },
+      _ => {
+        println!("Pila de saltos vacía en PRINCIPAL");
+      }
+    }
   }
-  
-  drop(cuadruplos);
-  drop(saltos);
 
   next = match bloque(next) {
     Ok((next_input, _)) => next_input,
     Err(err) => return Err(err),
   };
-
-  {
-    // println!("Funciones  {:?}", FUNCIONES.lock().unwrap());
-    // println!("Clases     {:?}", CLASES.lock().unwrap());
-    // println!("Variables {:?}", VARIABLES.lock().unwrap());
-    // println!("Constantes {:?}", CONSTANTES.lock().unwrap());
-    // println!("Cuadruplos {:?}", CUADRUPLOS.lock().unwrap());
-  }
 
   match ws(next) {
     Ok((_, _)) => Ok(("", "programa")),
@@ -112,11 +98,6 @@ pub fn programa(input: &str) -> IResult<&str, &str> {
 #[cfg(test)]
 mod tests {
   use super::*;
-  // use crate::semantica::tabla_variables::*;
-  // use nom::{
-  //     error::{ErrorKind, VerboseError, VerboseErrorKind},
-  //     Err,
-  // };
 
   #[test]
   fn test_programa() {

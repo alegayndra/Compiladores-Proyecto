@@ -27,11 +27,6 @@
     - = : 12
 */
 
-// pub struct CuboSemantico {
-//   pub lista: Vec<Vec<Vec<i64>>>
-// }
-
-// static CUBO_SEMANTICO: Vec<Vec<Vec<i64>>> = vec![
 static CUBO_SEMANTICO: [[[i64; 13]; 6]; 6] = [
   [ // Entero
     // +  -  *  /  >  <  >=  <=  ==  !=  &  |  =

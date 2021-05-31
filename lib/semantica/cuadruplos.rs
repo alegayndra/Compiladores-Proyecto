@@ -15,20 +15,26 @@ fn agregar_temporal_a_tabla(var: String, tipo_var: String, dir: i64) {
 
   if contexto_clase.clone() != "".to_owned() {
     if contexto_funcion.clone() != "".to_owned() {
-      match CLASES.lock().unwrap().agregar_atributo(contexto_clase.to_string(), var, tipo_var, vec![], 20000) {
-        Ok(_res) => { /*println!("{:?}", _res);*/ () },
-        Err(_err) => { /*println!("{:?}", _err);*/ () },
+      match CLASES.lock().unwrap().agregar_atributo(contexto_clase.to_string(), var, tipo_var, vec![], dir) {
+        Ok(_) => (),
+        Err(err) => {
+          println!("{:?}", err);
+        }
       }
     } else {
-      match CLASES.lock().unwrap().agregar_variable_metodo(contexto_clase.to_string(), contexto_funcion.to_string(), var, tipo_var, vec![], 25000, 1) {
-        Ok(_res) => { /*println!("{:?}", _res);*/ () },
-        Err(_err) => { /*println!("{:?}", _err);*/ () },
+      match CLASES.lock().unwrap().agregar_variable_metodo(contexto_clase.to_string(), contexto_funcion.to_string(), var, tipo_var, vec![], dir, 1) {
+        Ok(_) => (),
+        Err(err) => {
+          println!("{:?}", err);
+        }
       }
     }
   } else {
     match FUNCIONES.lock().unwrap().agregar_variable(contexto_funcion.to_string(), var, tipo_var, vec![], dir, 1) {
-      Ok(_res) => { /*println!("{:?}", _res);*/ () },
-      Err(_err) => { /*println!("{:?}", _err);*/ () },
+      Ok(_) => (),
+      Err(err) => {
+        println!("{:?}", err);
+      }
     }
   }
 }
@@ -57,14 +63,12 @@ impl ListaCuadruplos {
             let nombre_temporal = format!("temporal{}", NUM_TEMPORAL);
             match tabla_variables.agregar_variable(nombre_temporal.clone(), tipo_temporal.clone(), vec![], dir) {
               Ok((_, var)) => {
-                // println!("Temporal agregado: {:?}", nombre_temporal);
                 PILA_VALORES.lock().unwrap().push(var);
                 agregar_temporal_a_tabla(nombre_temporal.clone(), tipo_temporal.clone(), dir);
                 break;
               },
               Err(_) => {
                 NUM_TEMPORAL += 1;
-                ()
               }
             }
           }
@@ -99,7 +103,6 @@ impl ListaCuadruplos {
     match checar_cubo_semantico(op_num as usize, valor_num as usize, destino_num as usize) {
       3 => Err(("Asignacion incompatible", (valor.tipo, destino.tipo))),
       _ => {
-        // Crear temporal
         self.lista.push((op_num, valor.direccion, -1, destino.direccion));
         Ok(("Asignacion compatible", (valor.tipo, destino.tipo)))
       }
@@ -135,7 +138,10 @@ impl ListaCuadruplos {
     match conseguir_num_tipo(resultado.tipo.as_str()) {
       0 => 0,
       1 => 1,
-      _ => { println!("Tipo incompatible en GOTOF: {:?}", resultado); return Err("GOTOF incompatible"); }
+      _ => {
+        println!("Tipo incompatible en GOTOF: {:?}", resultado);
+        return Err("GOTOF incompatible");
+      }
     };
     self.lista.push((op_num, resultado.direccion, -1, -1));
     Ok("GOTOF bueno")
@@ -168,7 +174,6 @@ impl ListaCuadruplos {
     match checar_cubo_semantico(as_num as usize, valor_num as usize, destino_num as usize) {
       3 => Err(("Asignacion de parametro incompatible", (valor.tipo, destino.tipo))),
       _ => {
-        // Crear temporal
         self.lista.push((op_num, valor.direccion, -1, destino.direccion));
         Ok(("Asignacion de parametro compatible", (valor.tipo, destino.tipo)))
       }

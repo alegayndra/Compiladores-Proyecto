@@ -15,7 +15,6 @@ use crate::semantica::globales::*;
 fn diferentes_declaraciones(input: &str) -> IResult<&str, &str> {
   match alt((clase, funcion, variables))(input) {
     Ok((next_input, res)) => {
-      // Reset de variables globales de semantica
       let mut contexto_funcion = CONTEXTO_FUNCION.lock().unwrap();
       *contexto_funcion = ID_PROGRAMA.lock().unwrap().to_string();
       let mut contexto_clase = CONTEXTO_CLASE.lock().unwrap();
@@ -45,10 +44,6 @@ pub fn declaraciones(input: &str) -> IResult<&str, &str> {
 #[cfg(test)]
 mod tests {
   use super::*;
-  // use nom::{
-  //     error::{ErrorKind, VerboseError, VerboseErrorKind},
-  //     Err,
-  // };
 
   #[test]
   fn test_diferentes_declaraciones() {

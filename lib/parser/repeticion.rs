@@ -16,11 +16,7 @@ use crate::semantica::tabla_variables::*;
 use crate::semantica::globales::*;
 
 fn agregar_cuadruplo_a_pila_saltos() {
-  let cuadruplos = CUADRUPLOS.lock().unwrap();
-  let mut saltos = PILA_SALTOS.lock().unwrap();
-  saltos.push((cuadruplos.lista.len()) as i64);
-  drop(cuadruplos);
-  drop(saltos);
+  PILA_SALTOS.lock().unwrap().push((CUADRUPLOS.lock().unwrap().lista.len()) as i64);
 }
 
 fn generar_cuadruplo_asignacion(variable: TipoVar) {
@@ -30,12 +26,17 @@ fn generar_cuadruplo_asignacion(variable: TipoVar) {
   match pila_valores.pop() {
     Some(valor) => {
       match cuadruplos.agregar_cuadruplo_asignacion(valor, variable) {
-        Ok(_res) => { /*println!("{:?}", _res);*/ () },
-        Err(_err) => { /*println!("{:?}", _err);*/ () },
+        Ok(_) => (),
+        Err(err) => {
+          println!("{:?}", err);
+        }
       };
       return;
     },
-    _ => { println!("Stack de valores vacío en EXP_LOGICA"); return; }
+    _ => {
+      println!("Stack de valores vacío en EXP_LOGICA");
+      return;
+    }
   };
 }
 
@@ -50,7 +51,6 @@ fn generar_gotof_mientras() {
         Ok(_) => (),
         Err(err) => {
           println!("{:?}", err);
-          ()
         },
       };
     },
@@ -73,7 +73,9 @@ fn generar_gotof_desde(variable: TipoVar) {
       drop(lista_valores);
       match cuadruplos.agregar_cuadruplo("<=", variable.clone(), var.clone()) {
         Ok(_) => (),
-        Err(err) => { println!("{:?}", err); () }
+        Err(err) => {
+          println!("{:?}", err);
+        }
       };      
     },
     _ => ()
@@ -86,7 +88,6 @@ fn generar_gotof_desde(variable: TipoVar) {
         Ok(_) => (),
         Err(err) => {
           println!("{:?}", err);
-          ()
         }
       };
     },
@@ -117,9 +118,9 @@ fn generar_gotos_final() {
     Ok(_res) => (),
     Err(err) => {
       println!("{:?}", err);
-      ()
     },
   };
+
   let tamanio_cuadruplos = cuadruplos.lista.len() - 1;
   cuadruplos.lista[tamanio_cuadruplos].3 = return_dec;
 
@@ -127,7 +128,6 @@ fn generar_gotos_final() {
     Ok(_res) => (),
     Err(err) => {
       println!("{:?}", err);
-      ()
     },
   };
 }
@@ -252,7 +252,6 @@ pub fn desde(input: &str) -> IResult<&str, &str> {
         Ok(_res) => (),
         Err(err) => {
           println!("{:?}", err);
-          ()
         },
       };
       drop(cuadruplos);
@@ -273,10 +272,6 @@ pub fn repeticion(input: &str) -> IResult<&str, &str> {
 #[cfg(test)]
 mod tests {
   use super::*;
-  // use nom::{
-  //     error::{ErrorKind, VerboseError, VerboseErrorKind},
-  //     Err,
-  // };
 
   #[test]
   fn test_mientras() {

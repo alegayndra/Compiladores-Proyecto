@@ -84,7 +84,6 @@ fn agregar_variable_a_pila(id_valor: &str, dims: Vec<String>) {
   match tabla_variables.buscar_variable(id_valor.to_owned()) {
     Ok((_, var)) => {
       if dims.clone() == var.dimensiones.clone() { pila_valores.push(var); }
-      ()
     },
     Err(_) => ()
   };
@@ -183,10 +182,6 @@ pub fn valor(input: &str) -> IResult<&str, &str> {
 #[cfg(test)]
 mod tests {
   use super::*;
-  // use nom::{
-  //     error::{ErrorKind, VerboseError, VerboseErrorKind},
-  //     Err,
-  // };
 
   #[test]
   fn test_valor_cte() {

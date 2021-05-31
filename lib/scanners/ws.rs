@@ -14,10 +14,6 @@ pub fn necessary_ws(input: &str) -> IResult<&str, &str> {
 #[cfg(test)]
 mod tests {
   use super::*;
-  // use nom::{
-  //     error::{ErrorKind, VerboseError, VerboseErrorKind},
-  //     Err,
-  // };
 
   #[test]
   fn test_ws() {

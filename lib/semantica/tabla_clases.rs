@@ -133,16 +133,6 @@ impl TablaClases {
     }
   }
 
-  // pub fn buscar_parametro_metodo(&self, nombre_clase: String, nombre_func: String, nombre_var: String) -> Result<(&str, String), (&str, String)> {
-  //   match self.tabla.get(&nombre_clase) {
-  //     Some(clase) => match clase.metodos.tabla.get(&nombre_func) {
-  //       Some(metodo) => metodo.parametros.hash.buscar_variable(nombre_var),
-  //       None => Err(("Metodo no existente", nombre_func.clone()))
-  //     },
-  //     None => Err(("Clase no existente", nombre_clase.clone()))
-  //   }
-  // }
-
   pub fn agregar_atributo(
     &mut self,
     nombre_clase: String,
@@ -174,10 +164,6 @@ impl TablaClases {
 #[cfg(test)]
 mod tests {
   use super::*;
-  // use nom::{
-  //     error::{ErrorKind, VerboseError, VerboseErrorKind},
-  //     Err,
-  // };
 
   #[test]
   fn test_tabla_clases() {
@@ -272,22 +258,6 @@ mod tests {
       tabla.agregar_parametro_metodo("Estudiante".to_owned(), "a".to_owned(), "variable".to_owned(), "entero".to_owned(), dims.clone(), dir_var),
       Err(("Clase no existente", "Estudiante".to_owned(), "".to_owned(), "".to_owned()))
     );
-    // assert_eq!(
-    //   tabla.buscar_parametro_metodo("Persona".to_owned(), "func".to_owned(), "variable".to_owned()),
-    //   Ok(("Variable existente", "variable".to_owned()))
-    // );
-    // assert_eq!(
-    //   tabla.buscar_parametro_metodo("Persona".to_owned(), "func".to_owned(), "a".to_owned()),
-    //   Err(("Variable no existente", "a".to_owned()))
-    // );
-    // assert_eq!(
-    //   tabla.buscar_parametro_metodo("Persona".to_owned(), "a".to_owned(), "variable".to_owned()),
-    //    Err(("Metodo no existente", "a".to_owned()))
-    //   );
-    // assert_eq!(
-    //   tabla.buscar_parametro_metodo("Estudiante".to_owned(), "a".to_owned(), "variable".to_owned()),
-    //   Err(("Clase no existente", "Estudiante".to_owned()))
-    // );
 
     assert_eq!(
       tabla.agregar_atributo("Persona".to_owned(), "variable".to_owned(), "entero".to_owned(), dims.clone(), dir_var),

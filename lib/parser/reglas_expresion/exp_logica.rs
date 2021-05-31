@@ -1,7 +1,6 @@
 use nom::{
   IResult,
-  sequence::delimited,
-  combinator::opt
+  sequence::delimited
 };
   
 use crate::scanners::ws::*;
@@ -19,15 +18,12 @@ fn checar_lista_operadores() {
 
           let der = match pila_val.pop() {
             Some(val) => val,
-            _ => {
-              // println!("Stack de valores vacío en EXP_LOGICA");
-              return;
-            }
+            _ => return
           };
           let izq = match pila_val.pop() {
             Some(val) => val,
             _ => {
-              // println!("Stack de valores vacío en EXP_LOGICA");
+              println!("Stack de valores vacío en EXP_LOGICA");
               return;
             }
           };
@@ -35,22 +31,17 @@ fn checar_lista_operadores() {
           drop(pila_val);
 
           match CUADRUPLOS.lock().unwrap().agregar_cuadruplo(&op, izq, der) {
-            Ok(_res) => { /*println!("{:?}", _res);*/ () },
-            Err(_err) => { /*println!("{:?}", _err);*/ () },
+            Ok(_) => (),
+            Err(err) => {
+              println!("{:?}", err);
+            },
           };
         },
-        Err(_) => {
-          lista_operadores.push(op);
-          ()
-        }
-      }
-      ()
+        Err(_) => { lista_operadores.push(op); }
+      };
     },
-    _ => {
-      // println!("Stack de operadores vacío en EXP_LOGICA");
-      ()
-    }
-  }
+    _ => {}
+  };
 
   drop(lista_operadores);
 }
@@ -67,14 +58,12 @@ pub fn exp_logica(input: &str) -> IResult<&str, &str> {
   };
 
   loop {
-    next = match opt(delimited(ws, op_logica, ws))(next) {
-      Ok((next_input, Some(operador))) => {
+    next = match delimited(ws, op_logica, ws)(next) {
+      Ok((next_input, operador)) => {
         PILA_OPERADORS.lock().unwrap().push(operador.to_owned());
         next_input
       },
-      _ => {
-        return Ok((next, "exp_logica"));
-      }
+      _ => return Ok((next, "exp_logica"))
     };
 
     next = match expresion(next) {
@@ -90,10 +79,6 @@ pub fn exp_logica(input: &str) -> IResult<&str, &str> {
 #[cfg(test)]
 mod tests {
   use super::*;
-  // use nom::{
-  //     error::{ErrorKind, VerboseError, VerboseErrorKind},
-  //     Err,
-  // };
 
   #[test]
   fn test_exp_logica() {

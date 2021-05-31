@@ -216,10 +216,6 @@ pub fn funcion(input: &str) -> IResult<&str, &str> {
 #[cfg(test)]
 mod tests {
   use super::*;
-  // use nom::{
-  //     error::{ErrorKind, VerboseError, VerboseErrorKind},
-  //     Err,
-  // };
 
   #[test]
   fn test_parametro() {
@@ -235,7 +231,6 @@ mod tests {
 
   #[test]
   fn test_funcion() {
-    // assert_eq!(funcion("void funcion func (entero var): { estatuto; regresa expresion ; }"), Ok(("", ("void", "func", vec![("entero", ("var", vec![]))]))));
     assert_eq!(funcion("void funcion func () { regresa expresion ; }"), Ok(("", "funcion")));
     assert_eq!(funcion("void funcion func (entero var) { num = 10; regresa expresion ; }"), Ok(("", "funcion")));
   }

@@ -41,27 +41,17 @@ pub fn bloque_funcion(input: &str) -> IResult<&str, &str> {
 #[cfg(test)]
 mod tests {
   use super::*;
-  // use nom::{
-  //     error::{ErrorKind, VerboseError, VerboseErrorKind},
-  //     Err,
-  // };
 
   #[test]
   fn test_lista_estatutos() {
-    assert_eq!(lista_estatutos(""), Ok(("", "lista_estatutos")));
+    assert_eq!(lista_estatutos(""),                    Ok(("", "lista_estatutos")));
     assert_eq!(lista_estatutos("%% un comentario %%"), Ok(("", "lista_estatutos")));
-    // assert_eq!(lista_estatutos("id + id"), Ok(("", "lista_estatutos")));
-    // assert_eq!(lista_estatutos("mientras(expresion)"), Ok(("", "lista_estatutos")));
-    // assert_eq!(lista_estatutos("mientras ( expresion )"), Ok(("", "lista_estatutos")));
   }
 
   #[test]
   fn test_bloque() {
-    assert_eq!(bloque("{}"), Ok(("", "bloque")));
-    assert_eq!(bloque("{  }"), Ok(("", "bloque")));
+    assert_eq!(bloque("{}"),                      Ok(("", "bloque")));
+    assert_eq!(bloque("{  }"),                    Ok(("", "bloque")));
     assert_eq!(bloque("{ %% un comentario %% }"), Ok(("", "bloque")));
-    // assert_eq!(lista_estatutos("id + id"), Ok(("", "lista_estatutos")));
-    // assert_eq!(lista_estatutos("mientras(expresion)"), Ok(("", "lista_estatutos")));
-    // assert_eq!(lista_estatutos("mientras ( expresion )"), Ok(("", "lista_estatutos")));
   }
 }

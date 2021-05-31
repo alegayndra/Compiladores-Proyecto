@@ -102,22 +102,11 @@ impl TablaFunciones {
       None => Err(("Funcion no existente", nombre_func.clone(), "".to_owned()))
     }
   }
-
-  // pub fn buscar_parametro(&mut self, nombre_func: String, nombre_var: String) -> Result<(&str, String), (&str, String)> {
-  //   match self.tabla.get(&nombre_func) {
-  //     Some(funcion) => funcion.parametros.hash.buscar_variable(nombre_var),
-  //     None => Err(("Funcion no existente", nombre_func.clone()))
-  //   }
-  // }
 }
 
 #[cfg(test)]
 mod tests {
   use super::*;
-  // use nom::{
-  //     error::{ErrorKind, VerboseError, VerboseErrorKind},
-  //     Err,
-  // };
 
   #[test]
   fn test_tabla_funciones() {

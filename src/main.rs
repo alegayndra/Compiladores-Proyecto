@@ -149,6 +149,13 @@ fn main() {
   println!("Archivo leído correctamente");
   match programa(&contents) {
     Ok(_) => {
+			{
+				// println!("Funciones  {:?}", FUNCIONES.lock().unwrap());
+				// println!("Clases     {:?}", CLASES.lock().unwrap());
+				// println!("Variables {:?}", VARIABLES.lock().unwrap());
+				// println!("Constantes {:?}", CONSTANTES.lock().unwrap());
+				// println!("Cuadruplos {:?}", CUADRUPLOS.lock().unwrap());
+			}
       escribir_archivo(nombre_archivo);
     },
     Err(err) => {

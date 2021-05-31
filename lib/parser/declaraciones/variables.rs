@@ -67,12 +67,17 @@ fn agregar_variable_a_tabla(var: &str, tipo_var: &str, dims: Vec<&str>) {
 
   let dir = match conseguir_direccion(tipo_var, "variable", 0) {
     Ok(num) => num,
-    Err(err) => { println!("{:?}", err); return; }
+    Err(err) => {
+      println!("{:?}", err);
+      return;
+    }
   };
 
   match VARIABLES.lock().unwrap().agregar_variable(var.to_owned(), tipo_var.to_owned(), dims_string.clone(), dir) {
-    Ok(_res) => { /*println!("{:?}", _res);*/ () },
-    Err(_err) => { /*println!("{:?}", _err);*/ () },
+    Ok(_) => (),
+    Err(err) => {
+      println!("{:?}", err);
+    },
   }
 
   let contexto_clase = CONTEXTO_CLASE.lock().unwrap();
@@ -81,19 +86,25 @@ fn agregar_variable_a_tabla(var: &str, tipo_var: &str, dims: Vec<&str>) {
   if contexto_clase.clone() != "".to_owned() {
     if contexto_funcion.clone() != "".to_owned() {
       match CLASES.lock().unwrap().agregar_atributo(contexto_clase.to_string(), var.to_owned(), tipo_var.to_owned(), dims_string.clone(), dir) {
-        Ok(_res) => { /*println!("{:?}", _res);*/ () },
-        Err(_err) => { /*println!("{:?}", _err);*/ () },
+        Ok(_) => (),
+        Err(err) => {
+          println!("{:?}", err);
+        },
       }
     } else {
       match CLASES.lock().unwrap().agregar_variable_metodo(contexto_clase.to_string(), contexto_funcion.to_string(), var.to_owned(), tipo_var.to_owned(), dims_string.clone(), dir, 0) {
-        Ok(_res) => { /*println!("{:?}", _res);*/ () },
-        Err(_err) => { /*println!("{:?}", _err);*/ () },
+        Ok(_) => (),
+        Err(err) => {
+          println!("{:?}", err);
+        },
       }
     }
   } else {
     match FUNCIONES.lock().unwrap().agregar_variable(contexto_funcion.to_string(), var.to_owned(), tipo_var.to_owned(), dims_string.clone(), dir, 0) {
-      Ok(_res) => { /*println!("{:?}", _res);*/ () },
-      Err(_err) => { /*println!("{:?}", _err);*/ () },
+      Ok(_) => (),
+      Err(err) => {
+        println!("{:?}", err);
+      },
     }
   }
 }
@@ -157,10 +168,6 @@ pub fn variables(input: &str) -> IResult<&str, &str> {
 #[cfg(test)]
 mod tests {
   use super::*;
-  // use nom::{
-  //     error::{ErrorKind, VerboseError, VerboseErrorKind},
-  //     Err,
-  // };
 
   #[test]
   fn test_variable_compuesta() {

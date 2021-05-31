@@ -18,13 +18,11 @@ fn generar_goto_sino() {
         Ok(_) => (),
         Err(err) => {
           println!("{:?}", err);
-          ()
         },
       };
-      ()
     },
-    _ => { /*println!("Pila de saltos vacía en PRINCIPAL"); */ () }
-  }
+    _ => ()
+  };
 
   saltos.push((cuadruplos.lista.len()) as i64);
 
@@ -32,7 +30,6 @@ fn generar_goto_sino() {
     Ok(_) => (),
     Err(err) => {
       println!("{:?}", err);
-      ()
     },
   };
   
@@ -68,7 +65,6 @@ fn generar_gotof() {
         Ok(_res) => (),
         Err(err) => {
           println!("{:?}", err);
-          ()
         },
       };
     },
@@ -89,10 +85,8 @@ fn actualizar_gotof() {
         Ok(_res) => (),
         Err(err) => {
           println!("{:?}", err);
-          ()
         },
       };
-      ()
     },
     _ => { println!("Pila de saltos vacía en PRINCIPAL"); () }
   }
@@ -124,10 +118,6 @@ pub fn decision(input: &str) -> IResult<&str, &str> {
 #[cfg(test)]
 mod tests {
   use super::*;
-  // use nom::{
-  //     error::{ErrorKind, VerboseError, VerboseErrorKind},
-  //     Err,
-  // };
 
   #[test]
   fn test_decision() {
