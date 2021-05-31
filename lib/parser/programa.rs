@@ -31,7 +31,7 @@ pub fn programa(input: &str) -> IResult<&str, &str> {
   // Crear tabla de variables globales
   let mut funcs1 = FUNCIONES.lock().unwrap();
   match funcs1.agregar_funcion(id_programa.to_owned(), "void".to_owned(), -5, 0) {
-    Ok(res) => (),
+    Ok(_) => (),
     Err(err) => {
       println!("{:?}", err);
       ()
@@ -43,8 +43,11 @@ pub fn programa(input: &str) -> IResult<&str, &str> {
   let mut cuadruplos = CUADRUPLOS.lock().unwrap();
   let mut saltos = PILA_SALTOS.lock().unwrap();
   match cuadruplos.agregar_cuadruplo_goto() {
-    Ok(_res) => { /*println!("{:?}", _res);*/ () },
-    Err(_err) => { /*println!("{:?}", _err);*/ () },
+    Ok(_) => (),
+    Err(err) => {
+      println!("{:?}", err);
+      ()
+    },
   };
   saltos.push((cuadruplos.lista.len() - 1) as i64);
   drop(cuadruplos);

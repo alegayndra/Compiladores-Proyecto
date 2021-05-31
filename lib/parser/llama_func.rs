@@ -16,7 +16,12 @@ fn generar_cuadruplo_era(id_func: &str) -> Vec<TipoVar> {
   if contexto_clase != "".to_owned() {
     match CLASES.lock().unwrap().buscar_metodo(contexto_clase, id_func.to_owned()) {
       Ok((_, _, func)) => {
-        cuadruplos.agregar_cuadruplo_era(func.direccion);
+        match cuadruplos.agregar_cuadruplo_era(func.direccion) {
+          Ok(_) => (),
+          Err(err) => {
+            println!("{:?}", err);
+          }
+        };
         return func.parametros.clone();
       },
       Err(err) => {
@@ -27,7 +32,12 @@ fn generar_cuadruplo_era(id_func: &str) -> Vec<TipoVar> {
   } else {
     match FUNCIONES.lock().unwrap().buscar_funcion(id_func.to_owned()) {
       Ok((_, func)) => {
-        cuadruplos.agregar_cuadruplo_era(func.direccion);
+        match cuadruplos.agregar_cuadruplo_era(func.direccion) {
+          Ok(_) => (),
+          Err(err) => {
+            println!("{:?}", err);
+          }
+        };
         return func.parametros.clone();
       },
       Err(err) => {
@@ -44,7 +54,12 @@ fn generar_cuadruplo_gosub(id_func: &str) {
   if contexto_clase != "".to_owned() {
     match CLASES.lock().unwrap().buscar_metodo(contexto_clase, id_func.to_owned()) {
       Ok((_, _, func)) => {
-        cuadruplos.agregar_cuadruplo_gosub(func.direccion);
+        match cuadruplos.agregar_cuadruplo_gosub(func.direccion) {
+          Ok(_) => (),
+          Err(err) => {
+            println!("{:?}", err);
+          }
+        };
       },
       Err(err) => {
         println!("{:?}", err);
@@ -53,7 +68,12 @@ fn generar_cuadruplo_gosub(id_func: &str) {
   } else {
     match FUNCIONES.lock().unwrap().buscar_funcion(id_func.to_owned()) {
       Ok((_, func)) => {
-        cuadruplos.agregar_cuadruplo_gosub(func.direccion);
+        match cuadruplos.agregar_cuadruplo_gosub(func.direccion) {
+          Ok(_) => (),
+          Err(err) => {
+            println!("{:?}", err);
+          }
+        };
       },
       Err(err) => {
         println!("{:?}", err);
@@ -72,7 +92,12 @@ fn generar_cuadruplo_param(params: Vec<TipoVar>, pos: usize) {
     return;
   }
 
-  CUADRUPLOS.lock().unwrap().agregar_cuadruplo_param(variable.clone(), params[pos].clone());
+  match CUADRUPLOS.lock().unwrap().agregar_cuadruplo_param(variable.clone(), params[pos].clone()) {
+    Ok(_) => (),
+    Err(err) => {
+      println!("{:?}", err);
+    }
+  };
 }
 
 pub fn llama_func(input: &str) -> IResult<&str, &str> {
@@ -93,7 +118,7 @@ pub fn llama_func(input: &str) -> IResult<&str, &str> {
       _id_attr = id_a;
       next_input
     },
-    Err(err) => next
+    Err(_) => next
   };
 
   next = match tag("(")(next) {

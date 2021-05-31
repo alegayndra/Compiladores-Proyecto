@@ -63,7 +63,6 @@ fn agregar_param(tipo_param: &str, id_param: &str) {
 }
 
 fn agregar_funcion(id_f: &str, tipo_func: &str) {
-  println!("Agregando funcion {}", id_f);
   let contexto_clase = CONTEXTO_CLASE.lock().unwrap();
   let mut funciones = FUNCIONES.lock().unwrap();
 

@@ -161,10 +161,11 @@ impl ListaCuadruplos {
 
   pub fn agregar_cuadruplo_param<'a>(&mut self, valor: TipoVar, destino: TipoVar) -> Result<(&'a str, (String, String)), (&'a str, (String, String))>{
     let op_num = conseguir_num_operador("PARAM");
+    let as_num = conseguir_num_operador("=");
     let valor_num = conseguir_num_tipo(valor.tipo.as_str());
     let destino_num = conseguir_num_tipo(destino.tipo.as_str());
 
-    match checar_cubo_semantico(op_num as usize, valor_num as usize, destino_num as usize) {
+    match checar_cubo_semantico(as_num as usize, valor_num as usize, destino_num as usize) {
       3 => Err(("Asignacion de parametro incompatible", (valor.tipo, destino.tipo))),
       _ => {
         // Crear temporal
