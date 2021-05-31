@@ -1,38 +1,18 @@
-CONSTANTES
-start
-nombre,tipo,dimensiones
-end
+dir 0 = 123
+dir 9001 = 10
 
-FUNCIONES
-start
-nombre,tipo
-PARAMETROS
-start2
-nombre,tipo,dimensiones
-end2
-end
+cuadruplo 14 --> 123 > 10 TRUE
+dir 834 = 1
 
-CLASES
-start
-nombre,padre
-METODOS
-start2
-nombre,tipo
-PARAMETROS
-start3
-nombre,tipo,dimensiones
-end3
-end2
-ATRIBUTOS
-start2
-nombre,tipo,dimensiones
-end2
-end
+cuadr. 15
+if 1 es falso?  NO
 
-CUADRUPLOS
-start
-//operador, valorIzq, valorDer, direccionMemoria
-*,A,B,5000
-+,
-end
-//D = C + A * B
+cuadr. 16
+PRINT(123)
+
+cuadr. 17
+123 - 1 
+dir 835 = 122
+
+cuadr. 18
+dir 0 = 122

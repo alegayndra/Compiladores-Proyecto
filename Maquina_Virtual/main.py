@@ -314,13 +314,15 @@ def switchCubo(cuadruplo):
     else:
       print("No entramos")
     return
-  elif cuadruplo[0] == 18: # GoSub
+  elif cuadruplo[0] == 18: # EndFunc
     return
-  elif cuadruplo[0] == 19: # ERA
+  elif cuadruplo[0] == 19: # Return
     return
-  elif cuadruplo[0] == 20: # Return
+  elif cuadruplo[0] == 20: # ERA
     return
   elif cuadruplo[0] == 21: # Param
+    return
+  elif cuadruplo[0] == 22: #GoSub
     return
 
 def ejecutar_programa():
