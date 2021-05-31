@@ -59,7 +59,6 @@ fn generar_gotof() {
   let mut lista_valores = PILA_VALORES.lock().unwrap();
 
   let mut saltos = PILA_SALTOS.lock().unwrap();
-  println!("{:?}", saltos);
   match lista_valores.pop() {
     Some(var) => {
       match cuadruplos.agregar_cuadruplo_gotof(var) {
@@ -72,7 +71,6 @@ fn generar_gotof() {
     _ => ()
   }
   drop(lista_valores);
-  println!("{:?}", saltos);
   saltos.push((cuadruplos.lista.len() - 1) as i64);
   drop(cuadruplos);
   drop(saltos);

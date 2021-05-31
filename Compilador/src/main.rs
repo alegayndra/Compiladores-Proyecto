@@ -25,8 +25,8 @@ fn escribir_archivo(nombre_archivo: &str) {
 	let tabla_funciones = FUNCIONES.lock().unwrap();
 	let id_programa = ID_PROGRAMA.lock().unwrap();
 	let constantes = CONSTANTES.lock().unwrap();
-	let tabla_clases = CLASES.lock().unwrap();
 	let cuadruplos = CUADRUPLOS.lock().unwrap();
+	// let tabla_clases = CLASES.lock().unwrap();
 
 	let mut texto_archivo: String = "".to_owned();
 
