@@ -1,7 +1,7 @@
 from lectura import *
 from globales import *
 
-def extaerMemoria(direccion):
+def extraerMemoria(direccion):
   contexto = len(dir_memoria) - 1
   # Itera sobre todos los contextos
   while contexto >= 0:
@@ -24,15 +24,15 @@ def extaerMemoria(direccion):
     contexto -= 1
   return None
 
-# Funcion que realiza operaciones con dos operados
+# Funcion que realiza operaciones con dos operandos
 # Operaciones aritmeticas, relaciones y lógicas
 def operacionNormal(izq, der, op):
   if izq != -1:
-    opIzq = extaerMemoria(izq)
+    opIzq = extraerMemoria(izq)
   else:
     return None
   if der != -1:
-    opDer = extaerMemoria(der)
+    opDer = extraerMemoria(der)
   else:
     return None
 
@@ -146,7 +146,7 @@ def asignacion(valor, destino):
       mapa_memoria[dirDestino[0]][dirDestino[1]][dirDestino[2]][destino - base_destino] = mapa_memoria[dirValor[0]][dirValor[1]][dirValor[2]][valor - base_valor]
 
 def escribe(valor):
-  print(extaerMemoria(valor))
+  print(extraerMemoria(valor))
 
 def leerValor(valor, direccion):
   contexto = len(dir_memoria) - 1
@@ -192,7 +192,7 @@ def goto(cuadruplo):
   num_cuadruplo[0] = cuadruplo - 1
 
 def gotof(valor, cuadruplo):
-  if not extaerMemoria(valor):
+  if not extraerMemoria(valor):
     print("entramos")
     goto(cuadruplo)
   else:
@@ -232,7 +232,7 @@ def era(funcion):
     i += 1
 
 def param(valor, parametro):
-  val = extaerMemoria(valor)
+  val = extraerMemoria(valor)
   tipo = len(dir_memoria[1]) - 1
   while tipo >= 0:
     if tipo >= dir_memoria[1][tipo][0]:
@@ -262,7 +262,7 @@ def switchCubo(cuadruplo):
     goto(cuadruplo[3])
     return
   elif cuadruplo[0] == 16: # GotoT
-    if extaerMemoria(cuadruplo[1]):
+    if extraerMemoria(cuadruplo[1]):
       num_cuadruplo[0] = cuadruplo[3] - 1
     return
   elif cuadruplo[0] == 17: # GotoF
