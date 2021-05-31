@@ -18,13 +18,13 @@ fn checar_pila_operadores() {
       match op.as_str() {
         "(" => (),
         _ => {
-          println!("No se encontró ( al final del stack de operadores en FACTOR");
+          // println!("No se encontró ( al final del stack de operadores en FACTOR");
           lista_operadores.push(op);
           ()
         }
       }
     },
-    None => { println!("Stack de operadores vacío en EXP_LOGICA"); () }
+    None => { /*println!("Stack de operadores vacío en EXP_LOGICA");*/ () }
   };
   drop(lista_operadores);
 }
