@@ -16,19 +16,19 @@ fn agregar_temporal_a_tabla(var: String, tipo_var: String, dir: i64) {
   if contexto_clase.clone() != "".to_owned() {
     if contexto_funcion.clone() != "".to_owned() {
       match CLASES.lock().unwrap().agregar_atributo(contexto_clase.to_string(), var, tipo_var, vec![], 20000) {
-        Ok(res) => { println!("{:?}", res); () },
-        Err(err) => { println!("{:?}", err); () },
+        Ok(_res) => { /*println!("{:?}", _res);*/ () },
+        Err(_err) => { /*println!("{:?}", _err);*/ () },
       }
     } else {
       match CLASES.lock().unwrap().agregar_variable_metodo(contexto_clase.to_string(), contexto_funcion.to_string(), var, tipo_var, vec![], 25000, 1) {
-        Ok(res) => { println!("{:?}", res); () },
-        Err(err) => { println!("{:?}", err); () },
+        Ok(_res) => { /*println!("{:?}", _res);*/ () },
+        Err(_err) => { /*println!("{:?}", _err);*/ () },
       }
     }
   } else {
     match FUNCIONES.lock().unwrap().agregar_variable(contexto_funcion.to_string(), var, tipo_var, vec![], dir, 1) {
-      Ok(res) => { println!("{:?}", res); () },
-        Err(err) => { println!("{:?}", err); () },
+      Ok(_res) => { /*println!("{:?}", _res);*/ () },
+      Err(_err) => { /*println!("{:?}", _err);*/ () },
     }
   }
 }
@@ -47,8 +47,8 @@ impl ListaCuadruplos {
         let tipo_temporal = conseguir_tipo_num(n);
         let dir = match conseguir_direccion(tipo_temporal.as_str(), "variable", 1) {
           Ok(num) => num,
-          Err(err) => {
-            println!("{:?}", err); 
+          Err(_err) => {
+            // println!("{:?}", _err);
             return Err(("Error al conseguir direccion de variable temporal", ("", "".to_owned(), "".to_owned())));
           }
         };
@@ -57,7 +57,7 @@ impl ListaCuadruplos {
             let nombre_temporal = format!("temporal{}", NUM_TEMPORAL);
             match tabla_variables.agregar_variable(nombre_temporal.clone(), tipo_temporal.clone(), vec![], dir) {
               Ok((_, var)) => {
-                println!("Temporal agregado: {:?}", nombre_temporal);
+                // println!("Temporal agregado: {:?}", nombre_temporal);
                 PILA_VALORES.lock().unwrap().push(var);
                 agregar_temporal_a_tabla(nombre_temporal.clone(), tipo_temporal.clone(), dir);
                 break;
@@ -85,7 +85,7 @@ impl ListaCuadruplos {
       4 => Err(("Variable objetivo no es un número", objetivo.nombre.clone(), objetivo.tipo.clone())),
       5 => Err(("Variable objetivo no es un número", objetivo.nombre.clone(), objetivo.tipo.clone())),
       _ => {
-        self.lista.push((op_num, CONSTANTES.lock().unwrap().agregar_constante("1".to_owned(), "entero".to_owned()).direccion, -1, objetivo.direccion));
+        self.lista.push((op_num, CONSTANTES.lock().unwrap().agregar_constante("1".to_owned(), "entero".to_owned()).direccion, objetivo.direccion, objetivo.direccion));
         Ok(("Incremento de for creado", objetivo.tipo.clone()))
       }
     }

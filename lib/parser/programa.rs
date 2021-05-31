@@ -31,14 +31,8 @@ pub fn programa(input: &str) -> IResult<&str, &str> {
   // Crear tabla de variables globales
   let mut funcs1 = FUNCIONES.lock().unwrap();
   match funcs1.agregar_funcion(id_programa.to_owned(), "void".to_owned(), 14000) {
-    Ok(res) => {
-      println!("{:?}", res);
-      ()
-    },
-    Err(err) => {
-      println!("{:?}", err);
-      ()
-    },
+    Ok(_res) => { /*println!("{:?}", _res);*/ () },
+    Err(_err) => { /*println!("{:?}", _err);*/ () },
   };
   drop(funcs1);
 
@@ -46,8 +40,8 @@ pub fn programa(input: &str) -> IResult<&str, &str> {
   let mut cuadruplos = CUADRUPLOS.lock().unwrap();
   let mut saltos = PILA_SALTOS.lock().unwrap();
   match cuadruplos.agregar_cuadruplo_goto() {
-    Ok(_) => (),
-    Err(_) => ()
+    Ok(_res) => { /*println!("{:?}", _res);*/ () },
+    Err(_err) => { /*println!("{:?}", _err);*/ () },
   };
   saltos.push((cuadruplos.lista.len() - 1) as i64);
   drop(cuadruplos);
@@ -84,7 +78,7 @@ pub fn programa(input: &str) -> IResult<&str, &str> {
       };
       ()
     },
-    _ => { println!("Pila de saltos vacía en PRINCIPAL"); () }
+    _ => { /* println!("Pila de saltos vacía en PRINCIPAL"); */ () }
   }
   
   drop(cuadruplos);
@@ -96,11 +90,11 @@ pub fn programa(input: &str) -> IResult<&str, &str> {
   };
 
   {
-    println!("Funciones  {:?}", FUNCIONES.lock().unwrap());
-    println!("Clases     {:?}", CLASES.lock().unwrap());
+    // println!("Funciones  {:?}", FUNCIONES.lock().unwrap());
+    // println!("Clases     {:?}", CLASES.lock().unwrap());
     // println!("Variables {:?}", VARIABLES.lock().unwrap());
-    println!("Constantes {:?}", CONSTANTES.lock().unwrap());
-    println!("Cuadruplos {:?}", CUADRUPLOS.lock().unwrap());
+    // println!("Constantes {:?}", CONSTANTES.lock().unwrap());
+    // println!("Cuadruplos {:?}", CUADRUPLOS.lock().unwrap());
   }
 
   match ws(next) {

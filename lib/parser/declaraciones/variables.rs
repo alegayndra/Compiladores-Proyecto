@@ -71,11 +71,8 @@ fn agregar_variable_a_tabla(var: &str, tipo_var: &str, dims: Vec<&str>) {
   };
 
   match VARIABLES.lock().unwrap().agregar_variable(var.to_owned(), tipo_var.to_owned(), dims_string.clone(), dir) {
-    Ok(_) => (),
-    Err(err) => {
-      println!("{:?}", err);
-      ()
-    },
+    Ok(_res) => { /*println!("{:?}", _res);*/ () },
+    Err(_err) => { /*println!("{:?}", _err);*/ () },
   }
 
   let contexto_clase = CONTEXTO_CLASE.lock().unwrap();
@@ -84,37 +81,19 @@ fn agregar_variable_a_tabla(var: &str, tipo_var: &str, dims: Vec<&str>) {
   if contexto_clase.clone() != "".to_owned() {
     if contexto_funcion.clone() != "".to_owned() {
       match CLASES.lock().unwrap().agregar_atributo(contexto_clase.to_string(), var.to_owned(), tipo_var.to_owned(), dims_string.clone(), 20000) {
-        Ok(res) => {
-          println!("{:?}", res);
-          ()
-        },
-        Err(err) => {
-          println!("{:?}", err);
-          ()
-        },
+        Ok(_res) => { /*println!("{:?}", _res);*/ () },
+        Err(_err) => { /*println!("{:?}", _err);*/ () },
       }
     } else {
       match CLASES.lock().unwrap().agregar_variable_metodo(contexto_clase.to_string(), contexto_funcion.to_string(), var.to_owned(), tipo_var.to_owned(), dims_string.clone(), 25000, 0) {
-        Ok(res) => {
-          println!("{:?}", res);
-          ()
-        },
-        Err(err) => {
-          println!("{:?}", err);
-          ()
-        },
+        Ok(_res) => { /*println!("{:?}", _res);*/ () },
+        Err(_err) => { /*println!("{:?}", _err);*/ () },
       }
     }
   } else {
     match FUNCIONES.lock().unwrap().agregar_variable(contexto_funcion.to_string(), var.to_owned(), tipo_var.to_owned(), dims_string.clone(), dir, 0) {
-      Ok(res) => {
-        println!("{:?}", res);
-        ()
-      },
-      Err(err) => {
-        println!("{:?}", err);
-        ()
-      },
+      Ok(_res) => { /*println!("{:?}", _res);*/ () },
+      Err(_err) => { /*println!("{:?}", _err);*/ () },
     }
   }
 }
