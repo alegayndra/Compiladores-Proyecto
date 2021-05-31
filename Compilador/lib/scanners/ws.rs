@@ -4,11 +4,11 @@ use nom::{
 };
 
 pub fn ws(input: &str) -> IResult<&str, &str> {
-  take_while(|c: char| c == ' ' || c == '\n' || c == '\t')(input)
+  take_while(|c: char| c == ' ' || c == '\n' || c == '\t' || c == '\r')(input)
 }
 
 pub fn necessary_ws(input: &str) -> IResult<&str, &str> {
-  take_while1(|c: char| c == ' ' || c == '\n' || c == '\t')(input)
+  take_while1(|c: char| c == ' ' || c == '\n' || c == '\t' || c == '\r')(input)
 }
 
 #[cfg(test)]
