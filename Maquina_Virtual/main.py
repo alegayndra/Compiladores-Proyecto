@@ -1,106 +1,5 @@
-from os import DirEntry, read
-from pathlib import Path
-import io
-import sys
-
-dir_memoria = [
-  [ # Globales
-    [ # Enteras
-      # Inicio  Limite
-      0,    833 # Normales
-    ],
-    [ # Flotantes
-      # Inicio  Limite
-      1250,    2083 # Normales
-    ],
-    [ # Caracteres
-      # Inicio  Limite
-      2500,    2833 # Normales
-    ]
-  ],
-  [ # Locales
-    [ # Enteras
-      # Inicio  Limite
-      3000,    4665 # Normales
-    ],
-    [ # Flotantes
-      # Inicio  Limite
-      5500,    7164 # Normales
-    ],
-    [ # Caracteres
-      # Inicio  Limite
-      8000,    8666 # Normales
-    ]
-  ],
-  [ # Constantes
-    [ # Enteras
-      # Inicio
-      9000 # Normales
-    ],
-    [ # Flotantes
-      # Inicio
-      9401 # Normales
-    ],
-    [ # Caracteres
-      # Inicio
-      9801 # Normales
-    ]
-  ]
-]
-
-funciones = []
-
-auxLocales = [ # Locales
-    [ # Enteras
-      # Inicio  Limite
-      [ [],    []], # Normales
-    ],
-    [ # Flotantes
-      # Inicio  Limite
-      [ [],    []], # Normales
-    ],
-    [ # Caracteres
-      # Inicio  Limite
-      [ [],    []], # Normales
-    ]
-]
-
-mapa_memoria = [
-  [ # Globales
-    [ # Enteras
-      # Inicio  Limite
-      [],  [] # Normales
-    ],
-    [ # Flotantes
-      # Inicio  Limite
-      [],  [] # Normales
-    ],
-    [ # Caracteres
-      # Inicio  Limite
-      [],  [] # Normales
-    ]
-  ],
-  [ # Locales
-   # Aqui se van a pushear stacks de memoria
-  ],
-  [ # Constantes
-    [ # Enteras
-      # Inicio
-      [] # Normales
-    ],
-    [ # Flotantes
-      # Inicio
-      [] # Normales
-    ],
-    [ # Caracteres
-      # Inicio
-      [] # Normales
-    ]
-  ]
-]
-
-lista_cuadruplos = []
-num_cuadruplo = [0]
+from lectura import *
+from globales import *
 
 def extaerMemoria(direccion):
   contexto = len(dir_memoria) - 1
@@ -127,16 +26,16 @@ def extaerMemoria(direccion):
 
 # Funcion que realiza operaciones con dos operados
 # Operaciones aritmeticas, relaciones y lógicas
-def operacionNormal(opIzq, opDer, op):
-  if opIzq != -1:
-    opIzq = extaerMemoria(opIzq)
+def operacionNormal(izq, der, op):
+  if izq != -1:
+    opIzq = extaerMemoria(izq)
   else:
     return None
-  if opDer != -1:
-    opDer = extaerMemoria(opDer)
+  if der != -1:
+    opDer = extaerMemoria(der)
   else:
     return None
-    
+
   if op == 0:
     return opIzq + opDer
   elif op == 1:
@@ -204,13 +103,13 @@ def asignacion(valor, destino):
       
       # Itera sobre los espacios reservados para las variables normales y temporales
       while esTemporal >= 0:
-        if destino >= dir_memoria[contexto][tipoVariable][esTemporal]:
+        if (not dirDestino) and destino >= dir_memoria[contexto][tipoVariable][esTemporal]:
           dirDestino = [
             contexto,
             tipoVariable, 
             esTemporal
           ]
-        if valor >= dir_memoria[contexto][tipoVariable][esTemporal]:
+        if (not dirValor) and valor >= dir_memoria[contexto][tipoVariable][esTemporal]:
           dirValor = [
             contexto,
             tipoVariable, 
@@ -235,14 +134,16 @@ def asignacion(valor, destino):
   # Checa que se hayan encontrado ambas posiciones dentro de la memoria
   if dirValor and dirDestino:
     # Checa si las variables están en un cotexto local
-    if dirDestino[1] == 1 and dirValor[1] == 1: # Ambas son locales
-      mapa_memoria[dirDestino[0]][len(mapa_memoria[dirDestino[0]]) - 1][dirDestino[1]][dirDestino[2]] = mapa_memoria[dirValor[0]][len(mapa_memoria[dirValor[0]]) - 1][dirValor[1]][dirValor[2]]
-    elif dirDestino[1] == 1: # Destino es local
-      mapa_memoria[dirDestino[0]][len(mapa_memoria[dirDestino[0]]) - 1][dirDestino[1]][dirDestino[2]] = mapa_memoria[dirValor[0]][dirValor[1]][dirValor[2]]
-    elif dirValor[1] == 1: # Valor a asignas es local
-      mapa_memoria[dirDestino[0]][dirDestino[1]][dirDestino[2]] = mapa_memoria[dirValor[0]][len(mapa_memoria[dirValor[0]]) - 1][dirValor[1]][dirValor[2]]
+    base_destino = dir_memoria[dirDestino[0]][dirDestino[1]][dirDestino[2]]
+    base_valor = dir_memoria[dirValor[0]][dirValor[1]][dirValor[2]]
+    if dirDestino[0] == 1 and dirValor[0] == 1: # Ambas son locales
+      mapa_memoria[dirDestino[0]][len(mapa_memoria[dirDestino[0]]) - 1][dirDestino[1]][dirDestino[2]][destino - base_destino] = mapa_memoria[dirValor[0]][len(mapa_memoria[dirValor[0]]) - 1][dirValor[1]][dirValor[2]][valor - base_valor]
+    elif dirDestino[0] == 1: # Destino es local
+      mapa_memoria[dirDestino[0]][len(mapa_memoria[dirDestino[0]]) - 1][dirDestino[1]][dirDestino[2]][destino - base_destino] = mapa_memoria[dirValor[0]][dirValor[1]][dirValor[2]][valor - base_valor]
+    elif dirValor[0] == 1: # Valor a asignas es local
+      mapa_memoria[dirDestino[0]][dirDestino[1]][dirDestino[2]][destino - base_destino] = mapa_memoria[dirValor[0]][len(mapa_memoria[dirValor[0]]) - 1][dirValor[1]][dirValor[2]][valor - base_valor]
     else: # Ninguna es local
-      mapa_memoria[dirDestino[0]][dirDestino[1]][dirDestino[2]] = mapa_memoria[dirValor[0]][dirValor[1]][dirValor[2]]
+      mapa_memoria[dirDestino[0]][dirDestino[1]][dirDestino[2]][destino - base_destino] = mapa_memoria[dirValor[0]][dirValor[1]][dirValor[2]][valor - base_valor]
 
 def escribe(valor):
   print(extaerMemoria(valor))
@@ -269,6 +170,14 @@ def leerValor(valor, direccion):
             valor = int(valor)
           # Checa si estamos en un contexto local
           if contexto == 1:
+            print(contexto)
+            print(tipoVariable)
+            print(mapa_memoria[contexto])
+            print(mapa_memoria[contexto][len(mapa_memoria[contexto]) - 1])
+            print(mapa_memoria[contexto][len(mapa_memoria[contexto]) - 1][tipoVariable])
+            print(mapa_memoria[contexto][len(mapa_memoria[contexto]) - 1][tipoVariable][esTemporal])
+            print(dir_memoria[contexto][tipoVariable][esTemporal])
+            print(mapa_memoria[contexto][len(mapa_memoria[contexto]) - 1][tipoVariable][esTemporal][direccion - dir_memoria[contexto][tipoVariable][esTemporal]])
             mapa_memoria[contexto][len(mapa_memoria[contexto]) - 1][tipoVariable][esTemporal][direccion - dir_memoria[contexto][tipoVariable][esTemporal]] = valor
             return
           else:
@@ -279,16 +188,69 @@ def leerValor(valor, direccion):
     contexto -= 1
   return None
 
+def goto(cuadruplo):
+  num_cuadruplo[0] = cuadruplo - 1
+
+def gotof(valor, cuadruplo):
+  if not extaerMemoria(valor):
+    print("entramos")
+    goto(cuadruplo)
+  else:
+    print("No entramos")
+
+def endfunc():
+  mapa_memoria[1].pop()
+  goto(pila_cuadruplos[len(pila_cuadruplos) - 1] + 1)
+  pila_cuadruplos.pop()
+
+def regresa(valor, destino):
+  asignacion(valor, destino)
+  endfunc()
+
 def lee(valor):
   var = input("")
   leerValor(var, valor)
+
+def era(funcion):
+  memoriaFuncionEnProgreso[0] = auxLocales.copy()
+
+  for i in range(len(funciones)):
+    if funciones[i][0][1] == funcion:
+      cntIntNormal   =  funciones[i][1][0]
+      cntIntTemp     =  funciones[i][1][1]
+      cntFloatNormal =  funciones[i][2][0]
+      cntFloatTemp   =  funciones[i][2][1]
+      cntCharNormal  =  funciones[i][3][0]
+      cntCharTemp    =  funciones[i][3][1]
+      memoriaFuncionEnProgreso[0][0][0] = [None] * int(cntIntNormal)
+      memoriaFuncionEnProgreso[0][0][1] = [None] * int(cntIntTemp)
+      memoriaFuncionEnProgreso[0][1][0] = [None] * int(cntFloatNormal)
+      memoriaFuncionEnProgreso[0][1][1] = [None] * int(cntFloatTemp)
+      memoriaFuncionEnProgreso[0][2][0] = [None] * int(cntCharNormal)
+      memoriaFuncionEnProgreso[0][2][1] = [None] * int(cntCharTemp)
+      return
+    i += 1
+
+def param(valor, parametro):
+  val = extaerMemoria(valor)
+  tipo = len(dir_memoria[1]) - 1
+  while tipo >= 0:
+    if tipo >= dir_memoria[1][tipo][0]:
+      memoriaFuncionEnProgreso[0][tipo][0][parametro - dir_memoria[1][tipo][0]] = val
+    tipo -= 1
+  
+def gosub(cuad_funcion):
+  mapa_memoria[1].append(memoriaFuncionEnProgreso[0])
+  pila_cuadruplos.append(num_cuadruplo[0])
+  goto(cuad_funcion)
 
 def switchCubo(cuadruplo):
   if cuadruplo[0] >= 0 and cuadruplo[0] <= 11:
     guardarValor(operacionNormal(cuadruplo[1], cuadruplo[2], cuadruplo[0]), cuadruplo[3])
     return
   elif cuadruplo[0] == 12: # Asignacion
-    asignacion(cuadruplo[1], cuadruplo[2])
+    # print("Vamos a asignar")
+    asignacion(cuadruplo[1], cuadruplo[3])
     return
   elif cuadruplo[0] == 13: # Print
     escribe(cuadruplo[3])
@@ -297,32 +259,29 @@ def switchCubo(cuadruplo):
     lee(cuadruplo[3])
     return
   elif cuadruplo[0] == 15: # Goto
-    num_cuadruplo[0] = cuadruplo[3] - 1
+    goto(cuadruplo[3])
     return
   elif cuadruplo[0] == 16: # GotoT
     if extaerMemoria(cuadruplo[1]):
       num_cuadruplo[0] = cuadruplo[3] - 1
     return
   elif cuadruplo[0] == 17: # GotoF
-    # print(type(cuadruplo[3]))
-    # print(cuadruplo[3])
-    # print(mapa_memoria[0][0])
-    print(extaerMemoria(cuadruplo[1]))
-    if not extaerMemoria(cuadruplo[1]):
-      print("entramos")
-      num_cuadruplo[0] = cuadruplo[3] - 1
-    else:
-      print("No entramos")
+    gotof(cuadruplo[1], cuadruplo[3])
     return
   elif cuadruplo[0] == 18: # EndFunc
+    endfunc()
     return
   elif cuadruplo[0] == 19: # Return
+    regresa(cuadruplo[1], cuadruplo[3])
     return
   elif cuadruplo[0] == 20: # ERA
+    era(cuadruplo[3])
     return
   elif cuadruplo[0] == 21: # Param
+    param(cuadruplo[1], cuadruplo[3])
     return
   elif cuadruplo[0] == 22: #GoSub
+    gosub(cuadruplo[3])
     return
 
 def ejecutar_programa():
@@ -337,181 +296,5 @@ def ejecutar_programa():
  Funciones que guardan los valores del .txt en memoria
 '''
 
-def leerCuadruplos(txt_cuadruplos):
-  readStr = 0
-  while readStr < len(txt_cuadruplos):
-    cantidades = txt_cuadruplos[ readStr:txt_cuadruplos.find( '\n', readStr ) ]
-    operador = int( cantidades[ 1:cantidades.find( ',' ) ] )
-    cantidades = cantidades[ cantidades.find( ',' ) + 2: ]
-    varIzq = int(cantidades[ :cantidades.find(',')] )
-    cantidades = cantidades[ cantidades.find(',') + 2: ]
-    varDer = int(cantidades[ :cantidades.find( ',' ) ] )
-    cantidades = cantidades[ cantidades.find(',') + 2:]
-    guardar = int(cantidades[ :cantidades.find( ')' ) ] )
-
-    lista_cuadruplos.append((operador, varIzq, varDer, guardar))
-    
-    readStr = txt_cuadruplos.find('\n', readStr) + 1
-  ejecutar_programa()
-
-def guardarParams(direcciones_params, i):
-  readStr = 0
-  count = 0
-  parm = []
-  while readStr < len(direcciones_params) and count < 6:
-    cantidades = direcciones_params[readStr:direcciones_params.find('\n', readStr)]
-    direccion = int(cantidades[1:cantidades.find(',')] )
-    cantidades = cantidades[cantidades.find(',') + 2:]
-    tipo = cantidades[:cantidades.find(')')]
-    readStr = direcciones_params.find('\n', readStr) + 1
-    parm.append((direccion, tipo))
-  funciones[i].append(parm)
-
-def guardarFunciones(direcciones_funcs):
-  readStr = 0
-  i = 0
-  while readStr < len(direcciones_funcs):
-    funciones.append([])
-    cantidades = direcciones_funcs[readStr:direcciones_funcs.find('\n', readStr)]
-    nombreFunc = direcciones_funcs[1:cantidades.find(',')]
-    cantidades = cantidades[cantidades.find(',') + 2:]
-
-    direcFunc = int(cantidades[:cantidades.find(',')])
-    cantidades = cantidades[cantidades.find(',') + 2:]
-    numCuadruplo = int(cantidades[:cantidades.find(')')])
-    readStr = direcciones_funcs.find('\n', readStr) + 1
-
-    cantidades = direcciones_funcs[readStr:direcciones_funcs.find('\n', readStr)]
-    cntIntNormal = int(cantidades[1:cantidades.find(',')])
-    cantidades = cantidades[cantidades.find(',') + 2:]
-    cntIntTemp = int(cantidades[:cantidades.find(')')])
-    readStr = direcciones_funcs.find('\n', readStr) + 1
-
-    cantidades = direcciones_funcs[readStr:direcciones_funcs.find('\n', readStr)]
-    readStr = direcciones_funcs.find('\n', readStr) + 1
-    cntFloatNormal = int(cantidades[1:cantidades.find(',')])
-    cantidades = cantidades[cantidades.find(',') + 2:]
-    cntFloatTemp = int(cantidades[:cantidades.find(')')])
-
-    cantidades = direcciones_funcs[readStr:direcciones_funcs.find('\n', readStr)]
-    readStr = direcciones_funcs.find('\n', readStr) + 1
-    cntCharNormal = int(cantidades[1:cantidades.find(',')])
-    cantidades = cantidades[cantidades.find(',') + 2:]
-    cntCharTemp = int(cantidades[:cantidades.find(')')])
-    funciones[i].append((nombreFunc, direcFunc, numCuadruplo))
-    funciones[i].append((cntIntNormal, cntIntTemp))
-    funciones[i].append((cntFloatNormal, cntFloatTemp))
-    funciones[i].append((cntCharNormal, cntCharTemp))
-    guardarParams(direcciones_funcs[direcciones_funcs.find("PARAMS") + 7:direcciones_funcs.find("FIN_PARAMS")], i)
-    direcciones_funcs = direcciones_funcs[direcciones_funcs.find("FIN_PARAMS", readStr) + 11:direcciones_funcs.find("FIN_FUNCIONES", readStr)]
-    readStr = 0
-    print(direcciones_funcs)
-    i += 1
-  
-def guardarMapaGlobs(direcciones_globs):
-  readStr = 0
-  cantidades = direcciones_globs[readStr:direcciones_globs.find('\n', readStr)]
-  readStr = direcciones_globs.find('\n', readStr) + 1
-  cntIntNormal = cantidades[1:cantidades.find(',')] 
-  cantidades = cantidades[cantidades.find(',') + 2:]
-  cntIntTemp = cantidades[:cantidades.find(')')]
-  
-  cantidades = direcciones_globs[readStr:direcciones_globs.find('\n', readStr)]
-  readStr = direcciones_globs.find('\n', readStr) + 1
-  cntFloatNormal = cantidades[1:cantidades.find(',')] 
-  cantidades = cantidades[cantidades.find(',') + 2:]
-  cntFloatTemp = cantidades[:cantidades.find(')')]
-  
-  cantidades = direcciones_globs[readStr:direcciones_globs.find('\n', readStr)]
-  readStr = direcciones_globs.find('\n', readStr) + 1
-  cntCharNormal = cantidades[1:cantidades.find(',')] 
-  cantidades = cantidades[cantidades.find(',') + 2:]
-  cntCharTemp = cantidades[:cantidades.find(')')]
-  
-  mapa_memoria[0][0][0] = [None] * int(cntIntNormal)
-  mapa_memoria[0][0][1] = [None] * int(cntIntTemp)
-  mapa_memoria[0][1][0] = [None] * int(cntFloatNormal)
-  mapa_memoria[0][1][1] = [None] * int(cntFloatTemp)
-  mapa_memoria[0][2][0] = [None] * int(cntCharNormal)
-  mapa_memoria[0][2][1] = [None] * int(cntCharTemp)
-
-def guardarMapaCons(direcciones_const):
-  readStr = 0
-  cantidades = direcciones_const[readStr:direcciones_const.find('\n', readStr)]
-  cntInt = cantidades[1:cantidades.find(',')]
-  cantidades = cantidades[cantidades.find(',') + 2:]
-  cntFloat = cantidades[:cantidades.find(',')]
-  cantidades = cantidades[cantidades.find(',') + 2:]
-  cntChar = cantidades[:cantidades.find(',')]
-  mapa_memoria[2][0][0] = [None] * int(cntInt)
-  mapa_memoria[2][1][0] = [None] * int(cntFloat)
-  mapa_memoria[2][2][0] = [None] * int(cntChar)
-
-  direcciones_const = direcciones_const[direcciones_const.find('\n') + 1:]
-  while readStr < len(direcciones_const):
-    valYdir = direcciones_const[readStr:direcciones_const.find('\n', readStr)]
-
-    value = valYdir[1:valYdir.find(',')]
-    valYdir = valYdir[valYdir.find(',') + 2:]
-    direccion = valYdir[:valYdir.find(',')]
-    valYdir = valYdir[valYdir.find(',') + 2:]
-    tipo = valYdir[:valYdir.find(')')]
-
-    if tipo == "entero":
-      value = int(value)
-    elif tipo == "flotante":
-      value = float(value)
-    direccion = int(direccion)
-    i = len(dir_memoria[2])-1
-    while i >= 0:
-      if(direccion >= dir_memoria[2][i][0]):
-        mapa_memoria[2][i][0][direccion - dir_memoria[2][i][0]] = value
-        break
-      i -= 1
-
-    readStr = direcciones_const.find('\n', readStr) + 1
-
-def leer_obj():
-  # Lectura y normalizacion de archivo
-  prueba_cuadruplos = Path("C:/Users/delca/Documents/Tareas TEC/Compiladores/Compiladores-Proyecto/Compilador/cuadruplos")
-  abrir = prueba_cuadruplos / "Killer_queen.txt"
-  file_opened = open(abrir, 'r')
-  stringTxt = file_opened.read()
-
-  #Registro de valores para constantes en mapa de memoria
-  guardarMapaCons(stringTxt[stringTxt.find("CONSTANTES") + 11:stringTxt.find("FIN_CONSTANTES")])
-
-  #Registro de valores para globales en mapa de memoria
-  guardarMapaGlobs(stringTxt[stringTxt.find("GLOBALES") + 9:stringTxt.find("FIN_GLOBALES")])
-
-  guardarFunciones(stringTxt[stringTxt.find("FUNCIONES") + 10:stringTxt.find("FIN_FUNCIONES")])
-  
-  leerCuadruplos(stringTxt[stringTxt.find("CUADRUPLOS") + 11:stringTxt.find("FIN_CUADRUPLOS")])
-  '''
-  print("Aqui estan las variables globales")
-  print(mapa_memoria[0])
-  print("")
-  print("Aqui estan las variables normales globales")
-  print(mapa_memoria[0][0][0], mapa_memoria[0][1][0], mapa_memoria[0][2][0])
-  print("")
-  print("Aqui estan las variables temporales globales")
-  print(mapa_memoria[0][0][1], mapa_memoria[0][1][1], mapa_memoria[0][2][1])
-  print("")
-
-  print("Aqui estan las variables locales")
-  print(mapa_memoria[1])
-  
-  print("Aqui estan las variables constantes")
-  print(mapa_memoria[2])
-  print("")
-  print("Aqui estan las variables INT constantes")
-  print(mapa_memoria[2][0])
-  print("")
-  print("Aqui estan las variables FLOAT globales")
-  print(mapa_memoria[2][1])
-  print("")
-  print("Aqui estan las variables CHAR globales")
-  print(mapa_memoria[2][2])
-  '''
 leer_obj()
 ejecutar_programa()
