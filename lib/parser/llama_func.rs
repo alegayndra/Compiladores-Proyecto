@@ -10,7 +10,7 @@ use crate::parser::reglas_expresion::exp::*;
 use crate::semantica::tabla_variables::*;
 use crate::semantica::globales::*;
 
-fn generar_cuadruplo_era(id_func: &str) -> Vec<TipoVar> {
+pub fn generar_cuadruplo_era(id_func: &str) -> Vec<TipoVar> {
   let contexto_clase = CONTEXTO_CLASE.lock().unwrap().to_string();
   let mut cuadruplos = CUADRUPLOS.lock().unwrap();
   if contexto_clase != "".to_owned() {
@@ -48,7 +48,7 @@ fn generar_cuadruplo_era(id_func: &str) -> Vec<TipoVar> {
   }
 }
 
-fn generar_cuadruplo_gosub(id_func: &str) {
+pub fn generar_cuadruplo_gosub(id_func: &str) {
   let contexto_clase = CONTEXTO_CLASE.lock().unwrap().to_string();
   let mut cuadruplos = CUADRUPLOS.lock().unwrap();
   if contexto_clase != "".to_owned() {
@@ -82,7 +82,7 @@ fn generar_cuadruplo_gosub(id_func: &str) {
   }
 }
 
-fn generar_cuadruplo_param(params: Vec<TipoVar>, pos: usize) {
+pub fn generar_cuadruplo_param(params: Vec<TipoVar>, pos: usize) {
   let variable = match PILA_VALORES.lock().unwrap().pop() {
     Some(var) => var,
     None => return
