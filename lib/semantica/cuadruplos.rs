@@ -175,10 +175,10 @@ impl ListaCuadruplos {
     }
   }
 
-  pub fn agregar_cuadruplo_gosub<'a>(&mut self, dir_func: i64) -> Result<(&'a str, i64), (&'a str, i64)>{
+  pub fn agregar_cuadruplo_gosub<'a>(&mut self, cuadruplo: i64) -> Result<(&'a str, i64), (&'a str, i64)>{
     let op_num = conseguir_num_operador("GOSUB");
-    self.lista.push((op_num, -1, -1, dir_func));
-    Ok(("GOSUB generado", dir_func))
+    self.lista.push((op_num, -1, -1, cuadruplo));
+    Ok(("GOSUB generado", cuadruplo))
   }
 
   // pub fn modificar_cuadruplo_gotof<'a>(&mut self, num_cuadruplo: usize) -> Result<(&'a str, usize, i64), (&'a str, usize, i64)>{

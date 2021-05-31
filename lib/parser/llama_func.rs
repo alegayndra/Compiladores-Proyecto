@@ -54,7 +54,7 @@ fn generar_cuadruplo_gosub(id_func: &str) {
   if contexto_clase != "".to_owned() {
     match CLASES.lock().unwrap().buscar_metodo(contexto_clase, id_func.to_owned()) {
       Ok((_, _, func)) => {
-        match cuadruplos.agregar_cuadruplo_gosub(func.direccion) {
+        match cuadruplos.agregar_cuadruplo_gosub(func.num_cuadruplo) {
           Ok(_) => (),
           Err(err) => {
             println!("{:?}", err);
@@ -68,7 +68,7 @@ fn generar_cuadruplo_gosub(id_func: &str) {
   } else {
     match FUNCIONES.lock().unwrap().buscar_funcion(id_func.to_owned()) {
       Ok((_, func)) => {
-        match cuadruplos.agregar_cuadruplo_gosub(func.direccion) {
+        match cuadruplos.agregar_cuadruplo_gosub(func.num_cuadruplo) {
           Ok(_) => (),
           Err(err) => {
             println!("{:?}", err);
