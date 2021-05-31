@@ -16,9 +16,9 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - name: CD
-      run: cd Compilador
     - name: Build
+      working-directory: ./Compilador
       run: cargo build --verbose
     - name: Run tests
+      working-directory: ./Compilador
       run: cargo test -- --test-threads=1
