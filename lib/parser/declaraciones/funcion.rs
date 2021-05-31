@@ -26,11 +26,17 @@ fn parametros_vacios(input: &str) -> IResult<&str, &str> {
 
 fn agregar_param(tipo_param: &str, id_param: &str) {
   let dims_string : Vec<String> = vec![];
-  match VARIABLES.lock().unwrap().agregar_variable(id_param.to_owned(), tipo_param.to_owned(), dims_string.clone(), 1000) {
+
+  let dir = match conseguir_direccion(tipo_param, "variable", 0) {
+    Ok(num) => num,
+    Err(err) => { println!("{:?}", err); return; }
+  };
+
+  match VARIABLES.lock().unwrap().agregar_variable(id_param.to_owned(), tipo_param.to_owned(), dims_string.clone(), dir) {
     Ok(_) => (),
     Err(err) => {
       println!("{:?}", err);
-      ()
+      return;
     },
   }
 
@@ -38,28 +44,78 @@ fn agregar_param(tipo_param: &str, id_param: &str) {
   let contexto_funcion = CONTEXTO_FUNCION.lock().unwrap();
 
   if contexto_clase.clone() != "".to_owned() {
-    match CLASES.lock().unwrap().agregar_parametro_metodo(contexto_clase.to_string(), contexto_funcion.to_string(), id_param.to_owned(), tipo_param.to_owned(), dims_string.clone(), 26000) {
-      Ok(res) => {
-        println!("{:?}", res);
-        ()
-      },
+    match CLASES.lock().unwrap().agregar_parametro_metodo(contexto_clase.to_string(), contexto_funcion.to_string(), id_param.to_owned(), tipo_param.to_owned(), dims_string.clone(), dir) {
+      Ok(_res) => {},
       Err(err) => {
         println!("{:?}", err);
         ()
       },
     };
   } else {
-    match FUNCIONES.lock().unwrap().agregar_parametro(contexto_funcion.to_string(), id_param.to_owned(), tipo_param.to_owned(), dims_string.clone(), 16000) {
-      Ok(res) => {
-        println!("{:?}", res);
-        ()
-      },
+    match FUNCIONES.lock().unwrap().agregar_parametro(contexto_funcion.to_string(), id_param.to_owned(), tipo_param.to_owned(), dims_string.clone(), dir) {
+      Ok(_res) => {},
       Err(err) => {
         println!("{:?}", err);
         ()
       },
     }
   }
+}
+
+fn agregar_funcion(id_f: &str, tipo_func: &str) {
+  println!("Agregando funcion {}", id_f);
+  let contexto_clase = CONTEXTO_CLASE.lock().unwrap();
+  let mut funciones = FUNCIONES.lock().unwrap();
+
+  {
+    *CONTEXTO_FUNCION.lock().unwrap() = ID_PROGRAMA.lock().unwrap().to_string();
+  }
+
+  let cuad: i64 = CUADRUPLOS.lock().unwrap().lista.len() as i64;
+  let dir = match tipo_func {
+    "void" => -8, 
+    _ => match conseguir_direccion(tipo_func, "variable", 0) {
+      Ok(num) => {
+        let id_programa = ID_PROGRAMA.lock().unwrap().to_string();
+        if id_programa != "".to_owned() && id_programa != id_f {
+          match funciones.tabla.get_mut(&id_programa) {  
+            Some(funcion) => {
+              funcion.modificar_era(tipo_func.to_owned(), 0);
+            },
+            None => {
+              println!("Funcion global no existente")
+            }
+          };
+        }
+        num
+      },
+      Err(err) => { println!("{:?}", err); return; }
+    }
+  };
+
+  unsafe {
+    DIRECCION_CONTEXTO_FUNCION = dir;
+  }
+
+  if contexto_clase.clone() != "".to_owned() {
+    match CLASES.lock().unwrap().agregar_metodo(contexto_clase.to_string(), id_f.to_owned(), tipo_func.to_owned(), dir, cuad) {
+      Ok(_res) => {},
+      Err(err) => {
+        println!("{:?}", err);
+        ()
+      }
+    };
+  } else {
+    match funciones.agregar_funcion(id_f.to_owned(), tipo_func.to_owned(), dir, cuad) {
+      Ok(_res) => {},
+      Err(err) => {
+        println!("{:?}", err);
+        ()
+      },
+    };
+  }
+
+  *CONTEXTO_FUNCION.lock().unwrap() = id_f.to_owned();
 }
 
 fn parametros_varios(input: &str) -> IResult<&str, &str> {
@@ -121,34 +177,7 @@ pub fn funcion(input: &str) -> IResult<&str, &str> {
 
   next = match id(next) {
     Ok((next_input, id_f)) => {
-      let contexto_clase = CONTEXTO_CLASE.lock().unwrap();
-
-      if contexto_clase.clone() != "".to_owned() {
-        match CLASES.lock().unwrap().agregar_metodo(contexto_clase.to_string(), id_f.to_owned(), tipo_func.to_owned(), 24000) {
-          Ok(res) => {
-            println!("{:?}", res);
-            ()
-          },
-          Err(err) => {
-            println!("{:?}", err);
-            ()
-          }
-        };
-      } else {
-        match FUNCIONES.lock().unwrap().agregar_funcion(id_f.to_owned(), tipo_func.to_owned(), 14000) {
-          Ok(res) => {
-            println!("{:?}", res);
-            ()
-          },
-          Err(err) => {
-            println!("{:?}", err);
-            ()
-          },
-        };
-      }
-
-      *CONTEXTO_FUNCION.lock().unwrap() = id_f.to_owned();
-
+      agregar_funcion(id_f, tipo_func);
       next_input
     },
     Err(err) => return Err(err)
@@ -160,6 +189,19 @@ pub fn funcion(input: &str) -> IResult<&str, &str> {
     bloque_funcion, ws
   ))(next) {
     Ok((next_input, _)) => {
+      unsafe {
+        if tipo_func != "void" && RETURN_EXISTENTE == false {
+          println!("Funcion le falta return");
+        }
+
+        if tipo_func == "void" && RETURN_EXISTENTE == true {
+          println!("Funcion void no debería tener return");
+        }
+
+        DIRECCION_CONTEXTO_FUNCION = -10;
+        RETURN_EXISTENTE = false;
+      }
+      CUADRUPLOS.lock().unwrap().agregar_cuadruplo_endfunc();
       *CONTEXTO_FUNCION.lock().unwrap() = "".to_owned();
       Ok((next_input, "funcion"))
     },

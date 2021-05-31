@@ -46,9 +46,9 @@ impl TablaClases {
     }
   }
 
-  pub fn agregar_metodo(&mut self, nombre_clase: String, nombre_func: String, tipo_func: String, dir: i64) -> Result<(&str, String, TipoFunc), (&str, String, String)> {
+  pub fn agregar_metodo(&mut self, nombre_clase: String, nombre_func: String, tipo_func: String, dir: i64, cuad: i64) -> Result<(&str, String, TipoFunc), (&str, String, String)> {
     match self.tabla.get_mut(&nombre_clase) {
-      Some(clase) => match clase.metodos.agregar_funcion(nombre_func, tipo_func, dir) {
+      Some(clase) => match clase.metodos.agregar_funcion(nombre_func, tipo_func, dir, cuad) {
         Ok((_, func)) => Ok(("Metodo agregado a clase", nombre_clase.clone(), func)),
         Err((_, nom_func)) => Err(("Nombre de metodo ocupado en clase", nombre_clase.clone(), nom_func))
       },
@@ -193,12 +193,14 @@ mod tests {
     };
 
     let dir_func = 14000;
+    let cuad_func = 3;
     let func_entera = TipoFunc {
       nombre: "func".to_owned(),
       tipo: "entero".to_owned(),
       variables: TablaVariables { tabla: HashMap::new() },
       parametros: vec![],
       direccion: 14000, 
+      num_cuadruplo: 3, 
       era: vec![
         (0, 0),
         (0, 0),
@@ -214,6 +216,7 @@ mod tests {
       direccion: 1000
     };
 
+    // Clases
     assert_eq!(
       tabla.agregar_clase("Persona".to_owned(), "".to_owned()),
       Ok(("Clase agregada", clase.clone()))
@@ -231,12 +234,13 @@ mod tests {
       Err(("Clase no existente", "Estudiante".to_owned()))
     );
 
+    // Metodos
     assert_eq!(
-      tabla.agregar_metodo("Persona".to_owned(), "func".to_owned(), "entero".to_owned(), dir_func),
+      tabla.agregar_metodo("Persona".to_owned(), "func".to_owned(), "entero".to_owned(), dir_func, cuad_func),
       Ok(("Metodo agregado a clase", "Persona".to_owned(), func_entera.clone()))
     );
     assert_eq!(
-      tabla.agregar_metodo("Persona".to_owned(), "func".to_owned(), "entero".to_owned(), dir_func),
+      tabla.agregar_metodo("Persona".to_owned(), "func".to_owned(), "entero".to_owned(), dir_func, cuad_func),
       Err(("Nombre de metodo ocupado en clase", "Persona".to_owned(), "func".to_owned()))
     );
     assert_eq!(

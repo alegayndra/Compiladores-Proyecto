@@ -141,6 +141,45 @@ impl ListaCuadruplos {
     Ok("GOTOF bueno")
   }
 
+  pub fn agregar_cuadruplo_endfunc<'a>(&mut self) -> Result<&'a str, &'a str>{
+    let op_num = conseguir_num_operador("ENDFUNC");
+    self.lista.push((op_num, -1, -1, -1));
+    Ok("ENDFUNC generado")
+  }
+
+  pub fn agregar_cuadruplo_return<'a>(&mut self, valor: TipoVar, dir_func: i64) -> Result<&'a str, &'a str>{
+    let op_num = conseguir_num_operador("RETURN");
+    self.lista.push((op_num, valor.direccion , -1, dir_func));
+    Ok("RETURN generado")
+  }
+
+  pub fn agregar_cuadruplo_era<'a>(&mut self, dir_func: i64) -> Result<(&'a str, i64), (&'a str, i64)>{
+    let op_num = conseguir_num_operador("ERA");
+    self.lista.push((op_num, -1, -1, dir_func));
+    Ok(("ERA generado", dir_func))
+  }
+
+  pub fn agregar_cuadruplo_param<'a>(&mut self, valor: TipoVar, destino: TipoVar) -> Result<(&'a str, (String, String)), (&'a str, (String, String))>{
+    let op_num = conseguir_num_operador("PARAM");
+    let valor_num = conseguir_num_tipo(valor.tipo.as_str());
+    let destino_num = conseguir_num_tipo(destino.tipo.as_str());
+
+    match checar_cubo_semantico(op_num as usize, valor_num as usize, destino_num as usize) {
+      3 => Err(("Asignacion de parametro incompatible", (valor.tipo, destino.tipo))),
+      _ => {
+        // Crear temporal
+        self.lista.push((op_num, valor.direccion, -1, destino.direccion));
+        Ok(("Asignacion de parametro compatible", (valor.tipo, destino.tipo)))
+      }
+    }
+  }
+
+  pub fn agregar_cuadruplo_gosub<'a>(&mut self, dir_func: i64) -> Result<(&'a str, i64), (&'a str, i64)>{
+    let op_num = conseguir_num_operador("GOSUB");
+    self.lista.push((op_num, -1, -1, dir_func));
+    Ok(("GOSUB generado", dir_func))
+  }
+
   // pub fn modificar_cuadruplo_gotof<'a>(&mut self, num_cuadruplo: usize) -> Result<(&'a str, usize, i64), (&'a str, usize, i64)>{
   //   let direccion_cuadruplo = (self.lista.len()) as i64;
   //   self.lista[num_cuadruplo].3 = direccion_cuadruplo;

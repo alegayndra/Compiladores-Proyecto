@@ -65,7 +65,11 @@ lazy_static! {
   };
 }
 
-pub static mut ERA_CONSTANTES: (i64, i64, i64, i64) = (0, 0, 0, 0);
+pub static mut RETURN_EXISTENTE: bool = false;
+
+pub static mut DIRECCION_CONTEXTO_FUNCION: i64 = -10;
+
+pub static mut ERA_CONSTANTES: (i64, i64, i64) = (0, 0, 0);
 
 pub static mut DIRECCIONES: [[[[i64 ; 3] ; 2] ; 3] ; 3] = [
   [ // Globales

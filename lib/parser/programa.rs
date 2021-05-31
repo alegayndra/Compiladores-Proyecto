@@ -30,7 +30,7 @@ pub fn programa(input: &str) -> IResult<&str, &str> {
 
   // Crear tabla de variables globales
   let mut funcs1 = FUNCIONES.lock().unwrap();
-  match funcs1.agregar_funcion(id_programa.to_owned(), "void".to_owned(), 14000) {
+  match funcs1.agregar_funcion(id_programa.to_owned(), "void".to_owned(), -5, 0) {
     Ok(res) => {
       println!("{:?}", res);
       ()
