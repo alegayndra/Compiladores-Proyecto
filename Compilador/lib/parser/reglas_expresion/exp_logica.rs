@@ -20,14 +20,14 @@ fn checar_lista_operadores() {
           let der = match pila_val.pop() {
             Some(val) => val,
             _ => {
-              println!("Stack de valores vacío en EXP_LOGICA");
+              // println!("Stack de valores vacío en EXP_LOGICA");
               return;
             }
           };
           let izq = match pila_val.pop() {
             Some(val) => val,
             _ => {
-              println!("Stack de valores vacío en EXP_LOGICA");
+              // println!("Stack de valores vacío en EXP_LOGICA");
               return;
             }
           };
@@ -35,14 +35,8 @@ fn checar_lista_operadores() {
           drop(pila_val);
 
           match CUADRUPLOS.lock().unwrap().agregar_cuadruplo(&op, izq, der) {
-            Ok(res) => {
-              println!("{:?}", res);
-              ()
-            },
-            Err(err) => {
-              println!("{:?}", err);
-              ()
-            }
+            Ok(_res) => { /*println!("{:?}", _res);*/ () },
+            Err(_err) => { /*println!("{:?}", _err);*/ () },
           };
         },
         Err(_) => {
@@ -53,7 +47,7 @@ fn checar_lista_operadores() {
       ()
     },
     _ => {
-      println!("Stack de operadores vacío en EXP_LOGICA");
+      // println!("Stack de operadores vacío en EXP_LOGICA");
       ()
     }
   }
@@ -104,6 +98,7 @@ mod tests {
   #[test]
   fn test_exp_logica() {
     assert_eq!(exp_logica("id"),                                  Ok(("", "exp_logica")));
+    assert_eq!(exp_logica("10"),                                  Ok(("", "exp_logica")));
     assert_eq!(exp_logica("id & num_entero"),                     Ok(("", "exp_logica")));
     assert_eq!(exp_logica("id | num_entero"),                     Ok(("", "exp_logica")));
     assert_eq!(exp_logica("id | id > 2 * ( - num_entero + id )"), Ok(("", "exp_logica")));

@@ -19,14 +19,14 @@ fn checar_lista_operadores() {
           let der = match pila_val.pop() {
             Some(val) => val,
             _ => {
-              println!("Stack de valores vacío en TERMINO");
+              // println!("Stack de valores vacío en TERMINO");
               return;
             }
           };
           let izq = match pila_val.pop() {
             Some(val) => val,
             _ => {
-              println!("Stack de valores vacío en TERMINO");
+              // println!("Stack de valores vacío en TERMINO");
               return;
             }
           };
@@ -34,14 +34,8 @@ fn checar_lista_operadores() {
           drop(pila_val);
 
           match CUADRUPLOS.lock().unwrap().agregar_cuadruplo(&op, izq, der) {
-            Ok(res) => {
-              println!("{:?}", res);
-              ()
-            },
-            Err(err) => {
-              println!("{:?}", err);
-              ()
-            }
+            Ok(_res) => { /*println!("{:?}", _res);*/ () },
+            Err(_err) => { /*println!("{:?}", _err);*/ () },
           };
         },
         Err(_) => { lista_operadores.push(op); () }
@@ -49,7 +43,7 @@ fn checar_lista_operadores() {
       ()
     },
     _ => {
-      println!("Stack de operadores vacío en TERMINO");
+      // println!("Stack de operadores vacío en TERMINO");
       ()
     }
   }

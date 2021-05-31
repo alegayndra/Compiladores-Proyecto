@@ -27,11 +27,8 @@ fn parametros_vacios(input: &str) -> IResult<&str, &str> {
 fn agregar_param(tipo_param: &str, id_param: &str) {
   let dims_string : Vec<String> = vec![];
   match VARIABLES.lock().unwrap().agregar_variable(id_param.to_owned(), tipo_param.to_owned(), dims_string.clone(), 1000) {
-    Ok(_) => (),
-    Err(err) => {
-      println!("{:?}", err);
-      ()
-    },
+    Ok(_res) => { /*println!("{:?}", _res);*/ () },
+    Err(_err) => { /*println!("{:?}", _err);*/ () },
   }
 
   let contexto_clase = CONTEXTO_CLASE.lock().unwrap();
@@ -39,25 +36,13 @@ fn agregar_param(tipo_param: &str, id_param: &str) {
 
   if contexto_clase.clone() != "".to_owned() {
     match CLASES.lock().unwrap().agregar_parametro_metodo(contexto_clase.to_string(), contexto_funcion.to_string(), id_param.to_owned(), tipo_param.to_owned(), dims_string.clone(), 26000) {
-      Ok(res) => {
-        println!("{:?}", res);
-        ()
-      },
-      Err(err) => {
-        println!("{:?}", err);
-        ()
-      },
+      Ok(_res) => { /*println!("{:?}", _res);*/ () },
+      Err(_err) => { /*println!("{:?}", _err);*/ () },
     };
   } else {
     match FUNCIONES.lock().unwrap().agregar_parametro(contexto_funcion.to_string(), id_param.to_owned(), tipo_param.to_owned(), dims_string.clone(), 16000) {
-      Ok(res) => {
-        println!("{:?}", res);
-        ()
-      },
-      Err(err) => {
-        println!("{:?}", err);
-        ()
-      },
+      Ok(_res) => { /*println!("{:?}", _res);*/ () },
+      Err(_err) => { /*println!("{:?}", _err);*/ () },
     }
   }
 }
