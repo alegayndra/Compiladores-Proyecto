@@ -27,11 +27,6 @@
     - = : 12
 */
 
-// pub struct CuboSemantico {
-//   pub lista: Vec<Vec<Vec<i64>>>
-// }
-
-// static CUBO_SEMANTICO: Vec<Vec<Vec<i64>>> = vec![
 static CUBO_SEMANTICO: [[[i64; 13]; 6]; 6] = [
   [ // Entero
     // +  -  *  /  >  <  >=  <=  ==  !=  &  |  =
@@ -113,10 +108,11 @@ pub fn conseguir_num_operador(operador: &str) -> i64 {
     "GOTO"    => 15,
     "GOTOT"   => 16,
     "GOTOF"   => 17,
-    "GOSUB"   => 18,
-    "ERA"     => 19,
-    "RETURN"  => 20,
+    "ENDFUNC" => 18,
+    "RETURN"  => 19,
+    "ERA"     => 20,
     "PARAM"   => 21,
+    "GOSUB"   => 22,
     _         => -1,
   }
 }

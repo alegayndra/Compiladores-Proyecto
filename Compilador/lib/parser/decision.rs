@@ -15,19 +15,22 @@ fn generar_goto_sino() {
   match saltos.pop() {
     Some(valor) => {
       match cuadruplos.modificar_cuadruplo_goto(valor as usize) {
-        Ok(_res) => { /*println!("{:?}", _res);*/ () },
-        Err(_err) => { /*println!("{:?}", _err);*/ () },
+        Ok(_) => (),
+        Err(err) => {
+          println!("{:?}", err);
+        },
       };
-      ()
     },
-    _ => { /*println!("Pila de saltos vacía en PRINCIPAL"); */ () }
-  }
+    _ => ()
+  };
 
   saltos.push((cuadruplos.lista.len()) as i64);
 
   match cuadruplos.agregar_cuadruplo_goto() {
     Ok(_) => (),
-    Err(_) => ()
+    Err(err) => {
+      println!("{:?}", err);
+    },
   };
   
   drop(cuadruplos);
@@ -59,8 +62,10 @@ fn generar_gotof() {
   match lista_valores.pop() {
     Some(var) => {
       match cuadruplos.agregar_cuadruplo_gotof(var) {
-        Ok(_res) => { /*println!("{:?}", _res);*/ () },
-        Err(_err) => { /*println!("{:?}", _err);*/ () },
+        Ok(_res) => (),
+        Err(err) => {
+          println!("{:?}", err);
+        },
       };
     },
     _ => ()
@@ -77,10 +82,11 @@ fn actualizar_gotof() {
   match saltos.pop() {
     Some(valor) => {
       match cuadruplos.modificar_cuadruplo_goto(valor as usize) {
-        Ok(_res) => { /*println!("{:?}", _res);*/ () },
-        Err(_err) => { /*println!("{:?}", _err);*/ () },
+        Ok(_res) => (),
+        Err(err) => {
+          println!("{:?}", err);
+        },
       };
-      ()
     },
     _ => { println!("Pila de saltos vacía en PRINCIPAL"); () }
   }
@@ -112,10 +118,6 @@ pub fn decision(input: &str) -> IResult<&str, &str> {
 #[cfg(test)]
 mod tests {
   use super::*;
-  // use nom::{
-  //     error::{ErrorKind, VerboseError, VerboseErrorKind},
-  //     Err,
-  // };
 
   #[test]
   fn test_decision() {

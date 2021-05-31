@@ -4,7 +4,6 @@ use nom::{
   multi::many0,
   IResult,
   sequence::tuple,
-  // combinator::opt,
 };
 
 use crate::scanners::ws::*;
@@ -69,8 +68,8 @@ pub fn clase(input: &str) -> IResult<&str, &str> {
     Err(err) => return Err(err)
   };
 
-  // next = match opt(herencia)(input) {
-  //   Ok((next_input, Some(id_p))) => {
+  // next = match herencia(input) {
+  //   Ok((next_input, id_p)) => {
   //     id_padre = id_p;
   //     next_input
   //   },
@@ -88,13 +87,11 @@ pub fn clase(input: &str) -> IResult<&str, &str> {
         println!("{:?}", res);
         let mut contexto_clase = CONTEXTO_CLASE.lock().unwrap();
         *contexto_clase = id_clase.to_owned();
-        ()
       },
       Err(err) => {
         println!("{:?}", err);
-        ()
       },
-    }
+    };
   // }
 
   match tuple((ws, tag("{"), ws, lista_variable_funcion, ws, tag("}"), ws, tag(";"), ws))(next) {
@@ -110,10 +107,6 @@ pub fn clase(input: &str) -> IResult<&str, &str> {
 #[cfg(test)]
 mod tests {
   use super::*;
-  // use nom::{
-  //     error::{ErrorKind, VerboseError, VerboseErrorKind},
-  //     Err,
-  // };
 
   // #[test]
   // fn test_herencia() {

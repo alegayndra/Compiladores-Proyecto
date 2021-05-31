@@ -18,15 +18,12 @@ fn checar_lista_operadores() {
           let mut pila_val = PILA_VALORES.lock().unwrap();
           let der = match pila_val.pop() {
             Some(val) => val,
-            _ => {
-              // println!("Stack de valores vacío en TERMINO");
-              return;
-            }
+            _ => return
           };
           let izq = match pila_val.pop() {
             Some(val) => val,
             _ => {
-              // println!("Stack de valores vacío en TERMINO");
+              println!("Stack de valores vacío en TERMINO");
               return;
             }
           };
@@ -34,18 +31,18 @@ fn checar_lista_operadores() {
           drop(pila_val);
 
           match CUADRUPLOS.lock().unwrap().agregar_cuadruplo(&op, izq, der) {
-            Ok(_res) => { /*println!("{:?}", _res);*/ () },
-            Err(_err) => { /*println!("{:?}", _err);*/ () },
+            Ok(_) => (),
+            Err(err) => {
+              println!("{:?}", err);
+            },
+            
           };
         },
-        Err(_) => { lista_operadores.push(op); () }
+        Err(_) => { lista_operadores.push(op); }
       }
       ()
     },
-    _ => {
-      // println!("Stack de operadores vacío en TERMINO");
-      ()
-    }
+    _ => ()
   }
 
   drop(lista_operadores);
@@ -68,9 +65,7 @@ pub fn termino(input: &str) -> IResult<&str, &str> {
         PILA_OPERADORS.lock().unwrap().push(operador.to_owned());
         next_input
       },
-      _ => {
-        return Ok((next, "termino"));
-      }
+      _ => return Ok((next, "termino"))
     };
 
     next = match factor(next) {
@@ -86,10 +81,6 @@ pub fn termino(input: &str) -> IResult<&str, &str> {
 #[cfg(test)]
 mod tests {
   use super::*;
-  // use nom::{
-  //     error::{ErrorKind, VerboseError, VerboseErrorKind},
-  //     Err,
-  // };
 
   #[test]
   fn test_termino() {

@@ -18,13 +18,12 @@ fn checar_pila_operadores() {
       match op.as_str() {
         "(" => (),
         _ => {
-          // println!("No se encontró ( al final del stack de operadores en FACTOR");
+          println!("No se encontró ( al final del stack de operadores en FACTOR");
           lista_operadores.push(op);
-          ()
         }
       }
     },
-    None => { /*println!("Stack de operadores vacío en EXP_LOGICA");*/ () }
+    None => ()
   };
   drop(lista_operadores);
 }
@@ -76,16 +75,11 @@ fn checar_lista_operadores(op_valor: &str) {
       drop(pila_val);
 
       match CUADRUPLOS.lock().unwrap().agregar_cuadruplo(op_valor, valor.clone(), valor.clone()) {
-        Ok(res) => {
-          println!("{:?}", res);
-          ()
-        },
+        Ok(_) => (),
         Err(err) => {
           println!("{:?}", err);
-          ()
         }
       };
-      ()
     }
     _ => ()
   };
@@ -104,7 +98,7 @@ fn valor_factor(input: &str) -> IResult<&str, &str> {
   };
 
   match preceded(ws, valor)(next) {
-    Ok((next_input, _valor)) => {
+    Ok((next_input, _)) => {
       checar_lista_operadores(op_valor);
       Ok((next_input, "valor_factor")) 
     },
@@ -122,10 +116,6 @@ pub fn factor(input: &str) -> IResult<&str, &str> {
 #[cfg(test)]
 mod tests {
   use super::*;
-  // use nom::{
-  //     error::{ErrorKind, VerboseError, VerboseErrorKind},
-  //     Err,
-  // };
 
   #[test]
   fn test_valor_factor() {

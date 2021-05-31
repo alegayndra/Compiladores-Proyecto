@@ -16,11 +16,7 @@ use crate::semantica::tabla_variables::*;
 use crate::semantica::globales::*;
 
 fn agregar_cuadruplo_a_pila_saltos() {
-  let cuadruplos = CUADRUPLOS.lock().unwrap();
-  let mut saltos = PILA_SALTOS.lock().unwrap();
-  saltos.push((cuadruplos.lista.len()) as i64);
-  drop(cuadruplos);
-  drop(saltos);
+  PILA_SALTOS.lock().unwrap().push((CUADRUPLOS.lock().unwrap().lista.len()) as i64);
 }
 
 fn generar_cuadruplo_asignacion(variable: TipoVar) {
@@ -30,12 +26,17 @@ fn generar_cuadruplo_asignacion(variable: TipoVar) {
   match pila_valores.pop() {
     Some(valor) => {
       match cuadruplos.agregar_cuadruplo_asignacion(valor, variable) {
-        Ok(_res) => { /*println!("{:?}", _res);*/ () },
-        Err(_err) => { /*println!("{:?}", _err);*/ () },
+        Ok(_) => (),
+        Err(err) => {
+          println!("{:?}", err);
+        }
       };
       return;
     },
-    _ => { println!("Stack de valores vacío en EXP_LOGICA"); return; }
+    _ => {
+      println!("Stack de valores vacío en EXP_LOGICA");
+      return;
+    }
   };
 }
 
@@ -48,7 +49,9 @@ fn generar_gotof_mientras() {
     Some(var) => {
       match cuadruplos.agregar_cuadruplo_gotof(var) {
         Ok(_) => (),
-        Err(err) => { println!("{:?}", err); () }
+        Err(err) => {
+          println!("{:?}", err);
+        },
       };
     },
     _ => ()
@@ -70,7 +73,9 @@ fn generar_gotof_desde(variable: TipoVar) {
       drop(lista_valores);
       match cuadruplos.agregar_cuadruplo("<=", variable.clone(), var.clone()) {
         Ok(_) => (),
-        Err(err) => { println!("{:?}", err); () }
+        Err(err) => {
+          println!("{:?}", err);
+        }
       };      
     },
     _ => ()
@@ -81,7 +86,9 @@ fn generar_gotof_desde(variable: TipoVar) {
     Some(var) => {
       match cuadruplos.agregar_cuadruplo_gotof(var) {
         Ok(_) => (),
-        Err(err) => { println!("{:?}", err); () }
+        Err(err) => {
+          println!("{:?}", err);
+        }
       };
     },
     _ => ()
@@ -108,15 +115,20 @@ fn generar_gotos_final() {
   let mut cuadruplos = CUADRUPLOS.lock().unwrap();
 
   match cuadruplos.agregar_cuadruplo_goto() {
-    Ok(res) => { println!("{:?}", res); () },
-    Err(err) => { println!("{:?}", err); () }
+    Ok(_res) => (),
+    Err(err) => {
+      println!("{:?}", err);
+    },
   };
+
   let tamanio_cuadruplos = cuadruplos.lista.len() - 1;
   cuadruplos.lista[tamanio_cuadruplos].3 = return_dec;
 
   match cuadruplos.modificar_cuadruplo_goto(final_dec as usize) {
-    Ok(res) => { println!("{:?}", res); () },
-    Err(err) => { println!("{:?}", err); () }
+    Ok(_res) => (),
+    Err(err) => {
+      println!("{:?}", err);
+    },
   };
 }
 
@@ -163,43 +175,31 @@ fn buscar_variable(id_valor: &str) -> TipoVar {
   };
 
   match tabla_variables.buscar_variable(id_valor.to_owned()) {
-    Ok((_res, variable)) => {
-      // println!("{:?}", _res);
-      return variable;
-    },
+    Ok((_res, variable)) => return variable,
     Err(_) => ()
   };
 
   if contexto_clase.clone() != "".to_owned() {
     if contexto_funcion.clone() != "".to_owned() {
       match tabla_clases.buscar_variable_metodo(contexto_clase.clone(), contexto_funcion.clone(), id_valor.to_owned()) {
-        Ok((_res, _res2, _res3, variable)) => {
-          // println!("{:?} {:?} {:?}", _res, _res2, _res3);
-          return variable; 
-        },
-        Err(_err) => {
-          // println!("{:?}", _err);
+        Ok((_res, _res2, _res3, variable)) => return variable,
+        Err(err) => {
+          println!("{:?}", err);
         }
       };
     } else {
       match tabla_clases.buscar_atributo(contexto_clase.clone(), id_valor.to_owned()) {
-        Ok((_res, _res2, variable)) => {
-          // println!("{:?} {:?}", _res, _res2);
-          return variable;
-        },
-        Err(_err) => {
-          // println!("{:?}", _err);
+        Ok((_res, _res2, variable)) => return variable,
+        Err(err) => {
+          println!("{:?}", err);
         }
       };
     }
   } else {
     match tabla_funciones.buscar_variable(contexto_funcion.clone(), id_valor.to_owned()) {
-      Ok((_res, _res2, variable)) => {
-        // println!("{:?} {:?}", _res, _res2);
-        return variable;
-      },
-      Err(_err) => {
-        // println!("{:?}", _err);
+      Ok((_res, _res2, variable)) => return variable,
+      Err(err) => {
+        println!("{:?}", err);
       }
     };
   }
@@ -217,7 +217,6 @@ fn buscar_variable(id_valor: &str) -> TipoVar {
 pub fn desde_id(input: &str) -> IResult<&str, TipoVar> {
   match tuple((id, opt(tuple((ws, tag("."), ws, id))), con_dim))(input) {
     Ok((next_input, (id, _, _))) => {
-      println!("id for loop {:?}", id);
       let var = buscar_variable(id);
       Ok((next_input, var))
     },
@@ -250,8 +249,10 @@ pub fn desde(input: &str) -> IResult<&str, &str> {
     Ok((next_input, _)) => {
       let mut cuadruplos = CUADRUPLOS.lock().unwrap();
       match cuadruplos.agregar_cuadruplo_for(variable) {
-        Ok(res) => {  println!("{:?}", res); () },
-        Err(err) => {  println!("{:?}", err); () }
+        Ok(_res) => (),
+        Err(err) => {
+          println!("{:?}", err);
+        },
       };
       drop(cuadruplos);
       generar_gotos_final();
@@ -271,10 +272,6 @@ pub fn repeticion(input: &str) -> IResult<&str, &str> {
 #[cfg(test)]
 mod tests {
   use super::*;
-  // use nom::{
-  //     error::{ErrorKind, VerboseError, VerboseErrorKind},
-  //     Err,
-  // };
 
   #[test]
   fn test_mientras() {

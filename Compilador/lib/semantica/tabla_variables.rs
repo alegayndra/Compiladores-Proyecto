@@ -58,7 +58,7 @@ impl TablaVariables {
             0 => ERA_CONSTANTES.0 += 1,
             1 => ERA_CONSTANTES.1 += 1,
             2 => ERA_CONSTANTES.2 += 1,
-            5 => ERA_CONSTANTES.3 += 1,
+            5 => ERA_CONSTANTES.2 += 1,
             _ => (),
           }
         }
@@ -72,10 +72,6 @@ impl TablaVariables {
 #[cfg(test)]
 mod tests {
   use super::*;
-  // use nom::{
-  //     error::{ErrorKind, VerboseError, VerboseErrorKind},
-  //     Err,
-  // };
 
   #[test]
   fn test_tabla_variables() {
