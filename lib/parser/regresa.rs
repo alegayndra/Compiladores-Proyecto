@@ -13,7 +13,17 @@ pub fn regresa(input: &str) -> IResult<&str, &str> {
   .map(|(next_input, _)| {
     unsafe {
       RETURN_EXISTENTE = true;
-      CUADRUPLOS.lock().unwrap().agregar_cuadruplo_return(PILA_VALORES.lock().unwrap().pop().unwrap(), DIRECCION_CONTEXTO_FUNCION);
+      match PILA_VALORES.lock().unwrap().pop() {
+        Some(valor) => {
+          match CUADRUPLOS.lock().unwrap().agregar_cuadruplo_return(valor.clone(), DIRECCION_CONTEXTO_FUNCION){
+            Ok(_) => (),
+            Err(err) => {
+              println!("{:?}", err);
+            }
+          };
+        },
+        None => ()
+      }
     }
     (next_input, "regresa")
   })

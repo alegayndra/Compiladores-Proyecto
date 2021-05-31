@@ -200,7 +200,12 @@ pub fn funcion(input: &str) -> IResult<&str, &str> {
         DIRECCION_CONTEXTO_FUNCION = -10;
         RETURN_EXISTENTE = false;
       }
-      CUADRUPLOS.lock().unwrap().agregar_cuadruplo_endfunc();
+      match CUADRUPLOS.lock().unwrap().agregar_cuadruplo_endfunc() {
+        Ok(_) => (),
+        Err(err) => {
+          println!("{:?}", err);
+        }
+      };
       *CONTEXTO_FUNCION.lock().unwrap() = "".to_owned();
       Ok((next_input, "funcion"))
     },
