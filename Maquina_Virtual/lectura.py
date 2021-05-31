@@ -72,7 +72,6 @@ def guardarFunciones(direcciones_funcs):
     direcciones_funcs = direcciones_funcs[direcciones_funcs.find("FIN_PARAMS", readStr) + 11:direcciones_funcs.find("FIN_FUNCIONES", readStr)]
     readStr = 0
     i += 1
-  print(funciones[0])
   
 def guardarMapaGlobs(direcciones_globs):
   readStr = 0

@@ -1,5 +1,6 @@
 from lectura import *
 from globales import *
+from copy import *
 
 def extraerMemoria(direccion):
   contexto = len(dir_memoria) - 1
@@ -170,14 +171,6 @@ def leerValor(valor, direccion):
             valor = int(valor)
           # Checa si estamos en un contexto local
           if contexto == 1:
-            print(contexto)
-            print(tipoVariable)
-            print(mapa_memoria[contexto])
-            print(mapa_memoria[contexto][len(mapa_memoria[contexto]) - 1])
-            print(mapa_memoria[contexto][len(mapa_memoria[contexto]) - 1][tipoVariable])
-            print(mapa_memoria[contexto][len(mapa_memoria[contexto]) - 1][tipoVariable][esTemporal])
-            print(dir_memoria[contexto][tipoVariable][esTemporal])
-            print(mapa_memoria[contexto][len(mapa_memoria[contexto]) - 1][tipoVariable][esTemporal][direccion - dir_memoria[contexto][tipoVariable][esTemporal]])
             mapa_memoria[contexto][len(mapa_memoria[contexto]) - 1][tipoVariable][esTemporal][direccion - dir_memoria[contexto][tipoVariable][esTemporal]] = valor
             return
           else:
@@ -193,10 +186,10 @@ def goto(cuadruplo):
 
 def gotof(valor, cuadruplo):
   if not extraerMemoria(valor):
-    print("entramos")
+    # print("entramos")
     goto(cuadruplo)
-  else:
-    print("No entramos")
+  # else:
+  #   print("No entramos")
 
 def endfunc():
   mapa_memoria[1].pop()
@@ -212,22 +205,49 @@ def lee(valor):
   leerValor(var, valor)
 
 def era(funcion):
-  memoriaFuncionEnProgreso[0] = auxLocales.copy()
-
+  memoriaFuncionEnProgreso.append(deepcopy(auxLocales))
+  
   for i in range(len(funciones)):
-    if funciones[i][0][1] == funcion:
+    if funciones[i][0][2] == funcion:
       cntIntNormal   =  funciones[i][1][0]
       cntIntTemp     =  funciones[i][1][1]
       cntFloatNormal =  funciones[i][2][0]
       cntFloatTemp   =  funciones[i][2][1]
       cntCharNormal  =  funciones[i][3][0]
       cntCharTemp    =  funciones[i][3][1]
-      memoriaFuncionEnProgreso[0][0][0] = [None] * int(cntIntNormal)
-      memoriaFuncionEnProgreso[0][0][1] = [None] * int(cntIntTemp)
-      memoriaFuncionEnProgreso[0][1][0] = [None] * int(cntFloatNormal)
-      memoriaFuncionEnProgreso[0][1][1] = [None] * int(cntFloatTemp)
-      memoriaFuncionEnProgreso[0][2][0] = [None] * int(cntCharNormal)
-      memoriaFuncionEnProgreso[0][2][1] = [None] * int(cntCharTemp)
+
+      cantVarsLocales[0][0] += cntIntNormal
+      cantVarsLocales[0][1] += cntIntTemp
+      cantVarsLocales[1][0] += cntFloatNormal
+      cantVarsLocales[1][1] += cntFloatTemp
+      cantVarsLocales[2][0] += cntCharNormal
+      cantVarsLocales[2][1] += cntCharTemp
+
+      if cantVarsLocales[0][0] >= limitesVarsLocales[0][0] + dir_memoria[1][0][0]:
+        print("Se excedió la memoria disponibles para enteros dentro del contexto local")
+        sys.exit()
+      if cantVarsLocales[0][1] >= limitesVarsLocales[0][1] + dir_memoria[1][0][1]:
+        print("Se excedió la memoria disponibles para enteros termporales dentro del contexto local")
+        sys.exit()
+      if cantVarsLocales[1][0] >= limitesVarsLocales[1][0] + dir_memoria[1][1][0]:
+        print("Se excedió la memoria disponibles para flotantes dentro del contexto local")
+        sys.exit()
+      if cantVarsLocales[1][1] >= limitesVarsLocales[1][1] + dir_memoria[1][1][1]:
+        print("Se excedió la memoria disponibles para flotantes termporales dentro del contexto local")
+        sys.exit()
+      if cantVarsLocales[2][0] >= limitesVarsLocales[2][0] + dir_memoria[1][2][0]:
+        print("Se excedió la memoria disponibles para caracter dentro del contexto local")
+        sys.exit()
+      if cantVarsLocales[2][1] >= limitesVarsLocales[2][1] + dir_memoria[1][2][1]:
+        print("Se excedió la memoria disponibles para caracter termporales dentro del contexto local")
+        sys.exit()
+
+      memoriaFuncionEnProgreso[len(memoriaFuncionEnProgreso) - 1][0][0] = [None] * int(cntIntNormal)
+      memoriaFuncionEnProgreso[len(memoriaFuncionEnProgreso) - 1][0][1] = [None] * int(cntIntTemp)
+      memoriaFuncionEnProgreso[len(memoriaFuncionEnProgreso) - 1][1][0] = [None] * int(cntFloatNormal)
+      memoriaFuncionEnProgreso[len(memoriaFuncionEnProgreso) - 1][1][1] = [None] * int(cntFloatTemp)
+      memoriaFuncionEnProgreso[len(memoriaFuncionEnProgreso) - 1][2][0] = [None] * int(cntCharNormal)
+      memoriaFuncionEnProgreso[len(memoriaFuncionEnProgreso) - 1][2][1] = [None] * int(cntCharTemp)
       return
     i += 1
 
@@ -235,12 +255,14 @@ def param(valor, parametro):
   val = extraerMemoria(valor)
   tipo = len(dir_memoria[1]) - 1
   while tipo >= 0:
-    if tipo >= dir_memoria[1][tipo][0]:
-      memoriaFuncionEnProgreso[0][tipo][0][parametro - dir_memoria[1][tipo][0]] = val
+    if parametro >= dir_memoria[1][tipo][0]:
+      memoriaFuncionEnProgreso[len(memoriaFuncionEnProgreso) - 1][tipo][0][parametro - dir_memoria[1][tipo][0]] = val
+      print('params', memoriaFuncionEnProgreso[len(memoriaFuncionEnProgreso) - 1][tipo][0][parametro - dir_memoria[1][tipo][0]])
     tipo -= 1
   
 def gosub(cuad_funcion):
-  mapa_memoria[1].append(memoriaFuncionEnProgreso[0])
+  mapa_memoria[1].append(deepcopy(memoriaFuncionEnProgreso[len(memoriaFuncionEnProgreso) - 1]))
+  memoriaFuncionEnProgreso.pop()
   pila_cuadruplos.append(num_cuadruplo[0])
   goto(cuad_funcion)
 
@@ -286,10 +308,10 @@ def switchCubo(cuadruplo):
 
 def ejecutar_programa():
   while num_cuadruplo[0] < len(lista_cuadruplos):
-    print("Ejecutamos el cuadruplo #", num_cuadruplo[0])
-    print(lista_cuadruplos[num_cuadruplo[0]])
+    # print("Ejecutamos el cuadruplo #", num_cuadruplo[0])
+    # print(lista_cuadruplos[num_cuadruplo[0]])
     switchCubo(lista_cuadruplos[num_cuadruplo[0]]) 
-    print("Ahorita vamos en el cuadruplo --> ",num_cuadruplo)
+    # print("Ahorita vamos en el cuadruplo --> ",num_cuadruplo)
     num_cuadruplo[0] += 1
 
 '''
