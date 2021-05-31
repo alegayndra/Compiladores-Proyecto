@@ -150,7 +150,7 @@ pub fn mientras(input: &str) -> IResult<&str, &str> {
     Err(err) => return Err(err)
   };
 
-  match tuple((necessary_ws, bloque))(next) {
+  match tuple((ws, bloque))(next) {
     Ok((next_input, _)) => {
       generar_gotos_final();
       Ok((next_input, "mientras"))
