@@ -9,7 +9,7 @@ pub struct ListaCuadruplos {
 
 static mut NUM_TEMPORAL: i64 = 0;
 
-fn agregar_temporal_a_tabla(var: String, tipo_var: String, dir: i64) {
+pub fn agregar_temporal_a_tabla(var: String, tipo_var: String, dir: i64) {
   let contexto_clase = CONTEXTO_CLASE.lock().unwrap();
   let contexto_funcion = CONTEXTO_FUNCION.lock().unwrap();
 
@@ -133,6 +133,12 @@ impl ListaCuadruplos {
     Ok(("Goto modificado", num_cuadruplo, direccion_cuadruplo))
   }
 
+  pub fn modificar_cuadruplo_goto_sino<'a>(&mut self, num_cuadruplo: usize) -> Result<(&'a str, usize, i64), (&'a str, usize, i64)>{
+    let direccion_cuadruplo = (self.lista.len() + 1) as i64;
+    self.lista[num_cuadruplo].3 = direccion_cuadruplo;
+    Ok(("Goto modificado", num_cuadruplo, direccion_cuadruplo))
+  }
+
   pub fn agregar_cuadruplo_gotof<'a>(&mut self, resultado: TipoVar) -> Result<&'a str, &'a str>{
     let op_num = conseguir_num_operador("GOTOF");
     match conseguir_num_tipo(resultado.tipo.as_str()) {
@@ -159,10 +165,10 @@ impl ListaCuadruplos {
     Ok("RETURN generado")
   }
 
-  pub fn agregar_cuadruplo_era<'a>(&mut self, dir_func: i64) -> Result<(&'a str, i64), (&'a str, i64)>{
+  pub fn agregar_cuadruplo_era<'a>(&mut self, num_cuadruplo: i64) -> Result<(&'a str, i64), (&'a str, i64)>{
     let op_num = conseguir_num_operador("ERA");
-    self.lista.push((op_num, -1, -1, dir_func));
-    Ok(("ERA generado", dir_func))
+    self.lista.push((op_num, -1, -1, num_cuadruplo));
+    Ok(("ERA generado", num_cuadruplo))
   }
 
   pub fn agregar_cuadruplo_param<'a>(&mut self, valor: TipoVar, destino: TipoVar) -> Result<(&'a str, (String, String)), (&'a str, (String, String))>{
@@ -184,6 +190,35 @@ impl ListaCuadruplos {
     let op_num = conseguir_num_operador("GOSUB");
     self.lista.push((op_num, -1, -1, cuadruplo));
     Ok(("GOSUB generado", cuadruplo))
+  }
+
+  pub fn agregar_cuadruplo_asignacion_valor_funcion<'a>(&mut self, dir_funcion: i64, tipo_func: String) -> Result<(&'a str, i64), (&'a str, i64)>{
+    let op_num = conseguir_num_operador("=");
+    let mut tabla_variables = VARIABLES.lock().unwrap();
+    let dir = match conseguir_direccion(&tipo_func, "variable", 1) {
+      Ok(num) => num,
+      Err(_err) => {
+        // println!("{:?}", _err);
+        return Err(("Error al conseguir direccion de variable temporal", 0));
+      }
+    };
+    unsafe {
+      loop {
+        let nombre_temporal = format!("temporal{}", NUM_TEMPORAL);
+        match tabla_variables.agregar_variable(nombre_temporal.clone(), tipo_func.clone(), vec![], dir) {
+          Ok((_, var)) => {
+            PILA_VALORES.lock().unwrap().push(var);
+            agregar_temporal_a_tabla(nombre_temporal.clone(), tipo_func.clone(), dir);
+            break;
+          },
+          Err(_) => {
+            NUM_TEMPORAL += 1;
+          }
+        }
+      }
+    }
+    self.lista.push((op_num, dir_funcion, -1, dir));
+    Ok(("GOSUB generado", dir_funcion))
   }
 
   // pub fn modificar_cuadruplo_gotof<'a>(&mut self, num_cuadruplo: usize) -> Result<(&'a str, usize, i64), (&'a str, usize, i64)>{

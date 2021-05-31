@@ -14,7 +14,7 @@ fn generar_goto_sino() {
   let mut saltos = PILA_SALTOS.lock().unwrap();
   match saltos.pop() {
     Some(valor) => {
-      match cuadruplos.modificar_cuadruplo_goto(valor as usize) {
+      match cuadruplos.modificar_cuadruplo_goto_sino(valor as usize) {
         Ok(_) => (),
         Err(err) => {
           println!("{:?}", err);

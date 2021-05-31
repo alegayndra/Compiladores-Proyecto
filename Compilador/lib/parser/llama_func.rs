@@ -16,7 +16,7 @@ pub fn generar_cuadruplo_era(id_func: &str) -> Vec<TipoVar> {
   if contexto_clase != "".to_owned() {
     match CLASES.lock().unwrap().buscar_metodo(contexto_clase, id_func.to_owned()) {
       Ok((_, _, func)) => {
-        match cuadruplos.agregar_cuadruplo_era(func.direccion) {
+        match cuadruplos.agregar_cuadruplo_era(func.num_cuadruplo) {
           Ok(_) => (),
           Err(err) => {
             println!("{:?}", err);
@@ -32,7 +32,7 @@ pub fn generar_cuadruplo_era(id_func: &str) -> Vec<TipoVar> {
   } else {
     match FUNCIONES.lock().unwrap().buscar_funcion(id_func.to_owned()) {
       Ok((_, func)) => {
-        match cuadruplos.agregar_cuadruplo_era(func.direccion) {
+        match cuadruplos.agregar_cuadruplo_era(func.num_cuadruplo) {
           Ok(_) => (),
           Err(err) => {
             println!("{:?}", err);
