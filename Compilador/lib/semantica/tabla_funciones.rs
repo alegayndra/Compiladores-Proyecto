@@ -9,6 +9,7 @@ pub struct TipoFunc {
   pub tipo: String,
   pub variables: TablaVariables,
   pub direccion: i64,
+  pub num_cuadruplo: i64,
   pub parametros: Vec<TipoVar>,
   pub era: Vec<(i64, i64)>
 }
@@ -33,7 +34,7 @@ impl TipoFunc {
 }
 
 impl TablaFunciones {
-  pub fn agregar_funcion(&mut self, nombre_func: String, tipo_func: String, dir: i64) -> Result<(&str, TipoFunc), (&str, String)> {
+  pub fn agregar_funcion(&mut self, nombre_func: String, tipo_func: String, dir: i64, cuad: i64) -> Result<(&str, TipoFunc), (&str, String)> {
     match self.tabla.contains_key(&nombre_func) {
       true => Err(("Nombre de funcion ocupado", nombre_func.clone())),
       false =>  {
@@ -43,6 +44,7 @@ impl TablaFunciones {
           variables: TablaVariables { tabla: HashMap::new() },
           parametros: vec![],
           direccion: dir,
+          num_cuadruplo: cuad,
           era: vec![
             (0, 0),
             (0, 0),
@@ -91,6 +93,7 @@ impl TablaFunciones {
         match funcion.variables.agregar_variable(nombre_var.clone(), tipo_var.clone(), dims.clone(), dir) {
           Ok((_, var)) => {
             funcion.parametros.push(var.clone());
+            funcion.modificar_era(tipo_var.clone(), 0);
             Ok(("Parametro agregado a funcion", nombre_func.clone(), var))
           },
           Err((_, nom_var)) => Err(("Nombre de variable ocupado en funcion", nombre_func.clone(), nom_var))
@@ -99,22 +102,11 @@ impl TablaFunciones {
       None => Err(("Funcion no existente", nombre_func.clone(), "".to_owned()))
     }
   }
-
-  // pub fn buscar_parametro(&mut self, nombre_func: String, nombre_var: String) -> Result<(&str, String), (&str, String)> {
-  //   match self.tabla.get(&nombre_func) {
-  //     Some(funcion) => funcion.parametros.hash.buscar_variable(nombre_var),
-  //     None => Err(("Funcion no existente", nombre_func.clone()))
-  //   }
-  // }
 }
 
 #[cfg(test)]
 mod tests {
   use super::*;
-  // use nom::{
-  //     error::{ErrorKind, VerboseError, VerboseErrorKind},
-  //     Err,
-  // };
 
   #[test]
   fn test_tabla_funciones() {
@@ -122,12 +114,14 @@ mod tests {
     let dims = vec![];
 
     let dir_func = 14000;
+    let cuad_func = 3;
     let func_entera = TipoFunc {
       nombre: "func".to_owned(),
       tipo: "entero".to_owned(),
       variables: TablaVariables { tabla: HashMap::new() },
       parametros: vec![],
       direccion: 14000,
+      num_cuadruplo: 3,
       era: vec![
         (0, 0),
         (0, 0),
@@ -144,11 +138,11 @@ mod tests {
     };
 
     assert_eq!(
-      tabla.agregar_funcion("func".to_owned(), "entero".to_owned(), dir_func), 
+      tabla.agregar_funcion("func".to_owned(), "entero".to_owned(), dir_func, cuad_func), 
       Ok(("Funcion agregada", func_entera.clone()))
     );
     assert_eq!(
-      tabla.agregar_funcion("func".to_owned(), "entero".to_owned(), dir_func),
+      tabla.agregar_funcion("func".to_owned(), "entero".to_owned(), dir_func, cuad_func),
       Err(("Nombre de funcion ocupado", "func".to_owned()))
     );
 

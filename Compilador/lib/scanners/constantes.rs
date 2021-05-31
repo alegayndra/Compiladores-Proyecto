@@ -3,17 +3,13 @@ use nom::{
   combinator::{recognize, opt},
   multi::{many0, many1},
   character::complete::{one_of, char},
-  sequence::{terminated, tuple, preceded,delimited},
+  sequence::{terminated, tuple, delimited},
   branch::alt,
   bytes::complete::{tag, take_while_m_n}
 };
 
 pub fn num_entero(input: &str) -> IResult<&str, (&str, &str)> {
-  recognize(
-    many1(
-      terminated(one_of("0123456789"), many0(char('_')))
-    )
-  )(input)
+  recognize(many1(terminated(one_of("0123456789"), many0(char('_')))))(input)
   .map(|(next_input, res)| {
     (next_input, (res, "entero"))
   })
@@ -31,34 +27,16 @@ pub fn num_flotante(input: &str) -> IResult<&str, (&str, &str)> {
     // Case one: .42
     recognize(
       tuple((
+        opt(tag("0")),
         char('.'),
-        num_entero,
-        opt(tuple((
-          one_of("eE"),
-          opt(one_of("+-")),
-          num_entero
-        )))
-      ))
-    )
-    , // Case two: 42e42 and 42.42e42
-    recognize(
-      tuple((
-        num_entero,
-        opt(preceded(
-          char('.'),
-          num_entero,
-        )),
-        one_of("eE"),
-        opt(one_of("+-")),
         num_entero
       ))
-    )
-    , // Case three: 42. and 42.42
+    ), // Case three: 42. and 42.42
     recognize(
       tuple((
         num_entero,
         char('.'),
-        opt(num_entero)
+        num_entero
       ))
     )
   ))(input)
@@ -70,10 +48,6 @@ pub fn num_flotante(input: &str) -> IResult<&str, (&str, &str)> {
 #[cfg(test)]
 mod tests {
   use super::*;
-  // use nom::{
-  //     error::{ErrorKind, VerboseError, VerboseErrorKind},
-  //     Err,
-  // };
 
   #[test]
   fn test_num_caracter() {
@@ -93,5 +67,7 @@ mod tests {
     assert_eq!(num_flotante("1.1"),       Ok(("", ("1.1", "flotante"))));
     assert_eq!(num_flotante("11.23"),     Ok(("", ("11.23", "flotante"))));
     assert_eq!(num_flotante("112.3131"),  Ok(("", ("112.3131", "flotante"))));
+    assert_eq!(num_flotante("0.3131"),    Ok(("", ("0.3131", "flotante"))));
+    assert_eq!(num_flotante(".3131"),     Ok(("", (".3131", "flotante"))));
   }
 }

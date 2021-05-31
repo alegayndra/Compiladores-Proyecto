@@ -2,25 +2,22 @@ use nom::{
   branch::alt,
   bytes::complete::tag,
   IResult,
-  sequence::tuple,
+  sequence::{tuple, delimited},
 };
 
 use crate::scanners::ws::*;
 use crate::parser::reglas_expresion::exp::*;
 
 pub fn dimension(input: &str) -> IResult<&str, Vec<&str>> {
-  tuple((tag("["), ws, exp, ws, tag("]")))(input)
-  .map(|(next_input, res)| {
-    let (_, _, dimension, _, _) = res;
+  delimited(tuple((tag("["), ws)), exp, tuple((ws, tag("]"))))(input)
+  .map(|(next_input, dimension)| {
     (next_input, vec![dimension])
   })
 }
 
 fn dos_dimensiones(input: &str) -> IResult<&str, Vec<&str>> {
-  tuple((dimension, ws, dimension))
-  (input)
-  .map(|(next_input, res)| {
-    let (dimension_1, _, dimension_2) = res;
+  tuple((dimension, ws, dimension))(input)
+  .map(|(next_input, (dimension_1, _, dimension_2))| {
     (next_input, vec![dimension_1[0], dimension_2[0]])
   })
 }
@@ -30,17 +27,12 @@ pub fn ws_vec(input: &str) -> IResult<&str, Vec<&str>> {
 }
 
 pub fn con_dim(input: &str) -> IResult<&str, Vec<&str>> {
-  alt((dos_dimensiones, dimension, ws_vec))
-  (input)
+  alt((dos_dimensiones, dimension, ws_vec))(input)
 }
 
 #[cfg(test)]
 mod tests {
   use super::*;
-  // use nom::{
-  //     error::{ErrorKind, VerboseError, VerboseErrorKind},
-  //     Err,
-  // };
 
   #[test]
   fn test_dimension() {

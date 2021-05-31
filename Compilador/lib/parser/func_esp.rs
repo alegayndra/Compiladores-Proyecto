@@ -11,7 +11,6 @@ use crate::scanners::id::*;
 use crate::scanners::texto::*;
 use crate::parser::reglas_expresion::expresion::*;
 use crate::semantica::globales::*;
-use crate::semantica::tabla_variables::*;
 
 fn generar_cuadruplo_lectura(id_valor: &str, _dims: Vec<&str>) {
   let variable;
@@ -32,27 +31,37 @@ fn generar_cuadruplo_lectura(id_valor: &str, _dims: Vec<&str>) {
         if contexto_funcion.clone() != "".to_owned() {
           variable = match tabla_clases.buscar_variable_metodo(contexto_clase.clone(), contexto_funcion.clone(), id_valor.to_owned()) {
             Ok((_, _, _, var)) => var,
-            Err(_err) => { /*println!("{:?}", _err);*/ return;}
+            Err(err) => {
+              println!("{:?}", err);
+              return;
+            },
           };
         } else {
           variable = match tabla_clases.buscar_atributo(contexto_clase.clone(), id_valor.to_owned()) {
             Ok((_, _, var)) => var,
-            Err(_err) => { /*println!("{:?}", _err);*/ return;}
+            Err(err) => {
+              println!("{:?}", err);
+              return;
+            },
           };
         }
       } else {
         variable =match tabla_funciones.buscar_variable(contexto_funcion.clone(), id_valor.to_owned()) {
           Ok((_, _, var)) => var,
-          Err(_err) => { /*println!("{:?}", _err);*/ return;}
+          Err(err) => {
+            println!("{:?}", err);
+            return;
+          },
         };
       }
-      ()
     }
   };
 
   match cuadruplos.agregar_cuadruplo_lectura(variable) {
-    Ok(_res) => { /*println!("{:?}", _res);*/ () },
-    Err(_err) => { /*println!("{:?}", _err);*/ () },
+    Ok(_res) => (),
+    Err(err) => {
+      println!("{:?}", err);
+    },
   };
 
   drop(contexto_funcion);
@@ -64,15 +73,20 @@ fn generar_cuadruplo_lectura(id_valor: &str, _dims: Vec<&str>) {
   drop(cuadruplos);
 }
 
-fn generar_cuadruplo_escritura(variable: TipoVar) {
-  let mut cuadruplos = CUADRUPLOS.lock().unwrap();
-
-  match cuadruplos.agregar_cuadruplo_escritura(variable) {
-    Ok(_res) => { /*println!("{:?}", _res);*/ () },
-    Err(_err) => { /*println!("{:?}", _err);*/ () },
+fn generar_cuadruplo_escritura() {
+  match PILA_VALORES.lock().unwrap().pop() {
+    Some(valor) => {
+      match CUADRUPLOS.lock().unwrap().agregar_cuadruplo_escritura(valor) {
+        Ok(_res) => (),
+        Err(err) => {
+          println!("{:?}", err);
+        },
+      };
+    },
+    _ => {
+      println!("Stack de valores vacío en ESCRIBIR");
+    }
   };
-
-  drop(cuadruplos);
 }
 
 pub fn leer(input: &str) -> IResult<&str, &str> {
@@ -94,9 +108,7 @@ pub fn leer(input: &str) -> IResult<&str, &str> {
   loop {
     next = match opt(tuple((ws, tag(","), ws)))(next) {
       Ok((next_input, Some(_))) => next_input,
-      _ => {
-        break;
-      }
+      _ => break
     };
 
     next = match id_con_dim(next) {
@@ -118,6 +130,7 @@ fn agregar_texto_a_tabla(valor: &str) {
   let mut pila_valores = PILA_VALORES.lock().unwrap();
   pila_valores.push(CONSTANTES.lock().unwrap().agregar_constante(valor.to_owned(), "texto".to_owned()));
   drop(pila_valores);
+  generar_cuadruplo_escritura();
 }
 
 pub fn escribir(input: &str) -> IResult<&str, &str> {
@@ -130,22 +143,13 @@ pub fn escribir(input: &str) -> IResult<&str, &str> {
 
   next = match texto(next) {
     Ok((next_i, texto_const)) => {
-      // Agregar constante
       agregar_texto_a_tabla(texto_const);
       next_i
     },
     Err(_) => {
       match expresion(next) {
         Ok((next_input, _)) => {
-          let mut pila_valores = PILA_VALORES.lock().unwrap();
-          match pila_valores.pop() {
-            Some(valor) => {
-              generar_cuadruplo_escritura(valor);
-              ()
-            },
-            _ => { println!("Stack de valores vacío en ESCRIBIR"); () }
-          }
-          drop(pila_valores);
+          generar_cuadruplo_escritura();
           next_input
         },
         Err(err) => return Err(err)
@@ -156,32 +160,18 @@ pub fn escribir(input: &str) -> IResult<&str, &str> {
   loop {
     next = match opt(tuple((ws, tag(","), ws)))(next) {
       Ok((next_input, Some(_))) => next_input,
-      _ => {
-        break;
-      }
+      _ => break
     };
 
     next = match texto(next) {
       Ok((next_i, texto_const)) => {
-        // Agregar constante
-        let mut constantes = CONSTANTES.lock().unwrap();
-        generar_cuadruplo_escritura(constantes.agregar_constante(texto_const.to_owned(), "texto".to_owned()));
-        drop(constantes);
+        agregar_texto_a_tabla(texto_const);
         next_i
       },
       Err(_) => {
         match expresion(next) {
           Ok((next_input, _)) => {
-            // pop del stack de valores
-            let mut pila_valores = PILA_VALORES.lock().unwrap();
-            match pila_valores.pop() {
-              Some(valor) => {
-                generar_cuadruplo_escritura(valor);
-                ()
-              },
-              _ => { println!("Stack de valores vacío en ESCRIBIR"); () }
-            }
-            drop(pila_valores);
+            generar_cuadruplo_escritura();
             next_input
           },
           Err(err) => return Err(err)
@@ -196,10 +186,9 @@ pub fn escribir(input: &str) -> IResult<&str, &str> {
   }
 }
 
-
 pub fn funcion_esp(input: &str) -> IResult<&str, &str> {
   alt((leer, escribir))(input)
-  .map(|(next_input, _res)| {
+  .map(|(next_input, _)| {
     (next_input, "funcion_esp")
   })
 }
@@ -208,10 +197,6 @@ pub fn funcion_esp(input: &str) -> IResult<&str, &str> {
 #[cfg(test)]
 mod tests {
   use super::*;
-  // use nom::{
-  //     error::{ErrorKind, VerboseError, VerboseErrorKind},
-  //     Err,
-  // };
 
   #[test]
   fn test_leer() {

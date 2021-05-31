@@ -17,26 +17,19 @@ pub fn dimension_decl(input: &str) -> IResult<&str, Vec<&str>> {
 }
 
 fn dos_dimensiones_decl(input: &str) -> IResult<&str, Vec<&str>> {
-  tuple((dimension_decl, ws, dimension_decl))
-  (input)
-  .map(|(next_input, res)| {
-    let (dimension_1, _, dimension_2) = res;
+  tuple((dimension_decl, ws, dimension_decl))(input)
+  .map(|(next_input, (dimension_1, _, dimension_2))| {
     (next_input, vec![dimension_1[0], dimension_2[0]])
   })
 }
 
 pub fn con_dim_decl(input: &str) -> IResult<&str, Vec<&str>> {
-  alt((dos_dimensiones_decl, dimension_decl, ws_vec))
-  (input)
+  alt((dos_dimensiones_decl, dimension_decl, ws_vec))(input)
 }
 
 #[cfg(test)]
 mod tests {
   use super::*;
-  // use nom::{
-  //     error::{ErrorKind, VerboseError, VerboseErrorKind},
-  //     Err,
-  // };
 
   #[test]
   fn test_dimension_decl() {

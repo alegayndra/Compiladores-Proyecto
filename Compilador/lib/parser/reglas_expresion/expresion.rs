@@ -18,15 +18,12 @@ fn checar_lista_operadores() {
           let mut pila_val = PILA_VALORES.lock().unwrap();
           let der = match pila_val.pop() {
             Some(val) => val,
-            _ => {
-              // println!("Stack de valores vacío en EXPRESION");
-              return;
-            }
+            _ => return
           };
           let izq = match pila_val.pop() {
             Some(val) => val,
             _ => {
-              // println!("Stack de valores vacío en EXPRESION");
+              println!("Stack de valores vacío en EXPRESION");
               return;
             }
           };
@@ -34,21 +31,16 @@ fn checar_lista_operadores() {
           drop(pila_val);
 
           match CUADRUPLOS.lock().unwrap().agregar_cuadruplo(&op, izq, der) {
-            Ok(_res) => { /*println!("{:?}", _res);*/ () },
-            Err(_err) => { /*println!("{:?}", _err);*/ () },
+            Ok(_) => (),
+            Err(err) => {
+              println!("{:?}", err);
+            },
           };
         },
-        Err(_) => {
-          lista_operadores.push(op);
-          ()
-        }
+        Err(_) => { lista_operadores.push(op); }
       }
-      ()
     },
-    _ => {
-      // println!("Stack de operadores vacío en EXPRESION");
-      ()
-    }
+    _ => ()
   }
 }
 

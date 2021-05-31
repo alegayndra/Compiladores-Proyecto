@@ -21,22 +21,22 @@ fn generar_cuadruplo_asignacion(id_valor: &str, _dims: Vec<&str>) {
   let mut cuadruplos = CUADRUPLOS.lock().unwrap();
 
   match tabla_variables.buscar_variable(id_valor.to_owned()) {
-    Ok((_, var)) => { variable = var; () },
+    Ok((_, var)) => { variable = var; },
     Err(_) => {
       if contexto_clase.clone() != "".to_owned() {
         if contexto_funcion.clone() != "".to_owned() {
           variable = match tabla_clases.buscar_variable_metodo(contexto_clase.clone(), contexto_funcion.clone(), id_valor.to_owned()) {
             Ok((_, _, _, var)) => var,
-            Err(_err) => { 
-              // println!("{:?}", err);
+            Err(err) => { 
+              println!("{:?}", err);
               return;
             }
           };
         } else {
           variable = match tabla_clases.buscar_atributo(contexto_clase.clone(), id_valor.to_owned()) {
             Ok((_, _, var)) => var,
-            Err(_err) => {
-              // println!("{:?}", err); 
+            Err(err) => {
+              println!("{:?}", err); 
               return;
             }
           };
@@ -44,13 +44,12 @@ fn generar_cuadruplo_asignacion(id_valor: &str, _dims: Vec<&str>) {
       } else {
         variable =match tabla_funciones.buscar_variable(contexto_funcion.clone(), id_valor.to_owned()) {
           Ok((_, _, var)) => var,
-          Err(_err) => {
-            // println!("{:?}", err);
+          Err(err) => {
+            println!("{:?}", err);
             return;
           }
         };
       }
-      ()
     }
   };
 
@@ -66,8 +65,10 @@ fn generar_cuadruplo_asignacion(id_valor: &str, _dims: Vec<&str>) {
   match pila_valores.pop() {
     Some(valor) => {
       match cuadruplos.agregar_cuadruplo_asignacion(valor, variable) {
-        Ok(_res) => { /*println!("{:?}", _res);*/ () },
-        Err(_err) => { /*println!("{:?}", _err);*/ () },
+        Ok(_) => (),
+        Err(err) => {
+          println!("{:?}", err);
+        },
       };
       return;
     },
@@ -106,10 +107,6 @@ pub fn asignacion(input: &str) -> IResult<&str, &str> {
 #[cfg(test)]
 mod tests {
   use super::*;
-  // use nom::{
-  //     error::{ErrorKind, VerboseError, VerboseErrorKind},
-  //     Err,
-  // };
 
   #[test]
   fn test_asignacion() {

@@ -42,19 +42,25 @@ fn buscar_variable(id_valor: &str) {
   if contexto_clase.clone() != "".to_owned() {
     if contexto_funcion.clone() != "".to_owned() {
       match tabla_clases.buscar_variable_metodo(contexto_clase.clone(), contexto_funcion.clone(), id_valor.to_owned()) {
-        Ok(res) => { println!("{:?}", res); () },
-        Err(err) => { println!("{:?}", err); () }
+        Ok(_) => (),
+        Err(err) => {
+          println!("{:?}", err);
+        }
       };
     } else {
       match tabla_clases.buscar_atributo(contexto_clase.clone(), id_valor.to_owned()) {
-        Ok(res) => { println!("{:?}", res); () },
-        Err(err) => { println!("{:?}", err); () }
+        Ok(_) => (),
+        Err(err) => {
+          println!("{:?}", err);
+        }
       };
     }
   } else {
     match tabla_funciones.buscar_variable(contexto_funcion.clone(), id_valor.to_owned()) {
-      Ok(res) => { println!("{:?}", res); () },
-      Err(err) => { println!("{:?}", err); () }
+      Ok(_) => (),
+      Err(err) => {
+        println!("{:?}", err);
+      }
     };
   }
 
@@ -78,7 +84,6 @@ fn agregar_variable_a_pila(id_valor: &str, dims: Vec<String>) {
   match tabla_variables.buscar_variable(id_valor.to_owned()) {
     Ok((_, var)) => {
       if dims.clone() == var.dimensiones.clone() { pila_valores.push(var); }
-      ()
     },
     Err(_) => ()
   };
@@ -88,26 +93,29 @@ fn agregar_variable_a_pila(id_valor: &str, dims: Vec<String>) {
       match tabla_clases.buscar_variable_metodo(contexto_clase.clone(), contexto_funcion.clone(), id_valor.to_owned()) {
         Ok((_, _, _, var)) => {
           if dims.clone() == var.dimensiones.clone() { pila_valores.push(var); }
-          ()
         },
-        Err(err) => { println!("{:?}", err); () }
+        Err(err) => {
+          println!("{:?}", err);
+        }
       };
     } else {
       match tabla_clases.buscar_atributo(contexto_clase.clone(), id_valor.to_owned()) {
         Ok((_, _, var)) => {
           if dims.clone() == var.dimensiones.clone() { pila_valores.push(var); }
-          ()
         },
-        Err(err) => { println!("{:?}", err); () }
+        Err(err) => {
+          println!("{:?}", err);
+        }
       };
     }
   } else {
     match tabla_funciones.buscar_variable(contexto_funcion.clone(), id_valor.to_owned()) {
       Ok((_, _, var)) => {
         if dims.clone() == var.dimensiones.clone() { pila_valores.push(var); }
-        ()
       },
-      Err(err) => { println!("{:?}", err); () }
+      Err(err) => {
+        println!("{:?}", err);
+      }
     };
   }
 
@@ -174,10 +182,6 @@ pub fn valor(input: &str) -> IResult<&str, &str> {
 #[cfg(test)]
 mod tests {
   use super::*;
-  // use nom::{
-  //     error::{ErrorKind, VerboseError, VerboseErrorKind},
-  //     Err,
-  // };
 
   #[test]
   fn test_valor_cte() {
@@ -192,7 +196,5 @@ mod tests {
     assert_eq!(valor_id("Nombre.metodo(expresion)"),            Ok(("", "valor_id")));
     assert_eq!(valor_id("Nombre.metodo(expresion)"),            Ok(("", "valor_id")));
     assert_eq!(valor_id("Nombre.metodo()"),                     Ok(("", "valor_id")));
-    // assert_eq!(valor_id("Objeto.metodo.arreglo[id][id]"),       Ok(("", "valor_id")));
-    // assert_eq!(valor_id("Nombre.metodo.arreglo[  id][id ]"),    Ok(("", "valor_id")));
   }
 }
