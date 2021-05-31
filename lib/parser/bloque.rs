@@ -1,33 +1,39 @@
 use nom::{
-    bytes::complete::tag,
-    multi::many0,
-    IResult,
-    sequence::tuple,
+  bytes::complete::tag,
+  multi::many0,
+  IResult,
+  sequence::tuple,
+  branch::alt,
 };
 
 use crate::scanners::ws::*;
 use crate::parser::estatuto::*;
+use crate::parser::declaraciones::variables::*;
 
-// fn lista_estautos(input: &str) -> IResult<&str, Vec<&str>> {
 pub fn lista_estatutos(input: &str) -> IResult<&str, &str> {
   many0(tuple((estatuto, ws)))(input)
-  .map(|(next_input, _res)| {
-    // let mut lista = Vec::new();
-    // for val in res {
-    //   let (estatuto, _) = val;
-    //   lista.push(estatuto);
-    // }
-    // (next_input, lista)
+  .map(|(next_input, _)| {
     (next_input, "lista_estatutos")
   })
 }
 
-// pub fn bloque(input: &str) -> IResult<&str, Vec<&str>> {
 pub fn bloque(input: &str) -> IResult<&str, &str> {
   tuple((tag("{"), ws, lista_estatutos, ws, tag("}")))(input)
-  .map(|(next_input, res)| {
-    let (_, _, _estatuto, _, _,) = res;
-    // (next_input, estatuto)
+  .map(|(next_input, _)| {
+    (next_input, "bloque")
+  })
+}
+
+pub fn lista_estatutos_funcion(input: &str) -> IResult<&str, &str> {
+  many0(tuple((alt((estatuto, variables)), ws)))(input)
+  .map(|(next_input, _)| {
+    (next_input, "lista_estatutos")
+  })
+}
+
+pub fn bloque_funcion(input: &str) -> IResult<&str, &str> {
+  tuple((tag("{"), ws, lista_estatutos_funcion, ws, tag("}")))(input)
+  .map(|(next_input, _)| {
     (next_input, "bloque")
   })
 }

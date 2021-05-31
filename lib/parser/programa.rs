@@ -4,23 +4,19 @@ use nom::{
   bytes::complete::tag
 };
 
-use std::collections::HashMap;
-
 use crate::scanners::ws::*;
 use crate::scanners::id::*;
 use crate::parser::declaraciones::declaraciones::*;
 use crate::parser::bloque::*;
-use crate::semantica::tabla_funciones::*;
+use crate::semantica::globales::*;
 
 pub fn programa(input: &str) -> IResult<&str, &str> {
   let mut next: &str;
   
   next = match tuple((ws, tag("programa"), necessary_ws))(input) {
     Ok((next_input, _)) => next_input,
-    Err(err) => return Err(err), 
+    Err(err) => return Err(err),
   };
-
-  let mut funciones: TablaFunciones = TablaFunciones {tabla: HashMap::new()};
 
   let id_programa: &str;
 
@@ -32,37 +28,74 @@ pub fn programa(input: &str) -> IResult<&str, &str> {
     Err(err) => return Err(err),
   };
 
-  funciones.agregar_funcion(id_programa.to_owned(), "programa".to_owned());
+  // Crear tabla de variables globales
+  let mut funcs1 = FUNCIONES.lock().unwrap();
+  match funcs1.agregar_funcion(id_programa.to_owned(), "void".to_owned(), 14000) {
+    Ok(_res) => { /*println!("{:?}", _res);*/ () },
+    Err(_err) => { /*println!("{:?}", _err);*/ () },
+  };
+  drop(funcs1);
 
-  next = match tuple((ws, tag(";"), ws))(next) {
+  // Agregar el GOTO al main
+  let mut cuadruplos = CUADRUPLOS.lock().unwrap();
+  let mut saltos = PILA_SALTOS.lock().unwrap();
+  match cuadruplos.agregar_cuadruplo_goto() {
+    Ok(_res) => { /*println!("{:?}", _res);*/ () },
+    Err(_err) => { /*println!("{:?}", _err);*/ () },
+  };
+  saltos.push((cuadruplos.lista.len() - 1) as i64);
+  drop(cuadruplos);
+  drop(saltos);
+
+  // Actualizar contexto global y guardar id del programa
+  let mut contexto_funcion = CONTEXTO_FUNCION.lock().unwrap();
+  let mut id_programa_global = ID_PROGRAMA.lock().unwrap();
+  *contexto_funcion = id_programa.to_owned();
+  *id_programa_global = id_programa.to_owned();
+  drop(contexto_funcion);
+  drop(id_programa_global);
+
+  next = match tuple((ws, tag(";"), ws, declaraciones, ws, tag("principal()"), ws))(next) {
     Ok((next_input, _)) => next_input,
     Err(err) => return Err(err),
   };
 
-  let decl: Vec<&str>;
+  // Marcar que el contexto actual es el global
+  let mut contexto_funcion = CONTEXTO_FUNCION.lock().unwrap();
+  let id_programa_global = ID_PROGRAMA.lock().unwrap();
+  *contexto_funcion = id_programa_global.to_owned();
+  drop(contexto_funcion);
+  drop(id_programa_global);
 
-  match (declaraciones)(next) {
-    Ok((next_input, de)) => {
-      next = next_input;
-      decl = de;
+  // Actualicar el GOTO al main
+  let mut cuadruplos = CUADRUPLOS.lock().unwrap();
+  let mut saltos = PILA_SALTOS.lock().unwrap();
+  match saltos.pop() {
+    Some(valor) => {
+      match cuadruplos.modificar_cuadruplo_goto(valor as usize) {
+        Ok(_) => (),
+        Err(_) => ()
+      };
+      ()
     },
-    Err(err) => return Err(err),
-  };
+    _ => { /* println!("Pila de saltos vacía en PRINCIPAL"); */ () }
+  }
+  
+  drop(cuadruplos);
+  drop(saltos);
 
-  next = match tuple((ws, tag("principal()"), ws))(next) {
+  next = match bloque(next) {
     Ok((next_input, _)) => next_input,
     Err(err) => return Err(err),
   };
 
-  let blo: &str;
-
-  match bloque(next) {
-    Ok((next_input, b)) => {
-      next = next_input;
-      blo = b;
-    },
-    Err(err) => return Err(err),
-  };
+  {
+    // println!("Funciones  {:?}", FUNCIONES.lock().unwrap());
+    // println!("Clases     {:?}", CLASES.lock().unwrap());
+    // println!("Variables {:?}", VARIABLES.lock().unwrap());
+    // println!("Constantes {:?}", CONSTANTES.lock().unwrap());
+    // println!("Cuadruplos {:?}", CUADRUPLOS.lock().unwrap());
+  }
 
   match ws(next) {
     Ok((_, _)) => Ok(("", "programa")),
@@ -73,7 +106,7 @@ pub fn programa(input: &str) -> IResult<&str, &str> {
 #[cfg(test)]
 mod tests {
   use super::*;
-  use crate::semantica::tabla_variables::*;
+  // use crate::semantica::tabla_variables::*;
   // use nom::{
   //     error::{ErrorKind, VerboseError, VerboseErrorKind},
   //     Err,
@@ -81,16 +114,6 @@ mod tests {
 
   #[test]
   fn test_programa() {
-    // let funciones: TablaFunciones = TablaFunciones {tabla: vec![
-    //   TipoFunc {
-    //     nombre: "idPrograma".to_owned(),
-    //     tipo:  "programa".to_owned(),
-    //     variables: TablaVariables {
-    //       tabla: vec![]
-    //     },
-    //   }
-    // ]};
-
     assert_eq!(programa("
       programa idPrograma;
       principal() {}"
@@ -111,7 +134,7 @@ mod tests {
 
     assert_eq!(programa("
       programa idPrograma;
-      clase Estudiante <Persona> {
+      clase Estudiante {
         char nombre[10], apellido[10];
       };
       principal() {}"
@@ -133,7 +156,7 @@ mod tests {
         regresa expresion;
       }
       entero num;
-      clase Estudiante <Persona> {
+      clase Estudiante {
         char nombre[10], apellido[10];
       };
       principal() {}"
@@ -146,7 +169,7 @@ mod tests {
         regresa expresion;
       }
       entero num;
-      clase Estudiante <Persona> {
+      clase Estudiante {
         char nombre[10], apellido[10];
       };
       principal() {

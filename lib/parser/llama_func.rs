@@ -1,35 +1,27 @@
 use nom::{
   bytes::complete::tag,
   IResult,
-  multi::many0,
   sequence::tuple,
+  combinator::opt
 };
 
 use crate::scanners::ws::*;
 use crate::scanners::id::*;
 use crate::parser::func_params::*;
 
-fn attr_objeto(input: &str) -> IResult<&str, Vec<&str>> {
-  many0(tuple((ws, tag("."), ws, id)))(input)
+fn attr_objeto(input: &str) -> IResult<&str, &str> {
+  opt(tuple((ws, tag("."), ws, id)))(input)
   .map(|(next_input, res)| {
-    let mut lista_attr = Vec::new();
-    for r in res {
-      let (_, _, _, attr) = r;
-      lista_attr.push(attr);
+    match res {
+      Some(val) => (next_input, val.3),
+      None => (next_input, "")
     }
-    (next_input, lista_attr)
   })
 }
 
-// pub fn llama_func(input: &str) -> IResult<&str, (&str, Vec<&str>, (&str, Vec<&str>))> {
 pub fn llama_func(input: &str) -> IResult<&str, &str> {
-  tuple((
-    id, attr_objeto, func_params, ws, tag(";")
-  ))
-  (input)
+  tuple((id, attr_objeto, func_params, ws, tag(";")))(input)
   .map(|(next_input, __res)| {
-    // let (id, atributos, lista_params, _, _) = res;
-    // (next_input, (id, atributos, lista_params))
     (next_input, "llama_func")
   })
 }
@@ -44,14 +36,8 @@ mod tests {
 
   #[test]
   fn test_llama_func() {
-    // assert_eq!(llama_func("id();"), Ok(("", ("id", vec![], ("expresiones", vec![])))));
-    // assert_eq!(llama_func("id.metodo();"), Ok(("", ("id", vec!["metodo"], ("expresiones", vec![])))));
-    // assert_eq!(llama_func("id(expresion);"), Ok(("", ("id", vec![], ("expresiones", vec!["expresion"])))));
-    // assert_eq!(llama_func("id.metodo.metodo2(expresion);"), Ok(("", ("id", vec!["metodo", "metodo2"], ("expresiones", vec!["expresion"])))));
-
-    assert_eq!(llama_func("id();"),                         Ok(("", "llama_func")));
-    assert_eq!(llama_func("id.metodo();"),                  Ok(("", "llama_func")));
-    assert_eq!(llama_func("id(expresion);"),                Ok(("", "llama_func")));
-    assert_eq!(llama_func("id.metodo.metodo2(expresion);"), Ok(("", "llama_func")));
+    assert_eq!(llama_func("id();"),           Ok(("", "llama_func")));
+    assert_eq!(llama_func("id.metodo();"),    Ok(("", "llama_func")));
+    assert_eq!(llama_func("id(expresion);"),  Ok(("", "llama_func")));
   }
 }
