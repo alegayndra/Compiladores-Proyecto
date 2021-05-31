@@ -133,6 +133,12 @@ impl ListaCuadruplos {
     Ok(("Goto modificado", num_cuadruplo, direccion_cuadruplo))
   }
 
+  pub fn modificar_cuadruplo_goto_sino<'a>(&mut self, num_cuadruplo: usize) -> Result<(&'a str, usize, i64), (&'a str, usize, i64)>{
+    let direccion_cuadruplo = (self.lista.len() + 1) as i64;
+    self.lista[num_cuadruplo].3 = direccion_cuadruplo;
+    Ok(("Goto modificado", num_cuadruplo, direccion_cuadruplo))
+  }
+
   pub fn agregar_cuadruplo_gotof<'a>(&mut self, resultado: TipoVar) -> Result<&'a str, &'a str>{
     let op_num = conseguir_num_operador("GOTOF");
     match conseguir_num_tipo(resultado.tipo.as_str()) {
