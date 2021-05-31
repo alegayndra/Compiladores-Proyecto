@@ -130,6 +130,7 @@ fn agregar_texto_a_tabla(valor: &str) {
   let mut pila_valores = PILA_VALORES.lock().unwrap();
   pila_valores.push(CONSTANTES.lock().unwrap().agregar_constante(valor.to_owned(), "texto".to_owned()));
   drop(pila_valores);
+  generar_cuadruplo_escritura();
 }
 
 pub fn escribir(input: &str) -> IResult<&str, &str> {
@@ -184,7 +185,6 @@ pub fn escribir(input: &str) -> IResult<&str, &str> {
     Err(err) => Err(err)
   }
 }
-
 
 pub fn funcion_esp(input: &str) -> IResult<&str, &str> {
   alt((leer, escribir))(input)

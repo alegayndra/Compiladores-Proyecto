@@ -196,7 +196,5 @@ mod tests {
     assert_eq!(valor_id("Nombre.metodo(expresion)"),            Ok(("", "valor_id")));
     assert_eq!(valor_id("Nombre.metodo(expresion)"),            Ok(("", "valor_id")));
     assert_eq!(valor_id("Nombre.metodo()"),                     Ok(("", "valor_id")));
-    // assert_eq!(valor_id("Objeto.metodo.arreglo[id][id]"),       Ok(("", "valor_id")));
-    // assert_eq!(valor_id("Nombre.metodo.arreglo[  id][id ]"),    Ok(("", "valor_id")));
   }
 }
