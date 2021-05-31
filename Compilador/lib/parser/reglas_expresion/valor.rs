@@ -12,7 +12,6 @@ use crate::parser::dimensiones::*;
 use crate::parser::llama_func::*;
 use crate::parser::reglas_expresion::exp::*;
 use crate::semantica::globales::*;
-use crate::semantica::tabla_variables::*;
 
 fn agregar_constante_a_tabla(valor: &str, tipo: &str) {
   let mut pila_valores = PILA_VALORES.lock().unwrap();
@@ -85,7 +84,10 @@ fn agregar_variable_a_pila(id_valor: &str, dims: Vec<String>) {
 
   match tabla_variables.buscar_variable(id_valor.to_owned()) {
     Ok((_, var)) => {
-      if dims.clone() == var.dimensiones.clone() { pila_valores.push(var); }
+      if dims.clone() == var.dimensiones.clone() {
+        pila_valores.push(var);
+        return;
+      }
     },
     Err(_) => ()
   };
@@ -94,7 +96,10 @@ fn agregar_variable_a_pila(id_valor: &str, dims: Vec<String>) {
     if contexto_funcion.clone() != "".to_owned() {
       match tabla_clases.buscar_variable_metodo(contexto_clase.clone(), contexto_funcion.clone(), id_valor.to_owned()) {
         Ok((_, _, _, var)) => {
-          if dims.clone() == var.dimensiones.clone() { pila_valores.push(var); }
+          if dims.clone() == var.dimensiones.clone() {
+            pila_valores.push(var);
+            return;
+          }
         },
         Err(err) => {
           println!("{:?}", err);
@@ -103,7 +108,10 @@ fn agregar_variable_a_pila(id_valor: &str, dims: Vec<String>) {
     } else {
       match tabla_clases.buscar_atributo(contexto_clase.clone(), id_valor.to_owned()) {
         Ok((_, _, var)) => {
-          if dims.clone() == var.dimensiones.clone() { pila_valores.push(var); }
+          if dims.clone() == var.dimensiones.clone() {
+            pila_valores.push(var);
+            return;
+          }
         },
         Err(err) => {
           println!("{:?}", err);
@@ -113,22 +121,16 @@ fn agregar_variable_a_pila(id_valor: &str, dims: Vec<String>) {
   } else {
     match tabla_funciones.buscar_variable(contexto_funcion.clone(), id_valor.to_owned()) {
       Ok((_, _, var)) => {
-        if dims.clone() == var.dimensiones.clone() { pila_valores.push(var); }
+        if dims.clone() == var.dimensiones.clone() {
+          pila_valores.push(var);
+          return;
+        }
       },
       Err(err) => {
         println!("{:?}", err);
       }
     };
   }
-
-  drop(pila_valores);
-  
-  drop(contexto_funcion);
-  drop(contexto_clase);
-
-  drop(tabla_variables);
-  drop(tabla_funciones);
-  drop(tabla_clases);
 }
 
 fn agregar_funcion_a_pila_valores(id_valor: &str) {
@@ -156,19 +158,17 @@ fn agregar_funcion_a_pila_valores(id_valor: &str) {
     };
   }
 
-  let variable = TipoVar {
-    nombre: funcion.nombre.clone(),
-    tipo: funcion.tipo.clone(),
-    dimensiones: vec![],
-    direccion: funcion.direccion
-  };
-
-  PILA_VALORES.lock().unwrap().push(variable);
-  
   drop(contexto_clase);
 
   drop(tabla_funciones);
   drop(tabla_clases);
+
+  match CUADRUPLOS.lock().unwrap().agregar_cuadruplo_asignacion_valor_funcion(funcion.direccion, funcion.tipo.clone()) {
+    Ok(_) => (),
+    Err(err) => {
+      println!("{:?}", err);
+    }
+  };
 }
 
 fn parentesis(input: &str) -> IResult<&str, &str> {
@@ -200,8 +200,10 @@ fn valor_id(input: &str) -> IResult<&str, &str> {
 
   match parentesis(next) {
     Ok((next_input, _)) => {
-      println!("wiiiii parametros");
       next = next_input;
+      {
+        PILA_OPERADORS.lock().unwrap().push("(".to_owned());
+      }
       let params = generar_cuadruplo_era(id_valor);
       let mut pos: usize = 0;
       let mut continuar = true;
@@ -246,6 +248,9 @@ fn valor_id(input: &str) -> IResult<&str, &str> {
 
       match tuple((ws, tag(")")))(next) {
         Ok((next_input, _)) => {
+          {
+            PILA_OPERADORS.lock().unwrap().pop();
+          }
           generar_cuadruplo_gosub(id_valor);
           agregar_funcion_a_pila_valores(id_valor);
           Ok((next_input, "valor_id"))
@@ -254,7 +259,6 @@ fn valor_id(input: &str) -> IResult<&str, &str> {
       }
     },
     Err(_) => {
-      println!("no hubo parametros");
       next = match con_dim(next) {
         Ok((next_input, dims)) => {
           for dim in dims { vec_dims.push(dim.to_owned()); }

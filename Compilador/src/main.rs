@@ -100,25 +100,25 @@ fn escribir_archivo(nombre_archivo: &str) {
 
 	// Escritura clases
 	{
-		let mut texto_clases: String = "".to_owned();
-		for (_key, val) in tabla_clases.tabla.iter() {
-			let clase_string: String = format!("({}, {})", val.nombre, val.padre);
-			texto_clases = format!("{}{}\n", texto_clases, clase_string);
-			let mut texto_metodos: String = "".to_owned();
-			for (_key_m, metodo) in val.metodos.tabla.iter() {
-				let metodo_string: String = format!("({}, {}, {})", metodo.nombre, metodo.direccion, metodo.tipo);
-				texto_metodos = format!("{}{}\n", texto_metodos, metodo_string);
-				let mut lista_parametros: String = "".to_owned();
-				for param in metodo.parametros.iter() {
-					let param_string: String = format!("({}, {}, {})", param.nombre, param.direccion, param.tipo);
-					lista_parametros = format!("{}{}\n", lista_parametros, param_string);
-				}
-				texto_metodos = format!("{}PARAMS\n{}FIN_PARAMS\n", texto_metodos, metodo_string);
-			}
-			texto_clases = format!("{}METODOS\n{}FIN_METODOS\n", texto_clases, texto_metodos);
-		}
+		// let mut texto_clases: String = "".to_owned();
+		// for (_key, val) in tabla_clases.tabla.iter() {
+		// 	let clase_string: String = format!("({}, {})", val.nombre, val.padre);
+		// 	texto_clases = format!("{}{}\n", texto_clases, clase_string);
+		// 	let mut texto_metodos: String = "".to_owned();
+		// 	for (_key_m, metodo) in val.metodos.tabla.iter() {
+		// 		let metodo_string: String = format!("({}, {}, {})", metodo.nombre, metodo.direccion, metodo.tipo);
+		// 		texto_metodos = format!("{}{}\n", texto_metodos, metodo_string);
+		// 		let mut lista_parametros: String = "".to_owned();
+		// 		for param in metodo.parametros.iter() {
+		// 			let param_string: String = format!("({}, {}, {})", param.nombre, param.direccion, param.tipo);
+		// 			lista_parametros = format!("{}{}\n", lista_parametros, param_string);
+		// 		}
+		// 		texto_metodos = format!("{}PARAMS\n{}FIN_PARAMS\n", texto_metodos, metodo_string);
+		// 	}
+		// 	texto_clases = format!("{}METODOS\n{}FIN_METODOS\n", texto_clases, texto_metodos);
+		// }
 	
-		texto_archivo = format!("{}CLASES\n{}FIN_CLASES\n", texto_archivo, texto_clases);
+		// texto_archivo = format!("{}CLASES\n{}FIN_CLASES\n", texto_archivo, texto_clases);
 	}
 
 	// Escritura cuadruplos
