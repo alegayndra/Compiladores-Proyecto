@@ -115,6 +115,7 @@ pub fn conseguir_num_operador(operador: &str) -> i64 {
     "GOSUB"   => 22,
     "VER"     => 23,
     "ACC"     => 24,
+    "ASG"     => 25,
     _         => -1,
   }
 }

@@ -79,20 +79,22 @@ impl ListaCuadruplos {
     }
   }
 
-  pub fn agregar_cuadruplo_for<'a>(&mut self, objetivo: TipoVar) -> Result<(&'a str, String), (&'a str, String, String)>{
+  pub fn agregar_cuadruplo_for<'a>(&mut self, objetivo: i64) -> Result<(&'a str, i64), (&'a str, i64)>{
     let op_num = conseguir_num_operador("+");
-    let obj_num = conseguir_num_tipo(objetivo.tipo.as_str());
+    // let obj_num = conseguir_num_tipo(objetivo.tipo.as_str());
 
-    match checar_cubo_semantico(op_num as usize, 0 as usize, obj_num as usize) {
-      2 => Err(("Variable objetivo no es un número", objetivo.nombre.clone(), objetivo.tipo.clone())),
-      3 => Err(("Variable objetivo no es un número", objetivo.nombre.clone(), objetivo.tipo.clone())),
-      4 => Err(("Variable objetivo no es un número", objetivo.nombre.clone(), objetivo.tipo.clone())),
-      5 => Err(("Variable objetivo no es un número", objetivo.nombre.clone(), objetivo.tipo.clone())),
-      _ => {
-        self.lista.push((op_num, CONSTANTES.lock().unwrap().agregar_constante("1".to_owned(), "entero".to_owned()).direccion, objetivo.direccion, objetivo.direccion));
-        Ok(("Incremento de for creado", objetivo.tipo.clone()))
-      }
-    }
+    // match checar_cubo_semantico(op_num as usize, 0 as usize, obj_num as usize) {
+    //   2 => Err(("Variable objetivo no es un número", objetivo.nombre.clone(), objetivo.tipo.clone())),
+    //   3 => Err(("Variable objetivo no es un número", objetivo.nombre.clone(), objetivo.tipo.clone())),
+    //   4 => Err(("Variable objetivo no es un número", objetivo.nombre.clone(), objetivo.tipo.clone())),
+    //   5 => Err(("Variable objetivo no es un número", objetivo.nombre.clone(), objetivo.tipo.clone())),
+    //   _ => {
+    //     self.lista.push((op_num, CONSTANTES.lock().unwrap().agregar_constante("1".to_owned(), "entero".to_owned()).direccion, objetivo.direccion, objetivo.direccion));
+    //     Ok(("Incremento de for creado", objetivo.tipo.clone()))
+    //   }
+    // }
+    self.lista.push((op_num, CONSTANTES.lock().unwrap().agregar_constante("1".to_owned(), "entero".to_owned()).direccion, objetivo, objetivo));
+    Ok(("Incremento de for creado", objetivo))
   }
 
   pub fn agregar_cuadruplo_asignacion<'a>(&mut self, valor: TipoVar, destino: TipoVar) -> Result<(&'a str, (String, String)), (&'a str, (String, String))>{
@@ -105,6 +107,21 @@ impl ListaCuadruplos {
       _ => {
         self.lista.push((op_num, valor.direccion, -1, destino.direccion));
         Ok(("Asignacion compatible", (valor.tipo, destino.tipo)))
+      }
+    }
+  }
+
+  pub fn agregar_cuadruplo_asignacion_arreglo<'a>(&mut self, valor: TipoVar, destino: TipoVar) -> Result<(&'a str, (String, String)), (&'a str, (String, String))>{
+    let op_num = conseguir_num_operador("ASG");
+    let asg_num = conseguir_num_operador("=");
+    let valor_num = conseguir_num_tipo(valor.tipo.as_str());
+    let destino_num = conseguir_num_tipo(destino.tipo.as_str());
+
+    match checar_cubo_semantico(asg_num as usize, valor_num as usize, destino_num as usize) {
+      3 => Err(("Asignacion de arreglo incompatible", (valor.tipo, destino.tipo))),
+      _ => {
+        self.lista.push((op_num, valor.direccion, -1, destino.direccion));
+        Ok(("Asignacion de arreglo compatible", (valor.tipo, destino.tipo)))
       }
     }
   }
@@ -151,6 +168,51 @@ impl ListaCuadruplos {
     };
     self.lista.push((op_num, resultado.direccion, -1, -1));
     Ok("GOTOF bueno")
+  }
+
+  pub fn agregar_cuadruplo_gotof_desde<'a>(&mut self) -> Result<(&'a str, i64), (&'a str, i64)>{
+    let op_num = conseguir_num_operador("GOTOF");
+    let pos_arr = self.lista.len() - 1;
+    let dir = match self.lista[pos_arr].0 {
+      12 => self.lista[pos_arr].3,
+      25 => {
+        match self.agregar_cuadruplo_acceder_desde(self.lista[pos_arr].3) {
+          Ok((_, _, dir_temp)) => dir_temp,
+          Err(err) => return Err(("Error al crear GOTOF desde", -100))
+        }
+      },
+      _ => -9
+    };
+    self.lista.push((op_num, dir, -1, -1));
+    Ok(("GOTOF desde bueno", dir))
+  }
+
+  pub fn agregar_cuadruplo_acceder_desde<'a>(&mut self, apuntador: i64) -> Result<(&'a str, i64, i64), (&'a str, i64, i64)>{
+    let op_num = conseguir_num_operador("ACC");
+    let mut tabla_variables = VARIABLES.lock().unwrap();
+    let dir = match conseguir_direccion("entero", "variable", 1, vec![]) {
+      Ok(num) => num,
+      Err(_err) => {
+        return Err(("Error al conseguir direccion de variable temporal", 0, 0));
+      }
+    };
+    unsafe {
+      loop {
+        let nombre_temporal = format!("temporal{}", NUM_TEMPORAL);
+        match tabla_variables.agregar_variable(nombre_temporal.clone(), "entero".to_owned(), vec![], dir) {
+          Ok((_, var)) => {
+            PILA_VALORES.lock().unwrap().push(var);
+            agregar_temporal_a_tabla(nombre_temporal.clone(), "entero".to_owned(), dir);
+            break;
+          },
+          Err(_) => {
+            NUM_TEMPORAL += 1;
+          }
+        }
+      }
+    }
+    self.lista.push((op_num, apuntador, -1, dir));
+    Ok(("ACC desde generado", apuntador, dir))
   }
 
   pub fn agregar_cuadruplo_endfunc<'a>(&mut self) -> Result<&'a str, &'a str>{

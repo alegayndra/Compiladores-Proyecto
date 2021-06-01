@@ -13,7 +13,7 @@ use crate::parser::regresa::*;
 
 
 pub fn estatuto(input: &str) -> IResult<&str, &str> {
-  alt((asignacion, funcion_esp, llama_func, repeticion, decision, comentario, regresa))(input)
+  alt((comentario, regresa, funcion_esp, repeticion, decision, asignacion, llama_func))(input)
 }
 
 #[cfg(test)]

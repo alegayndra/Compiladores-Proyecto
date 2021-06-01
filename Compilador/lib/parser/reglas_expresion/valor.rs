@@ -8,7 +8,6 @@ use nom::{
 use crate::scanners::ws::*;
 use crate::scanners::id::*;
 use crate::scanners::constantes::*;
-use crate::parser::dimensiones::*;
 use crate::parser::llama_func::*;
 use crate::parser::reglas_expresion::exp::*;
 use crate::semantica::globales::*;

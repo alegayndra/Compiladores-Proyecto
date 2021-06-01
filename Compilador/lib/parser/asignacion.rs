@@ -11,25 +11,34 @@ use crate::parser::reglas_expresion::valor::*;
 use crate::semantica::globales::*;
 use crate::semantica::tabla_variables::*;
 
-fn generar_cuadruplo_asignacion(variable: TipoVar) {
+fn generar_cuadruplo_asignacion(variable: TipoVar, hay_dims: bool) {
   let mut pila_valores = PILA_VALORES.lock().unwrap();
   let mut cuadruplos = CUADRUPLOS.lock().unwrap();
 
   match pila_valores.pop() {
     Some(valor) => {
-      match cuadruplos.agregar_cuadruplo_asignacion(variable, valor) {
-        Ok(_) => (),
-        Err(err) => {
-          println!("{:?}", err);
-        },
-      };
+      if hay_dims {
+        match cuadruplos.agregar_cuadruplo_asignacion_arreglo(variable, valor) {
+          Ok(_) => (),
+          Err(err) => {
+            println!("{:?}", err);
+          },
+        };
+      } else {
+        match cuadruplos.agregar_cuadruplo_asignacion(variable, valor) {
+          Ok(_) => (),
+          Err(err) => {
+            println!("{:?}", err);
+          },
+        };
+      }
       return;
     },
     _ => { println!("Stack de valores vacío en EXP_LOGICA"); return; }
   };
 }
 
-pub fn asignacion(input: &str) -> IResult<&str, &str> {
+pub fn asignacion_interna(input: &str) -> IResult<&str, &str> {
   let mut next : &str = input;
   let id_valor: &str;
   let mut _id_attr: &str;
@@ -50,9 +59,12 @@ pub fn asignacion(input: &str) -> IResult<&str, &str> {
     Err(_) => next
   };
 
+
+  let mut hay_dims = false;
   let variable = buscar_variable(id_valor);
   next = match corchete(next) {
     Ok((next_input, _)) => {
+      hay_dims = true;
       match variable.dimensiones.len() {
         0 => {
           println!("Variable no tiene dimensiones");
@@ -79,10 +91,6 @@ pub fn asignacion(input: &str) -> IResult<&str, &str> {
             1 => {
               let dir = constantes.agregar_constante(variable.direccion.to_string(), variable.tipo.clone());
               cuadruplos.agregar_cuadruplo("+",valor.clone(), dir.clone());
-              {
-                let apuntador = PILA_VALORES.lock().unwrap().pop().unwrap();
-                cuadruplos.agregar_cuadruplo_acceder(apuntador);
-              }
               next_i
             },
             2 => {
@@ -111,10 +119,6 @@ pub fn asignacion(input: &str) -> IResult<&str, &str> {
                       drop(pila_valores);
                       let dir = constantes.agregar_constante(variable.direccion.to_string(), variable.tipo.clone());
                       cuadruplos.agregar_cuadruplo("+", valor.clone(), dir.clone());
-                      {
-                        let apuntador = PILA_VALORES.lock().unwrap().pop().unwrap();
-                        cuadruplos.agregar_cuadruplo_acceder(apuntador);
-                      }
                       next_i
                     },
                     Err(err) => {
@@ -147,7 +151,8 @@ pub fn asignacion(input: &str) -> IResult<&str, &str> {
       {
         var = PILA_VALORES.lock().unwrap().pop().unwrap();
       }
-      generar_cuadruplo_asignacion(var);
+
+      generar_cuadruplo_asignacion(var, hay_dims);
       next_input
     },
     Err(err) => {
@@ -156,7 +161,11 @@ pub fn asignacion(input: &str) -> IResult<&str, &str> {
     }
   };
 
-  match tuple((ws, tag(";")))(next) {
+  Ok((next, "asignacion_interna"))
+}
+
+pub fn asignacion(input: &str) -> IResult<&str, &str> {
+  match tuple((asignacion_interna, ws, tag(";")))(input) {
     Ok((next_input, _)) => Ok((next_input, "asignacion")),
     Err(err) => Err(err)
   }
