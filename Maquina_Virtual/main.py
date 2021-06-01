@@ -265,6 +265,22 @@ def gosub(cuad_funcion):
   memoriaFuncionEnProgreso.pop()
   pila_cuadruplos.append(num_cuadruplo[0])
   goto(cuad_funcion)
+def verificar(lim_inf, lim_sup, val_verificar):
+  valor = extraerMemoria(val_verificar)
+  if valor >= extraerMemoria(lim_inf) and valor <= extraerMemoria(lim_sup):
+    return
+  else:
+    print("El subindice excede las dimensiones del arreglo")
+    sys.exit()
+
+def acceder(apuntador, destino):
+  asignacion(extraerMemoria(apuntador), destino)
+  return
+
+extraerMemoria(extraerMemoria(t1)) = 1
+def asginacionArreglo(valor, destino):
+  asignacion(valor, extraerMemoria(destino))
+  return
 
 def switchCubo(cuadruplo):
   if cuadruplo[0] >= 0 and cuadruplo[0] <= 11:
@@ -302,8 +318,14 @@ def switchCubo(cuadruplo):
   elif cuadruplo[0] == 21: # Param
     param(cuadruplo[1], cuadruplo[3])
     return
-  elif cuadruplo[0] == 22: #GoSub
+  elif cuadruplo[0] == 22: # GoSub
     gosub(cuadruplo[3])
+  elif cuadruplo[0] == 23: # VER
+    verificar(cuadruplo[2], cuadruplo[3], cuadruplo[1])
+  elif cuadruplo[0] == 24: # ACC
+    acceder(cuadruplo[1], cuadruplo[3])
+  elif cuadruplo[0] == 25: # ASG
+    asignacionArreglo(cuadruplo[1], cuadruplo[3])
     return
 
 def ejecutar_programa():
