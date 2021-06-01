@@ -2,7 +2,7 @@ use nom::{
   branch::alt,
   bytes::complete::tag,
   IResult,
-  sequence::tuple,
+  sequence::{tuple, preceded},
   combinator::opt
 };
 
@@ -151,15 +151,10 @@ fn lista_parametros(input: &str) -> IResult<&str, &str> {
 }
 
 pub fn funcion(input: &str) -> IResult<&str, &str> {
-  let mut next : &str;
+  let mut next : &str = input;
   let tipo_func : &str;
 
-  next = match ws(input) {
-    Ok((next_input, _)) => next_input,
-    Err(err) => return Err(err)
-  };
-
-  next = match tipo_retorno(next) {
+  next = match preceded(ws, tipo_retorno)(next) {
     Ok((next_input, tipo_f)) => {
       tipo_func = tipo_f;
       next_input
@@ -167,12 +162,7 @@ pub fn funcion(input: &str) -> IResult<&str, &str> {
     Err(err) => return Err(err)
   };
 
-  next = match tuple((ws, tag("funcion"), necessary_ws))(next) {
-    Ok((next_input, _)) => next_input,
-    Err(err) => return Err(err)
-  };
-
-  next = match id(next) {
+  next = match preceded(tuple((ws, tag("funcion"), necessary_ws)), id)(next) {
     Ok((next_input, id_f)) => {
       agregar_funcion(id_f, tipo_func);
       next_input
