@@ -277,8 +277,7 @@ def acceder(apuntador, destino):
   asignacion(extraerMemoria(apuntador), destino)
   return
 
-extraerMemoria(extraerMemoria(t1)) = 1
-def asginacionArreglo(valor, destino):
+def asignacionArreglo(valor, destino):
   asignacion(valor, extraerMemoria(destino))
   return
 
@@ -320,10 +319,13 @@ def switchCubo(cuadruplo):
     return
   elif cuadruplo[0] == 22: # GoSub
     gosub(cuadruplo[3])
+    return
   elif cuadruplo[0] == 23: # VER
     verificar(cuadruplo[2], cuadruplo[3], cuadruplo[1])
+    return
   elif cuadruplo[0] == 24: # ACC
     acceder(cuadruplo[1], cuadruplo[3])
+    return
   elif cuadruplo[0] == 25: # ASG
     asignacionArreglo(cuadruplo[1], cuadruplo[3])
     return
