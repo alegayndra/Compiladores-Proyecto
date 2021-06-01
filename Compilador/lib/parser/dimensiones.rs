@@ -94,7 +94,7 @@ fn generar_cuadruplo_verificar(variable: TipoVar, dim: usize) -> TipoVar {
   valor
 }
 
-fn generar_cuadruplo_acceder(variable: TipoVar, valor: TipoVar, asignacion: bool) {
+fn generar_cuadruplo_acceder(variable: TipoVar, valor: TipoVar, asignacion: bool, dimension: i64) {
   let mut cuadruplos = CUADRUPLOS.lock().unwrap();
   let mut constantes = CONSTANTES.lock().unwrap();
   let dir = constantes.agregar_constante(variable.direccion.to_string(), variable.tipo.clone());
@@ -105,6 +105,27 @@ fn generar_cuadruplo_acceder(variable: TipoVar, valor: TipoVar, asignacion: bool
       println!("{:?}", err);
     }
   };
+  
+  if dimension == 2 {
+    let mut pila_valores = PILA_VALORES.lock().unwrap();
+    let apuntador = pila_valores.pop().unwrap();
+    drop(pila_valores);
+    match cuadruplos.agregar_cuadruplo_acceder(apuntador) {
+      Ok(_) => (),
+      Err(err) => {
+        println!("{:?}", err);
+      }
+    };
+    let mut pila_valores = PILA_VALORES.lock().unwrap();
+    let val = pila_valores.pop().unwrap();
+    drop(pila_valores);
+    match cuadruplos.agregar_cuadruplo_suma_arreglo("+", dir.clone(), val.clone()) {
+      Ok(_) => (),
+      Err(err) => {
+        println!("{:?}", err);
+      }
+    };
+  }
   if !asignacion {
     let mut pila_valores = PILA_VALORES.lock().unwrap();
     let apuntador = pila_valores.pop().unwrap();
@@ -153,7 +174,7 @@ pub fn con_dim(id_valor: &str, asignacion: bool) -> impl FnMut(&str)  -> IResult
                 popear_dimension();
                 let valor = generar_cuadruplo_verificar(variable.clone(), 0);
                 match variable.dimensiones.len() {
-                  1 => { generar_cuadruplo_acceder(variable.clone(), valor.clone(), asignacion); },
+                  1 => { generar_cuadruplo_acceder(variable.clone(), valor.clone(), asignacion, 1); },
                   2 => { generar_cuadruplo_offset(variable.clone(), valor.clone()); },
                   _ => ()
                 };
@@ -182,7 +203,7 @@ pub fn con_dim(id_valor: &str, asignacion: bool) -> impl FnMut(&str)  -> IResult
         match tuple((delimited(ws, exp, ws), tag("]")))(next_input) {
           Ok((next_i, _)) => {
             let valor = generar_cuadruplo_verificar(variable.clone(), 1);
-            generar_cuadruplo_acceder(variable.clone(), valor.clone(), asignacion);
+            generar_cuadruplo_acceder(variable.clone(), valor.clone(), asignacion, 2);
             popear_dimension();
             return Ok((next_i, "con_dim"));
           },
