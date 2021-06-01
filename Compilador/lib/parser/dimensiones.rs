@@ -81,7 +81,6 @@ fn popear_dimension() {
 }
 
 fn generar_cuadruplo_verificar(variable: TipoVar, dim: usize) -> TipoVar {
-  println!("generar_cuadruplo_verificar, variable: {:?}, dim: {:?}", variable.clone(), dim);
   let mut pila_valores = PILA_VALORES.lock().unwrap();
   let mut cuadruplos = CUADRUPLOS.lock().unwrap();
   let valor = pila_valores.pop().unwrap();
@@ -96,12 +95,10 @@ fn generar_cuadruplo_verificar(variable: TipoVar, dim: usize) -> TipoVar {
 }
 
 fn generar_cuadruplo_acceder(variable: TipoVar, valor: TipoVar, asignacion: bool) {
-  println!("generar_cuadruplo_acceder, variable: {:?}, dim: {:?}", variable.clone(), valor.clone());
   let mut cuadruplos = CUADRUPLOS.lock().unwrap();
   let mut constantes = CONSTANTES.lock().unwrap();
   let dir = constantes.agregar_constante(variable.direccion.to_string(), variable.tipo.clone());
   drop(constantes);
-  println!("suma, variable: {:?}, dim: {:?}", variable.clone(), valor.clone());
   match cuadruplos.agregar_cuadruplo_suma_arreglo("+", valor.clone(), dir.clone()) {
     Ok(_) => (),
     Err(err) => {
