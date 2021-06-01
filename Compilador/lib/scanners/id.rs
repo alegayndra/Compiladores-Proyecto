@@ -19,9 +19,9 @@ pub fn id_con_dim_decl(input: &str) -> IResult<&str, (&str, Vec<&str>)> {
   tuple((id, con_dim_decl))(input)
 }
 
-pub fn id_con_dim(input: &str) -> IResult<&str, (&str, Vec<&str>)> {
-  tuple((id, con_dim))(input)
-}
+// pub fn id_con_dim(input: &str) -> IResult<&str, (&str, Vec<&str>)> {
+//   tuple((id, con_dim))(input)
+// }
 
 #[cfg(test)]
 mod tests {

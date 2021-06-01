@@ -223,15 +223,15 @@ fn buscar_variable(id_valor: &str) -> TipoVar {
   variable_invalida
 }
 
-pub fn desde_id(input: &str) -> IResult<&str, TipoVar> {
-  match tuple((id, opt(tuple((ws, tag("."), ws, id))), con_dim))(input) {
-    Ok((next_input, (id, _, _))) => {
-      let var = buscar_variable(id);
-      Ok((next_input, var))
-    },
-    Err(err) => Err(err)
-  }
-}
+// pub fn desde_id(input: &str) -> IResult<&str, TipoVar> {
+//   match tuple((id, opt(tuple((ws, tag("."), ws, id))), con_dim))(input) {
+//     Ok((next_input, (id, _, _))) => {
+//       let var = buscar_variable(id);
+//       Ok((next_input, var))
+//     },
+//     Err(err) => Err(err)
+//   }
+// }
 
 pub fn desde(input: &str) -> IResult<&str, &str> {
   let mut next: &str = input;
