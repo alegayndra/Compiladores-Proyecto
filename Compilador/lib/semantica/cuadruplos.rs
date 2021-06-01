@@ -178,7 +178,7 @@ impl ListaCuadruplos {
       25 => {
         match self.agregar_cuadruplo_acceder_desde(self.lista[pos_arr].3) {
           Ok((_, _, dir_temp)) => dir_temp,
-          Err(err) => return Err(("Error al crear GOTOF desde", -100))
+          Err(_) => return Err(("Error al crear GOTOF desde", -100))
         }
       },
       _ => -9

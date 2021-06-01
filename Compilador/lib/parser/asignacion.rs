@@ -1,37 +1,39 @@
 use nom::{
   bytes::complete::tag,
   IResult,
-  sequence::{tuple, delimited, preceded},
+  sequence::{tuple, preceded},
 };
   
 use crate::scanners::ws::*;
 use crate::scanners::id::*;
 use crate::parser::reglas_expresion::exp::*;
-use crate::parser::reglas_expresion::valor::*;
 use crate::parser::dimensiones::*;
 use crate::semantica::globales::*;
 use crate::semantica::tabla_variables::*;
 
-fn generar_cuadruplo_asignacion(variable: TipoVar, hay_dims: bool) {
+fn generar_cuadruplo_asignacion(variable: TipoVar) {
   let mut pila_valores = PILA_VALORES.lock().unwrap();
   let mut cuadruplos = CUADRUPLOS.lock().unwrap();
 
   match pila_valores.pop() {
     Some(valor) => {
-      if hay_dims {
-        match cuadruplos.agregar_cuadruplo_asignacion_arreglo(variable, valor) {
-          Ok(_) => (),
-          Err(err) => {
-            println!("{:?}", err);
-          },
-        };
-      } else {
-        match cuadruplos.agregar_cuadruplo_asignacion(variable, valor) {
-          Ok(_) => (),
-          Err(err) => {
-            println!("{:?}", err);
-          },
-        };
+      match valor.dimensiones.len() {
+        0 => {
+          match cuadruplos.agregar_cuadruplo_asignacion(variable, valor) {
+            Ok(_) => (),
+            Err(err) => {
+              println!("{:?}", err);
+            },
+          };
+        },
+        _ => {
+          match cuadruplos.agregar_cuadruplo_asignacion_arreglo(variable, valor) {
+            Ok(_) => (),
+            Err(err) => {
+              println!("{:?}", err);
+            },
+          };
+        }
       }
       return;
     },
@@ -60,15 +62,8 @@ pub fn asignacion_interna(input: &str) -> IResult<&str, &str> {
     Err(_) => next
   };
 
-  let mut hay_dims = false;
-  let variable = buscar_variable(id_valor);
   next = match con_dim(id_valor)(next) {
-    Ok((next_input, _)) => {
-      if next_input == next {
-        hay_dims = true;
-      }
-      next_input
-    },
+    Ok((next_input, _)) => next_input,
     Err(err) => return Err(err)
   };
 
@@ -79,7 +74,7 @@ pub fn asignacion_interna(input: &str) -> IResult<&str, &str> {
         var = PILA_VALORES.lock().unwrap().pop().unwrap();
       }
 
-      generar_cuadruplo_asignacion(var, hay_dims);
+      generar_cuadruplo_asignacion(var);
       next_input
     },
     Err(err) => {

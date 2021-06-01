@@ -2,7 +2,7 @@ use nom::{
   branch::alt,
   bytes::complete::tag,
   IResult,
-  sequence::{tuple, preceded, delimited},
+  sequence::{tuple, preceded},
 };
 
 use crate::scanners::ws::*;
@@ -12,7 +12,6 @@ use crate::parser::llama_func::*;
 use crate::parser::dimensiones::*;
 use crate::parser::reglas_expresion::exp::*;
 use crate::semantica::globales::*;
-use crate::semantica::tabla_variables::*;
 
 fn agregar_constante_a_tabla(valor: &str, tipo: &str) {
   let mut pila_valores = PILA_VALORES.lock().unwrap();
