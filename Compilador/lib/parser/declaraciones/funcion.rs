@@ -25,14 +25,12 @@ fn parametros_vacios(input: &str) -> IResult<&str, &str> {
 }
 
 fn agregar_param(tipo_param: &str, id_param: &str) {
-  let dims_string : Vec<String> = vec![];
-
-  let dir = match conseguir_direccion(tipo_param, "variable", 0) {
+  let dir = match conseguir_direccion(tipo_param, "variable", 0, vec![]) {
     Ok(num) => num,
     Err(err) => { println!("{:?}", err); return; }
   };
 
-  match VARIABLES.lock().unwrap().agregar_variable(id_param.to_owned(), tipo_param.to_owned(), dims_string.clone(), dir) {
+  match VARIABLES.lock().unwrap().agregar_variable(id_param.to_owned(), tipo_param.to_owned(), vec![], dir) {
     Ok(_) => (),
     Err(err) => {
       println!("{:?}", err);
@@ -44,7 +42,7 @@ fn agregar_param(tipo_param: &str, id_param: &str) {
   let contexto_funcion = CONTEXTO_FUNCION.lock().unwrap();
 
   if contexto_clase.clone() != "".to_owned() {
-    match CLASES.lock().unwrap().agregar_parametro_metodo(contexto_clase.to_string(), contexto_funcion.to_string(), id_param.to_owned(), tipo_param.to_owned(), dims_string.clone(), dir) {
+    match CLASES.lock().unwrap().agregar_parametro_metodo(contexto_clase.to_string(), contexto_funcion.to_string(), id_param.to_owned(), tipo_param.to_owned(), dir) {
       Ok(_res) => {},
       Err(err) => {
         println!("{:?}", err);
@@ -52,7 +50,7 @@ fn agregar_param(tipo_param: &str, id_param: &str) {
       },
     };
   } else {
-    match FUNCIONES.lock().unwrap().agregar_parametro(contexto_funcion.to_string(), id_param.to_owned(), tipo_param.to_owned(), dims_string.clone(), dir) {
+    match FUNCIONES.lock().unwrap().agregar_parametro(contexto_funcion.to_string(), id_param.to_owned(), tipo_param.to_owned(), dir) {
       Ok(_res) => {},
       Err(err) => {
         println!("{:?}", err);
@@ -73,7 +71,7 @@ fn agregar_funcion(id_f: &str, tipo_func: &str) {
   let cuad: i64 = CUADRUPLOS.lock().unwrap().lista.len() as i64;
   let dir = match tipo_func {
     "void" => -8, 
-    _ => match conseguir_direccion(tipo_func, "variable", 0) {
+    _ => match conseguir_direccion(tipo_func, "variable", 0, vec![]) {
       Ok(num) => {
         let id_programa = ID_PROGRAMA.lock().unwrap().to_string();
         if id_programa != "".to_owned() && id_programa != id_f {

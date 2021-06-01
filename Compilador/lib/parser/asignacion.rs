@@ -1,104 +1,93 @@
 use nom::{
   bytes::complete::tag,
   IResult,
-  sequence::tuple,
+  sequence::{tuple, preceded},
 };
   
 use crate::scanners::ws::*;
 use crate::scanners::id::*;
 use crate::parser::reglas_expresion::exp::*;
+use crate::parser::dimensiones::*;
 use crate::semantica::globales::*;
+use crate::semantica::tabla_variables::*;
 
-fn generar_cuadruplo_asignacion(id_valor: &str, _dims: Vec<&str>) {
-  let variable;
-  let contexto_funcion = CONTEXTO_FUNCION.lock().unwrap();
-  let contexto_clase = CONTEXTO_CLASE.lock().unwrap();
-
-  let tabla_variables = VARIABLES.lock().unwrap();
-  let tabla_funciones = FUNCIONES.lock().unwrap();
-  let tabla_clases = CLASES.lock().unwrap();
-  
+fn generar_cuadruplo_asignacion(variable: TipoVar) {
+  let mut pila_valores = PILA_VALORES.lock().unwrap();
   let mut cuadruplos = CUADRUPLOS.lock().unwrap();
 
-  match tabla_variables.buscar_variable(id_valor.to_owned()) {
-    Ok((_, var)) => { variable = var; },
-    Err(_) => {
-      if contexto_clase.clone() != "".to_owned() {
-        if contexto_funcion.clone() != "".to_owned() {
-          variable = match tabla_clases.buscar_variable_metodo(contexto_clase.clone(), contexto_funcion.clone(), id_valor.to_owned()) {
-            Ok((_, _, _, var)) => var,
-            Err(err) => { 
-              println!("{:?}", err);
-              return;
-            }
-          };
-        } else {
-          variable = match tabla_clases.buscar_atributo(contexto_clase.clone(), id_valor.to_owned()) {
-            Ok((_, _, var)) => var,
-            Err(err) => {
-              println!("{:?}", err); 
-              return;
-            }
-          };
-        }
-      } else {
-        variable =match tabla_funciones.buscar_variable(contexto_funcion.clone(), id_valor.to_owned()) {
-          Ok((_, _, var)) => var,
-          Err(err) => {
-            println!("{:?}", err);
-            return;
-          }
-        };
-      }
-    }
+  let valor = match pila_valores.pop() {
+    Some(valor) => valor,
+    _ => { println!("Stack de valores vacío en EXP_LOGICA"); return; }
   };
 
-  drop(contexto_funcion);
-  drop(contexto_clase);
+  drop(pila_valores);
 
-  drop(tabla_variables);
-  drop(tabla_funciones);
-  drop(tabla_clases);
-
-  let mut pila_valores = PILA_VALORES.lock().unwrap();
-
-  match pila_valores.pop() {
-    Some(valor) => {
-      match cuadruplos.agregar_cuadruplo_asignacion(valor, variable) {
+  match valor.dimensiones.len() {
+    0 => {
+      match cuadruplos.agregar_cuadruplo_asignacion(variable, valor) {
         Ok(_) => (),
         Err(err) => {
           println!("{:?}", err);
         },
       };
-      return;
     },
-    _ => { println!("Stack de valores vacío en EXP_LOGICA"); return; }
-  };
+    _ => {
+      match cuadruplos.agregar_cuadruplo_asignacion_arreglo(variable, valor) {
+        Ok(_) => (),
+        Err(err) => {
+          println!("{:?}", err);
+        },
+      };
+    }
+  }
 }
 
-pub fn asignacion(input: &str) -> IResult<&str, &str> {
-  let mut next: &str = input;
-  let variable;
-  let dimensiones;
+pub fn asignacion_interna(input: &str) -> IResult<&str, &str> {
+  let mut next : &str = input;
+  let id_valor: &str;
+  let mut _id_attr: &str;
 
-  next = match id_con_dim(next) {
-    Ok((next_input, (id_valor, dims))) => {
-      variable = id_valor;
-      dimensiones = dims;
+  next = match id(next) {
+    Ok((next_input, id_v)) => {
+      id_valor = id_v;
       next_input
     },
+    Err(err) => return Err(err)
+  };
+
+  next = match preceded(tuple((ws, tag("."), ws)), id)(next) {
+    Ok((next_input, id_obj)) => {
+      _id_attr = id_obj;
+      next_input
+    },
+    Err(_) => next
+  };
+
+  next = match con_dim(id_valor)(next) {
+    Ok((next_input, _)) => next_input,
     Err(err) => return Err(err)
   };
 
   next = match tuple((ws, tag("="), ws, exp))(next) {
     Ok((next_input, _)) => {
-      generar_cuadruplo_asignacion(variable, dimensiones);
+      let var;
+      {
+        var = PILA_VALORES.lock().unwrap().pop().unwrap();
+      }
+
+      generar_cuadruplo_asignacion(var);
       next_input
     },
-    Err(err) => return Err(err)
+    Err(err) => {
+      return Err(err);
+    }
   };
 
-  match tuple((ws, tag(";")))(next) {
+  Ok((next, "asignacion_interna"))
+}
+
+pub fn asignacion(input: &str) -> IResult<&str, &str> {
+  match tuple((asignacion_interna, ws, tag(";")))(input) {
     Ok((next_input, _)) => Ok((next_input, "asignacion")),
     Err(err) => Err(err)
   }

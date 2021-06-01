@@ -7,69 +7,21 @@ use nom::{
 };
 
 use crate::scanners::ws::*;
-use crate::scanners::id::*;
 use crate::scanners::texto::*;
 use crate::parser::reglas_expresion::expresion::*;
+use crate::parser::reglas_expresion::valor::*;
 use crate::semantica::globales::*;
 
-fn generar_cuadruplo_lectura(id_valor: &str, _dims: Vec<&str>) {
-  let variable;
-  let contexto_funcion = CONTEXTO_FUNCION.lock().unwrap();
-  let contexto_clase = CONTEXTO_CLASE.lock().unwrap();
-
-  let tabla_variables = VARIABLES.lock().unwrap();
-  let tabla_funciones = FUNCIONES.lock().unwrap();
-  let tabla_clases = CLASES.lock().unwrap();
+fn generar_cuadruplo_lectura() {
   let mut cuadruplos = CUADRUPLOS.lock().unwrap();
+  let var = PILA_VALORES.lock().unwrap().pop().unwrap();
 
-  match tabla_variables.buscar_variable(id_valor.to_owned()) {
-    Ok((_, var)) => {
-      variable = var;
-    },
-    Err(_) => {
-      if contexto_clase.clone() != "".to_owned() {
-        if contexto_funcion.clone() != "".to_owned() {
-          variable = match tabla_clases.buscar_variable_metodo(contexto_clase.clone(), contexto_funcion.clone(), id_valor.to_owned()) {
-            Ok((_, _, _, var)) => var,
-            Err(err) => {
-              println!("{:?}", err);
-              return;
-            },
-          };
-        } else {
-          variable = match tabla_clases.buscar_atributo(contexto_clase.clone(), id_valor.to_owned()) {
-            Ok((_, _, var)) => var,
-            Err(err) => {
-              println!("{:?}", err);
-              return;
-            },
-          };
-        }
-      } else {
-        variable =match tabla_funciones.buscar_variable(contexto_funcion.clone(), id_valor.to_owned()) {
-          Ok((_, _, var)) => var,
-          Err(err) => {
-            println!("{:?}", err);
-            return;
-          },
-        };
-      }
-    }
-  };
-
-  match cuadruplos.agregar_cuadruplo_lectura(variable) {
+  match cuadruplos.agregar_cuadruplo_lectura(var) {
     Ok(_res) => (),
     Err(err) => {
       println!("{:?}", err);
     },
   };
-
-  drop(contexto_funcion);
-  drop(contexto_clase);
-
-  drop(tabla_variables);
-  drop(tabla_funciones);
-  drop(tabla_clases);
   drop(cuadruplos);
 }
 
@@ -97,9 +49,9 @@ pub fn leer(input: &str) -> IResult<&str, &str> {
     Err(err) => return Err(err)
   };
 
-  next = match id_con_dim(next) {
-    Ok((next_input, (id_valor, _dims))) => {
-      generar_cuadruplo_lectura(id_valor, _dims);
+  next = match valor(next) {
+    Ok((next_input, _)) => {
+      generar_cuadruplo_lectura();
       next_input
     },
     Err(err) => return Err(err)
@@ -111,9 +63,9 @@ pub fn leer(input: &str) -> IResult<&str, &str> {
       _ => break
     };
 
-    next = match id_con_dim(next) {
-      Ok((next_input, (id_valor, _dims))) => {
-        generar_cuadruplo_lectura(id_valor, _dims);
+    next = match valor(next) {
+      Ok((next_input, _)) => {
+        generar_cuadruplo_lectura();
         next_input
       },
       Err(err) => return Err(err)

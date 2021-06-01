@@ -19,10 +19,6 @@ pub fn id_con_dim_decl(input: &str) -> IResult<&str, (&str, Vec<&str>)> {
   tuple((id, con_dim_decl))(input)
 }
 
-pub fn id_con_dim(input: &str) -> IResult<&str, (&str, Vec<&str>)> {
-  tuple((id, con_dim))(input)
-}
-
 #[cfg(test)]
 mod tests {
   use super::*;
@@ -46,8 +42,9 @@ mod tests {
   }
 
   #[test]
-  fn test_id_con_dim() {
-    assert_eq!(id_con_dim("id"),     Ok(("", ("id", vec![]))));
-    assert_eq!(id_con_dim("id[id]"), Ok(("", ("id", vec!["exp"]))));
+  fn test_id_con_dim_decl() {
+    assert_eq!(id_con_dim_decl("id"),     Ok(("", ("id", vec![]))));
+    assert_eq!(id_con_dim_decl("id[10]"), Ok(("", ("id", vec!["10"]))));
+    assert_eq!(id_con_dim_decl("id[10][20]"), Ok(("", ("id", vec!["10", "20"]))));
   }
 }

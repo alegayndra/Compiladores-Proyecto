@@ -60,12 +60,12 @@ fn variable_compuesta(input: &str) -> IResult<&str, &str> {
 }
 
 fn agregar_variable_a_tabla(var: &str, tipo_var: &str, dims: Vec<&str>) {
-  let mut dims_string : Vec<String> = vec![];
+  let mut dims_nums : Vec<i64> = vec![];
   for dim in dims {
-    dims_string.push(dim.to_owned());
+    dims_nums.push(dim.to_owned().parse::<i64>().unwrap());
   }
 
-  let dir = match conseguir_direccion(tipo_var, "variable", 0) {
+  let dir = match conseguir_direccion(tipo_var, "variable", 0, dims_nums.clone()) {
     Ok(num) => num,
     Err(err) => {
       println!("{:?}", err);
@@ -73,7 +73,7 @@ fn agregar_variable_a_tabla(var: &str, tipo_var: &str, dims: Vec<&str>) {
     }
   };
 
-  match VARIABLES.lock().unwrap().agregar_variable(var.to_owned(), tipo_var.to_owned(), dims_string.clone(), dir) {
+  match VARIABLES.lock().unwrap().agregar_variable(var.to_owned(), tipo_var.to_owned(), dims_nums.clone(), dir) {
     Ok(_) => (),
     Err(err) => {
       println!("{:?}", err);
@@ -85,14 +85,14 @@ fn agregar_variable_a_tabla(var: &str, tipo_var: &str, dims: Vec<&str>) {
 
   if contexto_clase.clone() != "".to_owned() {
     if contexto_funcion.clone() != "".to_owned() {
-      match CLASES.lock().unwrap().agregar_atributo(contexto_clase.to_string(), var.to_owned(), tipo_var.to_owned(), dims_string.clone(), dir) {
+      match CLASES.lock().unwrap().agregar_atributo(contexto_clase.to_string(), var.to_owned(), tipo_var.to_owned(), dims_nums.clone(), dir) {
         Ok(_) => (),
         Err(err) => {
           println!("{:?}", err);
         },
       }
     } else {
-      match CLASES.lock().unwrap().agregar_variable_metodo(contexto_clase.to_string(), contexto_funcion.to_string(), var.to_owned(), tipo_var.to_owned(), dims_string.clone(), dir, 0) {
+      match CLASES.lock().unwrap().agregar_variable_metodo(contexto_clase.to_string(), contexto_funcion.to_string(), var.to_owned(), tipo_var.to_owned(), dims_nums.clone(), dir, 0) {
         Ok(_) => (),
         Err(err) => {
           println!("{:?}", err);
@@ -100,7 +100,7 @@ fn agregar_variable_a_tabla(var: &str, tipo_var: &str, dims: Vec<&str>) {
       }
     }
   } else {
-    match FUNCIONES.lock().unwrap().agregar_variable(contexto_funcion.to_string(), var.to_owned(), tipo_var.to_owned(), dims_string.clone(), dir, 0) {
+    match FUNCIONES.lock().unwrap().agregar_variable(contexto_funcion.to_string(), var.to_owned(), tipo_var.to_owned(), dims_nums.clone(), dir, 0) {
       Ok(_) => (),
       Err(err) => {
         println!("{:?}", err);

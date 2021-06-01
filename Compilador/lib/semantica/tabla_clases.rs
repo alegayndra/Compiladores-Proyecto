@@ -72,7 +72,7 @@ impl TablaClases {
     nombre_func: String,
     nombre_var: String,
     tipo_var: String,
-    dims: Vec<String>,
+    dims: Vec<i64>,
     dir: i64,
     temporal: i8
   ) -> Result<(&str, String, String, TipoVar), (&str, String, String, String)> {
@@ -115,12 +115,11 @@ impl TablaClases {
     nombre_func: String,
     nombre_var: String,
     tipo_var: String,
-    dims: Vec<String>,
     dir: i64
   ) -> Result<(&str, String, String, TipoVar), (&str, String, String, String)> {
     match self.tabla.get_mut(&nombre_clase) {
       Some(clase) => match clase.metodos.tabla.get_mut(&nombre_func) {
-        Some(metodo) => match metodo.variables.agregar_variable(nombre_var.clone(), tipo_var.clone(), dims.clone(), dir) {
+        Some(metodo) => match metodo.variables.agregar_variable(nombre_var.clone(), tipo_var.clone(), vec![], dir) {
           Ok((_, var)) => {
             metodo.parametros.push(var.clone());
             Ok(("Parametro agregado a metodo", nombre_clase.clone(), nombre_func.clone(), var))
@@ -138,7 +137,7 @@ impl TablaClases {
     nombre_clase: String,
     nombre_var: String,
     tipo_var: String,
-    dims: Vec<String>,
+    dims: Vec<i64>,
     dir: i64
   ) -> Result<(&str, String, TipoVar), (&str, String, String)> {
     match self.tabla.get_mut(&nombre_clase) {
@@ -168,7 +167,7 @@ mod tests {
   #[test]
   fn test_tabla_clases() {
     let mut tabla : TablaClases = TablaClases { tabla: HashMap::new() };
-    let dims : Vec<String> = vec![];
+    let dims : Vec<i64> = vec![];
 
     // let dir_clase = 20000;
     let clase = TipoClase {
@@ -243,19 +242,19 @@ mod tests {
     );
 
     assert_eq!(
-      tabla.agregar_parametro_metodo("Persona".to_owned(), "func".to_owned(), "variable".to_owned(), "entero".to_owned(), dims.clone(), dir_var),
+      tabla.agregar_parametro_metodo("Persona".to_owned(), "func".to_owned(), "variable".to_owned(), "entero".to_owned(), dir_var),
       Ok(("Parametro agregado a metodo", "Persona".to_owned(), "func".to_owned(), var_entera.clone()))
     );
     assert_eq!(
-      tabla.agregar_parametro_metodo("Persona".to_owned(), "func".to_owned(), "variable".to_owned(), "entero".to_owned(), dims.clone(), dir_var),
+      tabla.agregar_parametro_metodo("Persona".to_owned(), "func".to_owned(), "variable".to_owned(), "entero".to_owned(), dir_var),
       Err(("Nombre de variable ocupado en metodo", "Persona".to_owned(), "func".to_owned(), "variable".to_owned()))
     );
     assert_eq!(
-      tabla.agregar_parametro_metodo("Persona".to_owned(), "a".to_owned(), "variable".to_owned(), "entero".to_owned(), dims.clone(), dir_var),
+      tabla.agregar_parametro_metodo("Persona".to_owned(), "a".to_owned(), "variable".to_owned(), "entero".to_owned(), dir_var),
       Err(("Metodo no existente en clase", "Persona".to_owned(), "a".to_owned(), "".to_owned()))
     );
     assert_eq!(
-      tabla.agregar_parametro_metodo("Estudiante".to_owned(), "a".to_owned(), "variable".to_owned(), "entero".to_owned(), dims.clone(), dir_var),
+      tabla.agregar_parametro_metodo("Estudiante".to_owned(), "a".to_owned(), "variable".to_owned(), "entero".to_owned(), dir_var),
       Err(("Clase no existente", "Estudiante".to_owned(), "".to_owned(), "".to_owned()))
     );
 

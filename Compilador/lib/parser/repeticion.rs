@@ -2,42 +2,18 @@ use nom::{
   branch::alt,
   bytes::complete::tag,
   IResult,
-  combinator::opt,
-  sequence::{tuple, delimited},
+  sequence::{tuple, preceded},
 };
 
 use crate::scanners::ws::*;
-use crate::scanners::id::*;
 use crate::parser::reglas_expresion::exp_logica::*;
 use crate::parser::reglas_expresion::exp::*;
 use crate::parser::bloque::*;
-use crate::parser::dimensiones::*;
-use crate::semantica::tabla_variables::*;
+use crate::parser::asignacion::*;
 use crate::semantica::globales::*;
 
 fn agregar_cuadruplo_a_pila_saltos() {
   PILA_SALTOS.lock().unwrap().push((CUADRUPLOS.lock().unwrap().lista.len()) as i64);
-}
-
-fn generar_cuadruplo_asignacion(variable: TipoVar) {
-  let mut pila_valores = PILA_VALORES.lock().unwrap();
-  let mut cuadruplos = CUADRUPLOS.lock().unwrap();
-
-  match pila_valores.pop() {
-    Some(valor) => {
-      match cuadruplos.agregar_cuadruplo_asignacion(valor, variable) {
-        Ok(_) => (),
-        Err(err) => {
-          println!("{:?}", err);
-        }
-      };
-      return;
-    },
-    _ => {
-      println!("Stack de valores vacío en EXP_LOGICA");
-      return;
-    }
-  };
 }
 
 fn generar_gotof_mientras() {
@@ -63,41 +39,22 @@ fn generar_gotof_mientras() {
   drop(saltos);
 }
 
-fn generar_gotof_desde(variable: TipoVar) {
+fn generar_gotof_desde() -> i64{
   let mut cuadruplos = CUADRUPLOS.lock().unwrap();
-  let mut lista_valores = PILA_VALORES.lock().unwrap();
+
+  let dir = match cuadruplos.agregar_cuadruplo_gotof_desde() {
+    Ok((_, dir_temp)) => dir_temp,
+    Err(err) => {
+      println!("{:?}", err);
+      -7
+    }
+  };
 
   let mut saltos = PILA_SALTOS.lock().unwrap();
-  match lista_valores.pop() {
-    Some(var) => {
-      drop(lista_valores);
-      match cuadruplos.agregar_cuadruplo("<=", variable.clone(), var.clone()) {
-        Ok(_) => (),
-        Err(err) => {
-          println!("{:?}", err);
-        }
-      };      
-    },
-    _ => ()
-  };
-
-  let mut lista_valores = PILA_VALORES.lock().unwrap();
-  match lista_valores.pop() {
-    Some(var) => {
-      match cuadruplos.agregar_cuadruplo_gotof(var) {
-        Ok(_) => (),
-        Err(err) => {
-          println!("{:?}", err);
-        }
-      };
-    },
-    _ => ()
-  };
-
-  drop(lista_valores);
   saltos.push((cuadruplos.lista.len() - 1) as i64);
   drop(cuadruplos);
   drop(saltos);
+  dir
 }
 
 fn generar_gotos_final() {
@@ -159,78 +116,11 @@ pub fn mientras(input: &str) -> IResult<&str, &str> {
   }
 }
 
-fn buscar_variable(id_valor: &str) -> TipoVar {
-  let contexto_funcion = CONTEXTO_FUNCION.lock().unwrap();
-  let contexto_clase = CONTEXTO_CLASE.lock().unwrap();
-
-  let tabla_variables = VARIABLES.lock().unwrap();
-  let tabla_funciones = FUNCIONES.lock().unwrap();
-  let tabla_clases = CLASES.lock().unwrap();
-
-  let variable_invalida = TipoVar {
-    nombre: "".to_owned(),
-    tipo: "".to_owned(),
-    dimensiones: vec!["-1".to_owned()],
-    direccion: -3
-  };
-
-  match tabla_variables.buscar_variable(id_valor.to_owned()) {
-    Ok((_res, variable)) => return variable,
-    Err(_) => ()
-  };
-
-  if contexto_clase.clone() != "".to_owned() {
-    if contexto_funcion.clone() != "".to_owned() {
-      match tabla_clases.buscar_variable_metodo(contexto_clase.clone(), contexto_funcion.clone(), id_valor.to_owned()) {
-        Ok((_res, _res2, _res3, variable)) => return variable,
-        Err(err) => {
-          println!("{:?}", err);
-        }
-      };
-    } else {
-      match tabla_clases.buscar_atributo(contexto_clase.clone(), id_valor.to_owned()) {
-        Ok((_res, _res2, variable)) => return variable,
-        Err(err) => {
-          println!("{:?}", err);
-        }
-      };
-    }
-  } else {
-    match tabla_funciones.buscar_variable(contexto_funcion.clone(), id_valor.to_owned()) {
-      Ok((_res, _res2, variable)) => return variable,
-      Err(err) => {
-        println!("{:?}", err);
-      }
-    };
-  }
-
-  drop(contexto_funcion);
-  drop(contexto_clase);
-
-  drop(tabla_variables);
-  drop(tabla_funciones);
-  drop(tabla_clases);
-
-  variable_invalida
-}
-
-pub fn desde_id(input: &str) -> IResult<&str, TipoVar> {
-  match tuple((id, opt(tuple((ws, tag("."), ws, id))), con_dim))(input) {
-    Ok((next_input, (id, _, _))) => {
-      let var = buscar_variable(id);
-      Ok((next_input, var))
-    },
-    Err(err) => Err(err)
-  }
-}
-
 pub fn desde(input: &str) -> IResult<&str, &str> {
   let mut next: &str = input;
-  let variable;
-  next = match delimited(tuple((tag("desde"), necessary_ws)), desde_id, tuple((ws, tag("="), ws, exp)))(next) {
-    Ok((next_input, var)) => {
-      variable = var;
-      generar_cuadruplo_asignacion(variable.clone());
+  let variable: i64;
+  next = match preceded(tuple((tag("desde"), necessary_ws)), asignacion_interna)(next) {
+    Ok((next_input, _)) => {
       agregar_cuadruplo_a_pila_saltos();
       next_input
     },
@@ -239,7 +129,7 @@ pub fn desde(input: &str) -> IResult<&str, &str> {
 
   next = match tuple((necessary_ws, tag("hasta"), necessary_ws, exp))(next) {
     Ok((next_input, _)) => {
-      generar_gotof_desde(variable.clone());
+      variable = generar_gotof_desde();
       next_input
     },
     Err(err) => return Err(err)
@@ -281,16 +171,24 @@ mod tests {
 
   #[test]
   fn test_desde() {
-    assert_eq!(desde("desde id = 10 hasta 20 {}"),         Ok(("", "desde")));
+    let wii = "wii";
+    let id = "id";
+    let parte = "parte";
+    let mut tabla_variables = VARIABLES.lock().unwrap();
+    tabla_variables.agregar_variable(wii.to_owned(), "entero".to_owned(), vec![], 200);
+    tabla_variables.agregar_variable(id.to_owned(), "entero".to_owned(), vec![5], 300);
+    tabla_variables.agregar_variable(parte.to_owned(), "entero".to_owned(), vec![5, 10], 400);
+    drop(tabla_variables);
+    assert_eq!(desde("desde wiii = 10 hasta 20 {}"),         Ok(("", "desde")));
     assert_eq!(desde("desde id[id] = 10 hasta 20 {}"),     Ok(("", "desde")));
-    assert_eq!(desde("desde id[id][id] = 10 hasta 20 {}"), Ok(("", "desde")));
-    assert_eq!(desde("desde id.id[id] = 10 hasta 20 {}"),  Ok(("", "desde")));
-    assert_eq!(desde("desde id.id = 15 hasta 25 {}"),      Ok(("", "desde")));
+    assert_eq!(desde("desde parte[id][id] = 10 hasta 20 {}"), Ok(("", "desde")));
+    // assert_eq!(desde("desde id.id[id] = 10 hasta 20 {}"),  Ok(("", "desde")));
+    // assert_eq!(desde("desde id.id = 15 hasta 25 {}"),      Ok(("", "desde")));
   }
 
   #[test]
   fn test_repeticion() {
     assert_eq!(repeticion("mientras(expresion) {}"),    Ok(("", "repeticion")));
-    assert_eq!(repeticion("desde id = 10 hasta 20 {}"), Ok(("", "repeticion")));
+    assert_eq!(repeticion("desde wii = 10 hasta 20 {}"), Ok(("", "repeticion")));
   }
 }

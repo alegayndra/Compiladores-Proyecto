@@ -7,7 +7,7 @@ pub struct TipoVar {
   pub nombre: String,
   pub direccion: i64,
   pub tipo: String,
-  pub dimensiones: Vec<String>
+  pub dimensiones: Vec<i64>
 }
 
 #[derive(Debug, PartialEq, Eq, Clone)]
@@ -16,7 +16,7 @@ pub struct TablaVariables {
 }
 
 impl TablaVariables {
-  pub fn agregar_variable(&mut self, nombre_var: String, tipo_var: String, dims: Vec<String>, dir: i64) -> Result<(&str, TipoVar), (&str, String)> {
+  pub fn agregar_variable(&mut self, nombre_var: String, tipo_var: String, dims: Vec<i64>, dir: i64) -> Result<(&str, TipoVar), (&str, String)> {
     match self.tabla.contains_key(&nombre_var) {
       true => Err(("Nombre de variable ocupado", nombre_var.clone())),
       false => {
@@ -43,7 +43,7 @@ impl TablaVariables {
     match self.tabla.get(&nombre_var) {
       Some(var) => var.clone(),
       None => {
-        let dir = match conseguir_direccion(tipo_var.clone().as_str(), "constante", 0) {
+        let dir = match conseguir_direccion(tipo_var.clone().as_str(), "constante", 0, vec![]) {
           Ok(num) => num,
           Err(err) => { println!("{:?}", err); -1}
         };

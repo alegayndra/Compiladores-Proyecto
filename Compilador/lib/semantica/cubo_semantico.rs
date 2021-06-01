@@ -113,6 +113,9 @@ pub fn conseguir_num_operador(operador: &str) -> i64 {
     "ERA"     => 20,
     "PARAM"   => 21,
     "GOSUB"   => 22,
+    "VER"     => 23,
+    "ACC"     => 24,
+    "ASG"     => 25,
     _         => -1,
   }
 }
