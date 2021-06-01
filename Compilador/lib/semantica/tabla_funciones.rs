@@ -64,7 +64,7 @@ impl TablaFunciones {
     }
   }
 
-  pub fn agregar_variable(&mut self, nombre_func: String, nombre_var: String, tipo_var: String, dims: Vec<String>, dir: i64, temporal: i8) -> Result<(&str, String, TipoVar), (&str, String, String)> {
+  pub fn agregar_variable(&mut self, nombre_func: String, nombre_var: String, tipo_var: String, dims: Vec<i64>, dir: i64, temporal: i8) -> Result<(&str, String, TipoVar), (&str, String, String)> {
     match self.tabla.get_mut(&nombre_func) {  
       Some(funcion) => match funcion.variables.agregar_variable(nombre_var.clone(), tipo_var.clone(), dims, dir) {
         Ok((_, var)) => {
@@ -87,10 +87,10 @@ impl TablaFunciones {
     }
   }
 
-  pub fn agregar_parametro(&mut self, nombre_func: String, nombre_var: String, tipo_var: String, dims: Vec<String>, dir: i64) -> Result<(&str, String, TipoVar), (&str, String, String)> {
+  pub fn agregar_parametro(&mut self, nombre_func: String, nombre_var: String, tipo_var: String, dir: i64) -> Result<(&str, String, TipoVar), (&str, String, String)> {
     match self.tabla.get_mut(&nombre_func) {
       Some(funcion) => {
-        match funcion.variables.agregar_variable(nombre_var.clone(), tipo_var.clone(), dims.clone(), dir) {
+        match funcion.variables.agregar_variable(nombre_var.clone(), tipo_var.clone(), vec![], dir) {
           Ok((_, var)) => {
             funcion.parametros.push(var.clone());
             funcion.modificar_era(tipo_var.clone(), 0);

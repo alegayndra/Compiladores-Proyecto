@@ -170,7 +170,7 @@ fn buscar_variable(id_valor: &str) -> TipoVar {
   let variable_invalida = TipoVar {
     nombre: "".to_owned(),
     tipo: "".to_owned(),
-    dimensiones: vec!["-1".to_owned()],
+    dimensiones: vec![-1],
     direccion: -3
   };
 

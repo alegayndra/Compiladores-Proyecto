@@ -63,6 +63,11 @@ lazy_static! {
     let saltos = Mutex::new(vec![]);
     saltos
   };
+
+  pub static ref PILA_DIMENSIONES: Mutex<Vec<(TipoVar, i64)>> = {
+    let saltos = Mutex::new(vec![]);
+    saltos
+  };
 }
 
 pub static mut RETURN_EXISTENTE: bool = false;
@@ -134,7 +139,7 @@ fn conseguir_contexto(contexto_num: usize) -> String {
   }.to_owned()
 }
 
-pub fn conseguir_direccion(tipo_var: &str, contexto: &str, temporal: usize) -> Result<i64, String> {
+pub fn conseguir_direccion(tipo_var: &str, contexto: &str, temporal: usize, dims: Vec<i64>) -> Result<i64, String> {
   let contexto_num: usize;
   let tipo_num: usize;
   if contexto == "constante" {
@@ -145,6 +150,12 @@ pub fn conseguir_direccion(tipo_var: &str, contexto: &str, temporal: usize) -> R
     contexto_num = 1;
   }
 
+  let cant_direcciones: i64 = match dims.len() {
+    2 => dims[0] * dims[1],
+    1 => dims[0],
+    _ => 1
+  };
+
   tipo_num = match conseguir_num_tipo(tipo_var) {
     3 => return Err("Variable de tipo error".to_owned()),
     4 => return Err("Variable de tipo objeto".to_owned()),
@@ -154,11 +165,22 @@ pub fn conseguir_direccion(tipo_var: &str, contexto: &str, temporal: usize) -> R
 
   unsafe {
     let dir_nueva = DIRECCIONES[contexto_num][tipo_num][temporal][0];
-    if dir_nueva + 1 >= DIRECCIONES[contexto_num][tipo_num][temporal][2] {
+    if dir_nueva + cant_direcciones >= DIRECCIONES[contexto_num][tipo_num][temporal][2] {
       return Err(format!("Limite de tipo {} alcanzado en el contexto {}", tipo_var, conseguir_contexto(contexto_num)))
     }
 
-    DIRECCIONES[contexto_num][tipo_num][temporal][0] = dir_nueva + 1;
+    DIRECCIONES[contexto_num][tipo_num][temporal][0] = dir_nueva + cant_direcciones;
     return Ok(dir_nueva)
+  }
+}
+
+pub fn resetear_direcciones_locales()  {
+  unsafe {
+    DIRECCIONES[1][0][0][0] = DIRECCIONES[1][0][0][1];
+    DIRECCIONES[1][0][1][0] = DIRECCIONES[1][0][1][1];
+    DIRECCIONES[1][1][0][0] = DIRECCIONES[1][1][0][1];
+    DIRECCIONES[1][1][1][0] = DIRECCIONES[1][1][1][1];
+    DIRECCIONES[1][2][0][0] = DIRECCIONES[1][2][0][1];
+    DIRECCIONES[1][2][1][0] = DIRECCIONES[1][2][1][1];
   }
 }

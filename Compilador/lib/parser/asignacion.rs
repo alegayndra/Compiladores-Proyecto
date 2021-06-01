@@ -1,70 +1,23 @@
 use nom::{
   bytes::complete::tag,
   IResult,
-  sequence::tuple,
+  sequence::{tuple, delimited, preceded},
 };
   
 use crate::scanners::ws::*;
 use crate::scanners::id::*;
 use crate::parser::reglas_expresion::exp::*;
+use crate::parser::reglas_expresion::valor::*;
 use crate::semantica::globales::*;
+use crate::semantica::tabla_variables::*;
 
-fn generar_cuadruplo_asignacion(id_valor: &str, _dims: Vec<&str>) {
-  let variable;
-  let contexto_funcion = CONTEXTO_FUNCION.lock().unwrap();
-  let contexto_clase = CONTEXTO_CLASE.lock().unwrap();
-
-  let tabla_variables = VARIABLES.lock().unwrap();
-  let tabla_funciones = FUNCIONES.lock().unwrap();
-  let tabla_clases = CLASES.lock().unwrap();
-  
-  let mut cuadruplos = CUADRUPLOS.lock().unwrap();
-
-  match tabla_variables.buscar_variable(id_valor.to_owned()) {
-    Ok((_, var)) => { variable = var; },
-    Err(_) => {
-      if contexto_clase.clone() != "".to_owned() {
-        if contexto_funcion.clone() != "".to_owned() {
-          variable = match tabla_clases.buscar_variable_metodo(contexto_clase.clone(), contexto_funcion.clone(), id_valor.to_owned()) {
-            Ok((_, _, _, var)) => var,
-            Err(err) => { 
-              println!("{:?}", err);
-              return;
-            }
-          };
-        } else {
-          variable = match tabla_clases.buscar_atributo(contexto_clase.clone(), id_valor.to_owned()) {
-            Ok((_, _, var)) => var,
-            Err(err) => {
-              println!("{:?}", err); 
-              return;
-            }
-          };
-        }
-      } else {
-        variable =match tabla_funciones.buscar_variable(contexto_funcion.clone(), id_valor.to_owned()) {
-          Ok((_, _, var)) => var,
-          Err(err) => {
-            println!("{:?}", err);
-            return;
-          }
-        };
-      }
-    }
-  };
-
-  drop(contexto_funcion);
-  drop(contexto_clase);
-
-  drop(tabla_variables);
-  drop(tabla_funciones);
-  drop(tabla_clases);
-
+fn generar_cuadruplo_asignacion(variable: TipoVar) {
   let mut pila_valores = PILA_VALORES.lock().unwrap();
+  let mut cuadruplos = CUADRUPLOS.lock().unwrap();
 
   match pila_valores.pop() {
     Some(valor) => {
-      match cuadruplos.agregar_cuadruplo_asignacion(valor, variable) {
+      match cuadruplos.agregar_cuadruplo_asignacion(variable, valor) {
         Ok(_) => (),
         Err(err) => {
           println!("{:?}", err);
@@ -77,25 +30,130 @@ fn generar_cuadruplo_asignacion(id_valor: &str, _dims: Vec<&str>) {
 }
 
 pub fn asignacion(input: &str) -> IResult<&str, &str> {
-  let mut next: &str = input;
-  let variable;
-  let dimensiones;
+  let mut next : &str = input;
+  let id_valor: &str;
+  let mut _id_attr: &str;
 
-  next = match id_con_dim(next) {
-    Ok((next_input, (id_valor, dims))) => {
-      variable = id_valor;
-      dimensiones = dims;
+  next = match id(next) {
+    Ok((next_input, id_v)) => {
+      id_valor = id_v;
       next_input
     },
     Err(err) => return Err(err)
   };
 
-  next = match tuple((ws, tag("="), ws, exp))(next) {
-    Ok((next_input, _)) => {
-      generar_cuadruplo_asignacion(variable, dimensiones);
+  next = match preceded(tuple((ws, tag("."), ws)), id)(next) {
+    Ok((next_input, id_obj)) => {
+      _id_attr = id_obj;
       next_input
     },
-    Err(err) => return Err(err)
+    Err(_) => next
+  };
+
+  let variable = buscar_variable(id_valor);
+  next = match corchete(next) {
+    Ok((next_input, _)) => {
+      match variable.dimensiones.len() {
+        0 => {
+          println!("Variable no tiene dimensiones");
+        },
+        _ => {
+          PILA_DIMENSIONES.lock().unwrap().push((variable.clone(), 1));
+          PILA_OPERADORS.lock().unwrap().push("(".to_owned());
+        }
+      };
+
+      match tuple((delimited(ws, exp, ws), tag("]")))(next_input) {
+        Ok((next_i, _)) => {
+          {
+            PILA_DIMENSIONES.lock().unwrap().pop();
+            PILA_OPERADORS.lock().unwrap().pop();
+          }
+          let mut pila_valores = PILA_VALORES.lock().unwrap();
+          let valor = pila_valores.pop().unwrap();
+          let mut cuadruplos = CUADRUPLOS.lock().unwrap();
+          let mut constantes = CONSTANTES.lock().unwrap();
+          cuadruplos.agregar_cuadruplo_verificar(valor.direccion, variable.dimensiones[0]);
+          drop(pila_valores);
+          match variable.dimensiones.len() {
+            1 => {
+              let dir = constantes.agregar_constante(variable.direccion.to_string(), variable.tipo.clone());
+              cuadruplos.agregar_cuadruplo("+",valor.clone(), dir.clone());
+              {
+                let apuntador = PILA_VALORES.lock().unwrap().pop().unwrap();
+                cuadruplos.agregar_cuadruplo_acceder(apuntador);
+              }
+              next_i
+            },
+            2 => {
+              let dim_constante = constantes.agregar_constante(variable.dimensiones[1].to_string(), variable.tipo.clone());
+              cuadruplos.agregar_cuadruplo("*", valor.clone(), dim_constante.clone());
+              match corchete(next_i) {
+                Ok((next_input, _)) => {
+                  {
+                    PILA_DIMENSIONES.lock().unwrap().push((variable.clone(), 2));
+                    PILA_OPERADORS.lock().unwrap().push("(".to_owned());
+                  }
+                  drop(cuadruplos);
+                  drop(constantes);
+                  match tuple((delimited(ws, exp, ws), tag("]")))(next_input) {
+                    Ok((next_i, _)) => {
+                      println!("exp 2");
+                      {
+                        PILA_DIMENSIONES.lock().unwrap().pop();
+                        PILA_OPERADORS.lock().unwrap().pop();
+                      }
+                      let mut pila_valores = PILA_VALORES.lock().unwrap();
+                      let mut cuadruplos = CUADRUPLOS.lock().unwrap();
+                      let mut constantes = CONSTANTES.lock().unwrap();
+                      let valor = pila_valores.pop().unwrap();
+                      cuadruplos.agregar_cuadruplo_verificar(valor.direccion, variable.dimensiones[1]);
+                      drop(pila_valores);
+                      let dir = constantes.agregar_constante(variable.direccion.to_string(), variable.tipo.clone());
+                      cuadruplos.agregar_cuadruplo("+", valor.clone(), dir.clone());
+                      {
+                        let apuntador = PILA_VALORES.lock().unwrap().pop().unwrap();
+                        cuadruplos.agregar_cuadruplo_acceder(apuntador);
+                      }
+                      next_i
+                    },
+                    Err(err) => {
+                      println!("Error mero dentro");
+                      return Err(err);
+                    }
+                  }
+                },
+                Err(_) => next_i
+              }
+            },
+            _ => next_i
+          }
+        },
+        Err(err) => {
+          println!("Error no sé");
+          return Err(err);
+        }
+      }
+    },
+    Err(_) => {
+      PILA_VALORES.lock().unwrap().push(variable);
+      next
+    }
+  };
+
+  next = match tuple((ws, tag("="), ws, exp))(next) {
+    Ok((next_input, _)) => {
+      let var;
+      {
+        var = PILA_VALORES.lock().unwrap().pop().unwrap();
+      }
+      generar_cuadruplo_asignacion(var);
+      next_input
+    },
+    Err(err) => {
+      println!("Error =");
+      return Err(err);
+    }
   };
 
   match tuple((ws, tag(";")))(next) {

@@ -51,7 +51,7 @@ impl ListaCuadruplos {
         // Crear temporal
         let mut tabla_variables = VARIABLES.lock().unwrap();
         let tipo_temporal = conseguir_tipo_num(n);
-        let dir = match conseguir_direccion(tipo_temporal.as_str(), "variable", 1) {
+        let dir = match conseguir_direccion(tipo_temporal.as_str(), "variable", 1, vec![]) {
           Ok(num) => num,
           Err(_err) => {
             // println!("{:?}", _err);
@@ -192,10 +192,44 @@ impl ListaCuadruplos {
     Ok(("GOSUB generado", cuadruplo))
   }
 
+  pub fn agregar_cuadruplo_verificar<'a>(&mut self, direccion: i64, dimension: i64) -> Result<(&'a str, i64, i64), (&'a str, i64, i64)>{
+    let op_num = conseguir_num_operador("VER");
+    self.lista.push((op_num, direccion, 0, dimension));
+    Ok(("VER generado", direccion, dimension))
+  }
+
+  pub fn agregar_cuadruplo_acceder<'a>(&mut self, apuntador: TipoVar) -> Result<(&'a str, i64, i64), (&'a str, i64, i64)>{
+    let op_num = conseguir_num_operador("ACC");
+    let mut tabla_variables = VARIABLES.lock().unwrap();
+    let dir = match conseguir_direccion(&apuntador.tipo, "variable", 1, vec![]) {
+      Ok(num) => num,
+      Err(_err) => {
+        return Err(("Error al conseguir direccion de variable temporal", 0, 0));
+      }
+    };
+    unsafe {
+      loop {
+        let nombre_temporal = format!("temporal{}", NUM_TEMPORAL);
+        match tabla_variables.agregar_variable(nombre_temporal.clone(), apuntador.tipo.clone(), vec![], dir) {
+          Ok((_, var)) => {
+            PILA_VALORES.lock().unwrap().push(var);
+            agregar_temporal_a_tabla(nombre_temporal.clone(), apuntador.tipo.clone(), dir);
+            break;
+          },
+          Err(_) => {
+            NUM_TEMPORAL += 1;
+          }
+        }
+      }
+    }
+    self.lista.push((op_num, apuntador.direccion, -1, dir));
+    Ok(("ACC generado", apuntador.direccion, dir))
+  }
+
   pub fn agregar_cuadruplo_asignacion_valor_funcion<'a>(&mut self, dir_funcion: i64, tipo_func: String) -> Result<(&'a str, i64), (&'a str, i64)>{
     let op_num = conseguir_num_operador("=");
     let mut tabla_variables = VARIABLES.lock().unwrap();
-    let dir = match conseguir_direccion(&tipo_func, "variable", 1) {
+    let dir = match conseguir_direccion(&tipo_func, "variable", 1, vec![]) {
       Ok(num) => num,
       Err(_err) => {
         // println!("{:?}", _err);
