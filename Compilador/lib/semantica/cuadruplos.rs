@@ -244,10 +244,10 @@ impl ListaCuadruplos {
 
   pub fn agregar_cuadruplo_verificar<'a>(&mut self, direccion: i64, dimension: i64) -> Result<(&'a str, i64, i64), (&'a str, i64, i64)>{
     let op_num = conseguir_num_operador("VER");
-    let constantes = CONSTANTES.lock().unwrap();
+    let mut constantes = CONSTANTES.lock().unwrap();
     let cero = constantes.agregar_constante("0".to_owned(), "entero".to_owned());
-    let dimension = constantes.agregar_constante(dimension.to_string(), "entero".to_owned());
-    self.lista.push((op_num, direccion, cero.direccion, dimension.direccion - 1));
+    let dim = constantes.agregar_constante(dimension.to_string(), "entero".to_owned());
+    self.lista.push((op_num, direccion, cero.direccion, dim.direccion - 1));
     Ok(("VER generado", direccion, dimension))
   }
 
