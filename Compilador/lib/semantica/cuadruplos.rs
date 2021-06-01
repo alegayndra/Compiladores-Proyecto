@@ -81,18 +81,6 @@ impl ListaCuadruplos {
 
   pub fn agregar_cuadruplo_for<'a>(&mut self, objetivo: i64) -> Result<(&'a str, i64), (&'a str, i64)>{
     let op_num = conseguir_num_operador("+");
-    // let obj_num = conseguir_num_tipo(objetivo.tipo.as_str());
-
-    // match checar_cubo_semantico(op_num as usize, 0 as usize, obj_num as usize) {
-    //   2 => Err(("Variable objetivo no es un número", objetivo.nombre.clone(), objetivo.tipo.clone())),
-    //   3 => Err(("Variable objetivo no es un número", objetivo.nombre.clone(), objetivo.tipo.clone())),
-    //   4 => Err(("Variable objetivo no es un número", objetivo.nombre.clone(), objetivo.tipo.clone())),
-    //   5 => Err(("Variable objetivo no es un número", objetivo.nombre.clone(), objetivo.tipo.clone())),
-    //   _ => {
-    //     self.lista.push((op_num, CONSTANTES.lock().unwrap().agregar_constante("1".to_owned(), "entero".to_owned()).direccion, objetivo.direccion, objetivo.direccion));
-    //     Ok(("Incremento de for creado", objetivo.tipo.clone()))
-    //   }
-    // }
     self.lista.push((op_num, CONSTANTES.lock().unwrap().agregar_constante("1".to_owned(), "entero".to_owned()).direccion, objetivo, objetivo));
     Ok(("Incremento de for creado", objetivo))
   }

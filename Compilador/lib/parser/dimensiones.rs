@@ -84,6 +84,7 @@ fn generar_cuadruplo_verificar(variable: TipoVar, dim: usize) -> TipoVar {
   let mut pila_valores = PILA_VALORES.lock().unwrap();
   let mut cuadruplos = CUADRUPLOS.lock().unwrap();
   let valor = pila_valores.pop().unwrap();
+  drop(pila_valores);
   match cuadruplos.agregar_cuadruplo_verificar(valor.direccion, variable.dimensiones[dim]) {
     Ok(_) => (),
     Err(err) => {
@@ -97,13 +98,16 @@ fn generar_cuadruplo_acceder(variable: TipoVar, valor: TipoVar) {
   let mut cuadruplos = CUADRUPLOS.lock().unwrap();
   let mut constantes = CONSTANTES.lock().unwrap();
   let dir = constantes.agregar_constante(variable.direccion.to_string(), variable.tipo.clone());
+  drop(constantes);
   match cuadruplos.agregar_cuadruplo("+", valor.clone(), dir.clone()) {
     Ok(_) => (),
     Err(err) => {
       println!("{:?}", err);
     }
   };
-  let apuntador = PILA_VALORES.lock().unwrap().pop().unwrap();
+  let mut pila_valores = PILA_VALORES.lock().unwrap();
+  let apuntador = pila_valores.pop().unwrap();
+  drop(pila_valores);
   match cuadruplos.agregar_cuadruplo_acceder(apuntador) {
     Ok(_) => (),
     Err(err) => {
@@ -192,8 +196,8 @@ mod tests {
 
   #[test]
   fn test_con_dim() {
-    assert_eq!(con_dim("[id]"),     Ok(("", vec!["exp"])));
-    assert_eq!(con_dim("[id][id]"), Ok(("", vec!["exp", "exp"])));
-    assert_eq!(con_dim("aaaa"),     Ok(("aaaa", vec![])));
+    assert_eq!(con_dim("")("[id]"),     Ok(("", "con_dim")));
+    assert_eq!(con_dim("")("[id][id]"), Ok(("", "con_dim")));
+    assert_eq!(con_dim("")("aaaa"),     Ok(("aaaa", "con_dim")));
   }
 }

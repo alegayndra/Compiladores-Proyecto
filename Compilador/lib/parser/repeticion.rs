@@ -41,20 +41,6 @@ fn generar_gotof_mientras() {
 
 fn generar_gotof_desde() -> i64{
   let mut cuadruplos = CUADRUPLOS.lock().unwrap();
-  // let mut lista_valores = PILA_VALORES.lock().unwrap();
-
-  // match lista_valores.pop() {
-  //   Some(var) => {
-  //     drop(lista_valores);
-  //     match cuadruplos.agregar_cuadruplo("<=", variable.clone(), var.clone()) {
-  //       Ok(_) => (),
-  //       Err(err) => {
-  //         println!("{:?}", err);
-  //       }
-  //     };      
-  //   },
-  //   _ => ()
-  // };
 
   let dir = match cuadruplos.agregar_cuadruplo_gotof_desde() {
     Ok((_, dir_temp)) => dir_temp,
@@ -63,20 +49,7 @@ fn generar_gotof_desde() -> i64{
       -7
     }
   };
-
-  // match lista_valores.pop() {
-  //   Some(var) => {
-  //     match cuadruplos.agregar_cuadruplo_gotof(var) {
-  //       Ok(_) => (),
-  //       Err(err) => {
-  //         println!("{:?}", err);
-  //       }
-  //     };
-  //   },
-  //   _ => ()
-  // };
-
-  // drop(lista_valores);
+  
   let mut saltos = PILA_SALTOS.lock().unwrap();
   saltos.push((cuadruplos.lista.len() - 1) as i64);
   drop(cuadruplos);

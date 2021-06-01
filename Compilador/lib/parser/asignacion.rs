@@ -15,30 +15,31 @@ fn generar_cuadruplo_asignacion(variable: TipoVar) {
   let mut pila_valores = PILA_VALORES.lock().unwrap();
   let mut cuadruplos = CUADRUPLOS.lock().unwrap();
 
-  match pila_valores.pop() {
-    Some(valor) => {
-      match valor.dimensiones.len() {
-        0 => {
-          match cuadruplos.agregar_cuadruplo_asignacion(variable, valor) {
-            Ok(_) => (),
-            Err(err) => {
-              println!("{:?}", err);
-            },
-          };
-        },
-        _ => {
-          match cuadruplos.agregar_cuadruplo_asignacion_arreglo(variable, valor) {
-            Ok(_) => (),
-            Err(err) => {
-              println!("{:?}", err);
-            },
-          };
-        }
-      }
-      return;
-    },
+  let valor = match pila_valores.pop() {
+    Some(valor) => valor,
     _ => { println!("Stack de valores vacío en EXP_LOGICA"); return; }
   };
+
+  drop(pila_valores);
+
+  match valor.dimensiones.len() {
+    0 => {
+      match cuadruplos.agregar_cuadruplo_asignacion(variable, valor) {
+        Ok(_) => (),
+        Err(err) => {
+          println!("{:?}", err);
+        },
+      };
+    },
+    _ => {
+      match cuadruplos.agregar_cuadruplo_asignacion_arreglo(variable, valor) {
+        Ok(_) => (),
+        Err(err) => {
+          println!("{:?}", err);
+        },
+      };
+    }
+  }
 }
 
 pub fn asignacion_interna(input: &str) -> IResult<&str, &str> {
