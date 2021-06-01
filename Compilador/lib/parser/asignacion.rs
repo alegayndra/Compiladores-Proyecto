@@ -63,17 +63,21 @@ pub fn asignacion_interna(input: &str) -> IResult<&str, &str> {
     Err(_) => next
   };
 
-  next = match con_dim(id_valor)(next) {
+  next = match con_dim(id_valor, true)(next) {
     Ok((next_input, _)) => next_input,
     Err(err) => return Err(err)
   };
 
   next = match tuple((ws, tag("="), ws, exp))(next) {
     Ok((next_input, _)) => {
-      let var;
-      {
-        var = PILA_VALORES.lock().unwrap().pop().unwrap();
-      }
+      let mut pila_valores = PILA_VALORES.lock().unwrap();
+      println!("\npila valores asignacion, pila_valores: {:?}\n", pila_valores);
+
+      let var = pila_valores.pop().unwrap();
+
+      println!("\nvalor asignacion, var: {:?}\n", var);
+
+      drop(pila_valores);
 
       generar_cuadruplo_asignacion(var);
       next_input

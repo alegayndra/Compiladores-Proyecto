@@ -81,6 +81,7 @@ fn popear_dimension() {
 }
 
 fn generar_cuadruplo_verificar(variable: TipoVar, dim: usize) -> TipoVar {
+  println!("generar_cuadruplo_verificar, variable: {:?}, dim: {:?}", variable.clone(), dim);
   let mut pila_valores = PILA_VALORES.lock().unwrap();
   let mut cuadruplos = CUADRUPLOS.lock().unwrap();
   let valor = pila_valores.pop().unwrap();
@@ -94,26 +95,30 @@ fn generar_cuadruplo_verificar(variable: TipoVar, dim: usize) -> TipoVar {
   valor
 }
 
-fn generar_cuadruplo_acceder(variable: TipoVar, valor: TipoVar) {
+fn generar_cuadruplo_acceder(variable: TipoVar, valor: TipoVar, asignacion: bool) {
+  println!("generar_cuadruplo_acceder, variable: {:?}, dim: {:?}", variable.clone(), valor.clone());
   let mut cuadruplos = CUADRUPLOS.lock().unwrap();
   let mut constantes = CONSTANTES.lock().unwrap();
   let dir = constantes.agregar_constante(variable.direccion.to_string(), variable.tipo.clone());
   drop(constantes);
-  match cuadruplos.agregar_cuadruplo("+", valor.clone(), dir.clone()) {
+  println!("suma, variable: {:?}, dim: {:?}", variable.clone(), valor.clone());
+  match cuadruplos.agregar_cuadruplo_suma_arreglo("+", valor.clone(), dir.clone()) {
     Ok(_) => (),
     Err(err) => {
       println!("{:?}", err);
     }
   };
-  let mut pila_valores = PILA_VALORES.lock().unwrap();
-  let apuntador = pila_valores.pop().unwrap();
-  drop(pila_valores);
-  match cuadruplos.agregar_cuadruplo_acceder(apuntador) {
-    Ok(_) => (),
-    Err(err) => {
-      println!("{:?}", err);
-    }
-  };
+  if !asignacion {
+    let mut pila_valores = PILA_VALORES.lock().unwrap();
+    let apuntador = pila_valores.pop().unwrap();
+    drop(pila_valores);
+    match cuadruplos.agregar_cuadruplo_acceder(apuntador) {
+      Ok(_) => (),
+      Err(err) => {
+        println!("{:?}", err);
+      }
+    };
+  }
 }
 
 fn generar_cuadruplo_offset(variable: TipoVar, valor: TipoVar) {
@@ -128,12 +133,14 @@ fn generar_cuadruplo_offset(variable: TipoVar, valor: TipoVar) {
   };
 }
 
-pub fn con_dim(id_valor: &str) -> impl FnMut(&str)  -> IResult<&str, &str> + '_ {
+pub fn con_dim(id_valor: &str, asignacion: bool) -> impl FnMut(&str)  -> IResult<&str, &str> + '_ {
   move |input| {
     let mut next: &str = input;
     let variable = buscar_variable(id_valor);
+    let mut hubo_dimensiones: bool = false;
     next = match corchete(next) {
       Ok((next_input, _)) => {
+        hubo_dimensiones = true;
         match variable.dimensiones.len() {
           0 => {
             println!("Variable no tiene dimensiones");
@@ -149,7 +156,7 @@ pub fn con_dim(id_valor: &str) -> impl FnMut(&str)  -> IResult<&str, &str> + '_ 
                 popear_dimension();
                 let valor = generar_cuadruplo_verificar(variable.clone(), 0);
                 match variable.dimensiones.len() {
-                  1 => { generar_cuadruplo_acceder(variable.clone(), valor.clone()); },
+                  1 => { generar_cuadruplo_acceder(variable.clone(), valor.clone(), asignacion); },
                   2 => { generar_cuadruplo_offset(variable.clone(), valor.clone()); },
                   _ => ()
                 };
@@ -161,72 +168,44 @@ pub fn con_dim(id_valor: &str) -> impl FnMut(&str)  -> IResult<&str, &str> + '_ 
         }
       },
       Err(_) => {
-        PILA_VALORES.lock().unwrap().push(variable.clone());
-        next
-      }
-    };
-    if variable.dimensiones.len() == 2 {
-      next = match corchete(next) {
-        Ok((next_input, _)) => {
-          match variable.dimensiones.len() {
-            0 => {
-              println!("Variable no tiene dimensiones");
-              return Err(nom::Err::Error(nom::error::Error {
-                input: next,
-                code: nom::error::ErrorKind::Tag
-              }));
-            },
-            _ => {
-              pushear_dimension(variable.clone(), 1);
-              match tuple((delimited(ws, exp, ws), tag("]")))(next_input) {
-                Ok((next_i, _)) => {
-                  popear_dimension();
-                  let valor = generar_cuadruplo_verificar(variable.clone(), 0);
-                  match variable.dimensiones.len() {
-                    1 => { generar_cuadruplo_acceder(variable.clone(), valor.clone()); },
-                    2 => { generar_cuadruplo_offset(variable.clone(), valor.clone()); },
-                    _ => ()
-                  };
-                  next_i
-                },
-                Err(err) => return Err(err)
-              }
-            }
-          }
-        },
-        Err(_) => {
-          PILA_VALORES.lock().unwrap().push(variable.clone());
+        if variable.dimensiones.len() >= 1 {
+          return Err(nom::Err::Error(nom::error::Error {
+            input: next,
+            code: nom::error::ErrorKind::Tag
+          }));
+        } else {
           next
         }
-      };
-    } else {
-      PILA_VALORES.lock().unwrap().push(variable.clone());
-      return Ok((next, "con_dim"));
-    }
+      }
+    };
 
-    if variable.dimensiones.len() == 2 {
-      match corchete(next) {
-        Ok((next_input, _)) => {
-          pushear_dimension(variable.clone(), 2);
-          match tuple((delimited(ws, exp, ws), tag("]")))(next_input) {
-            Ok((next_i, _)) => {
-              popear_dimension();
-              let valor = generar_cuadruplo_verificar(variable.clone(), 1);
-              generar_cuadruplo_acceder(variable.clone(), valor.clone());
-              Ok((next_i, "con_dim"))
-            },
-            Err(err) => Err(err)
-          }
-        },
-        Err(_) => {
-          PILA_VALORES.lock().unwrap().push(variable.clone());
-          Ok((next, "con_dim"))
+    match corchete(next) {
+      Ok((next_input, _)) => {
+        pushear_dimension(variable.clone(), 2);
+        match tuple((delimited(ws, exp, ws), tag("]")))(next_input) {
+          Ok((next_i, _)) => {
+            let valor = generar_cuadruplo_verificar(variable.clone(), 1);
+            generar_cuadruplo_acceder(variable.clone(), valor.clone(), asignacion);
+            popear_dimension();
+            return Ok((next_i, "con_dim"));
+          },
+          Err(err) => return Err(err)
+        }
+      },
+      Err(_) => {
+        if variable.dimensiones.len() == 2 {
+          return Err(nom::Err::Error(nom::error::Error {
+            input: next,
+            code: nom::error::ErrorKind::Tag
+          }));
         }
       }
-    } else {
+    };
+
+    if !hubo_dimensiones {
       PILA_VALORES.lock().unwrap().push(variable.clone());
-      Ok((next, "con_dim"))
     }
+    Ok((next, "con_dim"))
   }
 }
 

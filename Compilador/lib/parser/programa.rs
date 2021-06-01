@@ -85,7 +85,7 @@ pub fn programa(input: &str) -> IResult<&str, &str> {
     }
   }
 
-  next = match bloque(next) {
+  next = match bloque_funcion(next) {
     Ok((next_input, _)) => next_input,
     Err(err) => return Err(err),
   };

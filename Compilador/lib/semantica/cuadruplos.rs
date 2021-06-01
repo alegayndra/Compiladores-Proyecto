@@ -79,6 +79,45 @@ impl ListaCuadruplos {
     }
   }
 
+  pub fn agregar_cuadruplo_suma_arreglo<'a>(&mut self, operador: &'a str, izq: TipoVar, der: TipoVar) -> Result<(&'a str, (&'a str, String, String)), (&'a str, (&'a str, String, String))>{
+    let op_num = conseguir_num_operador(operador);
+    let izq_num = conseguir_num_tipo(izq.tipo.as_str());
+    let der_num = conseguir_num_tipo(der.tipo.as_str());
+
+    match checar_cubo_semantico(op_num as usize, izq_num as usize, der_num as usize) {
+      3 => Err(("Tipos incompatibles", (operador, izq.tipo, der.tipo))),
+      n => {
+        // Crear temporal
+        let mut tabla_variables = VARIABLES.lock().unwrap();
+        let tipo_temporal = conseguir_tipo_num(n);
+        let dir = match conseguir_direccion(tipo_temporal.as_str(), "variable", 1, vec![]) {
+          Ok(num) => num,
+          Err(_err) => {
+            // println!("{:?}", _err);
+            return Err(("Error al conseguir direccion de variable temporal", ("", "".to_owned(), "".to_owned())));
+          }
+        };
+        unsafe {
+          loop {
+            let nombre_temporal = format!("temporal{}", NUM_TEMPORAL);
+            match tabla_variables.agregar_variable(nombre_temporal.clone(), tipo_temporal.clone(), vec![1], dir) {
+              Ok((_, var)) => {
+                PILA_VALORES.lock().unwrap().push(var);
+                agregar_temporal_a_tabla(nombre_temporal.clone(), tipo_temporal.clone(), dir);
+                break;
+              },
+              Err(_) => {
+                NUM_TEMPORAL += 1;
+              }
+            }
+          }
+        }
+        self.lista.push((op_num, izq.direccion, der.direccion, dir));
+        Ok(("Tipos compatibles", (operador, izq.tipo, der.tipo)))
+      }
+    }
+  }
+
   pub fn agregar_cuadruplo_for<'a>(&mut self, objetivo: i64) -> Result<(&'a str, i64), (&'a str, i64)>{
     let op_num = conseguir_num_operador("+");
     self.lista.push((op_num, CONSTANTES.lock().unwrap().agregar_constante("1".to_owned(), "entero".to_owned()).direccion, objetivo, objetivo));
@@ -246,8 +285,8 @@ impl ListaCuadruplos {
     let op_num = conseguir_num_operador("VER");
     let mut constantes = CONSTANTES.lock().unwrap();
     let cero = constantes.agregar_constante("0".to_owned(), "entero".to_owned());
-    let dim = constantes.agregar_constante(dimension.to_string(), "entero".to_owned());
-    self.lista.push((op_num, direccion, cero.direccion, dim.direccion - 1));
+    let dim = constantes.agregar_constante((dimension - 1).to_string(), "entero".to_owned());
+    self.lista.push((op_num, direccion, cero.direccion, dim.direccion));
     Ok(("VER generado", direccion, dimension))
   }
 
@@ -265,7 +304,9 @@ impl ListaCuadruplos {
         let nombre_temporal = format!("temporal{}", NUM_TEMPORAL);
         match tabla_variables.agregar_variable(nombre_temporal.clone(), apuntador.tipo.clone(), vec![], dir) {
           Ok((_, var)) => {
-            PILA_VALORES.lock().unwrap().push(var);
+            let mut pila_valores = PILA_VALORES.lock().unwrap();
+            pila_valores.push(var);
+            println!("{:?}", pila_valores);
             agregar_temporal_a_tabla(nombre_temporal.clone(), apuntador.tipo.clone(), dir);
             break;
           },
@@ -305,7 +346,7 @@ impl ListaCuadruplos {
       }
     }
     self.lista.push((op_num, dir_funcion, -1, dir));
-    Ok(("GOSUB generado", dir_funcion))
+    Ok(("Asignacion de valor de funcion generado", dir_funcion))
   }
 
   // pub fn modificar_cuadruplo_gotof<'a>(&mut self, num_cuadruplo: usize) -> Result<(&'a str, usize, i64), (&'a str, usize, i64)>{
