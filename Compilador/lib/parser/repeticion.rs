@@ -49,7 +49,7 @@ fn generar_gotof_desde() -> i64{
       -7
     }
   };
-  
+
   let mut saltos = PILA_SALTOS.lock().unwrap();
   saltos.push((cuadruplos.lista.len() - 1) as i64);
   drop(cuadruplos);
@@ -171,16 +171,24 @@ mod tests {
 
   #[test]
   fn test_desde() {
-    assert_eq!(desde("desde id = 10 hasta 20 {}"),         Ok(("", "desde")));
+    let wii = "wii";
+    let id = "id";
+    let parte = "parte";
+    let mut tabla_variables = VARIABLES.lock().unwrap();
+    tabla_variables.agregar_variable(wii.to_owned(), "entero".to_owned(), vec![], 200);
+    tabla_variables.agregar_variable(id.to_owned(), "entero".to_owned(), vec![5], 300);
+    tabla_variables.agregar_variable(parte.to_owned(), "entero".to_owned(), vec![5, 10], 400);
+    drop(tabla_variables);
+    assert_eq!(desde("desde wiii = 10 hasta 20 {}"),         Ok(("", "desde")));
     assert_eq!(desde("desde id[id] = 10 hasta 20 {}"),     Ok(("", "desde")));
-    assert_eq!(desde("desde id[id][id] = 10 hasta 20 {}"), Ok(("", "desde")));
-    assert_eq!(desde("desde id.id[id] = 10 hasta 20 {}"),  Ok(("", "desde")));
-    assert_eq!(desde("desde id.id = 15 hasta 25 {}"),      Ok(("", "desde")));
+    assert_eq!(desde("desde parte[id][id] = 10 hasta 20 {}"), Ok(("", "desde")));
+    // assert_eq!(desde("desde id.id[id] = 10 hasta 20 {}"),  Ok(("", "desde")));
+    // assert_eq!(desde("desde id.id = 15 hasta 25 {}"),      Ok(("", "desde")));
   }
 
   #[test]
   fn test_repeticion() {
     assert_eq!(repeticion("mientras(expresion) {}"),    Ok(("", "repeticion")));
-    assert_eq!(repeticion("desde id = 10 hasta 20 {}"), Ok(("", "repeticion")));
+    assert_eq!(repeticion("desde wii = 10 hasta 20 {}"), Ok(("", "repeticion")));
   }
 }

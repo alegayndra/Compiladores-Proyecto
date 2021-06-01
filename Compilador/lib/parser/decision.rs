@@ -121,6 +121,9 @@ mod tests {
 
   #[test]
   fn test_decision() {
+    let mut cuadruplos = CUADRUPLOS.lock().unwrap();
+    cuadruplos.agregar_cuadruplo_endfunc();
+    drop(cuadruplos);
     assert_eq!(decision("si ( expresion ) {}"),        Ok(("", "decision")));
     assert_eq!(decision("si ( expresion ) {} sino {}"), Ok(("", "decision")));
   }

@@ -179,9 +179,14 @@ mod tests {
 
   #[test]
   fn test_valor_id() {
-    assert_eq!(valor_id("id"),                                  Ok(("", "valor_id")));
-    assert_eq!(valor_id("SoyUnString.arreglo[id]"),             Ok(("", "valor_id")));
-    assert_eq!(valor_id("Nombre.metodo()"),                     Ok(("", "valor_id")));
+    let id = "abr";
+    let mut tabla_variables = VARIABLES.lock().unwrap();
+    tabla_variables.agregar_variable(id.to_owned(), "entero".to_owned(), vec![5], 200);
+    drop(tabla_variables);
+    assert_eq!(valor_id("abr"),                                  Ok(("", "valor_id")));
+    assert_eq!(valor_id("abr[10]"),                                  Ok(("", "valor_id")));
+    // assert_eq!(valor_id("SoyUnString.arreglo[id]"),             Ok(("", "valor_id")));
+    // assert_eq!(valor_id("Nombre.metodo()"),                     Ok(("", "valor_id")));
     // assert_eq!(valor_id("Nombre.metodo(expresion)"),            Ok(("", "valor_id")));
     // assert_eq!(valor_id("Nombre.metodo(expresion)"),            Ok(("", "valor_id")));
   }

@@ -20,6 +20,7 @@ pub fn programa(input: &str) -> IResult<&str, &str> {
 
   let id_programa: &str;
 
+  // Conseguir id del programa
   match id(next) {
     Ok((next_input, id)) => {
       next = next_input;
@@ -102,86 +103,35 @@ mod tests {
   #[test]
   fn test_programa() {
     assert_eq!(programa("
-      programa idPrograma;
-      principal() {}"
-    ), Ok(("", "programa")));
-
-    assert_eq!(programa("
-      programa idPrograma;
-      principal() {
-        %% comentario %%
-      }"
-    ), Ok(("", "programa")));
-
-    assert_eq!(programa("
-      programa idPrograma;
-      entero num;
-      principal() {}"
-    ), Ok(("", "programa")));
-
-    assert_eq!(programa("
-      programa idPrograma;
-      clase Estudiante {
-        char nombre[10], apellido[10];
-      };
-      principal() {}"
-    ), Ok(("", "programa")));
-
-    assert_eq!(programa("
-      programa idPrograma;
-      void funcion func (entero var) {
+      programa programaCompleto;
+      entero id, arr[5];
+      void funcion func3 (entero var) {
         id = 10;
-        regresa expresion;
+        regresa 10;
       }
-      principal() {}"
-    ), Ok(("", "programa")));
-    
-    assert_eq!(programa("
-      programa idPrograma;
-      void funcion func (entero var) {
-        id = 10;
-        regresa expresion;
-      }
-      entero num;
-      clase Estudiante {
-        char nombre[10], apellido[10];
-      };
-      principal() {}"
-    ), Ok(("", "programa")));
-
-    assert_eq!(programa("
-      programa idPrograma;
-      void funcion func (entero var) {
-        id = 10;
-        regresa expresion;
-      }
-      entero num;
-      clase Estudiante {
-        char nombre[10], apellido[10];
-      };
+      entero x, d, var;
       principal() {
         x = 10;
         d = 10 + 10;
         lee(var);
         escribe(var);
-        id();
-        id(param);
-        id.metodo();
-        mientras ( id > 10 ) {
-          escribe(id);
+        mientras ( d > 10 ) {
+          escribe(d);
+          d = d - 1;
         }
 
         desde arr[10] = 10 hasta 20 {
           escribe(id);
         }
+
         %% comentario %%
-        si (id > 2) {
-          escribe(id);
+        si (x > 2) {
+          escribe(\"wiiii\");
         }
-        si (id > 2) {
-          escribe(id);
+        si (x > 2) {
+          escribe(10);
         } sino {
-          escribe(id);
+          escribe(2);
         }
       }"
     ), Ok(("", "programa")));

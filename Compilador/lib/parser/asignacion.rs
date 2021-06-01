@@ -79,7 +79,6 @@ pub fn asignacion_interna(input: &str) -> IResult<&str, &str> {
       next_input
     },
     Err(err) => {
-      println!("Error =");
       return Err(err);
     }
   };
