@@ -20,18 +20,27 @@ void funcion llenar_arreglo() {
 void funcion buscar() {
   entero seEncontro, i;
   seEncontro = 0;
+  desde i = 0 hasta 9 {
+    si (var == arreglo[i]) {
+      seEncontro = 1;
+      escribe("valor");
+      escribe(i);
+    }
+  }
 
-  
+  si (seEncontro == 0) {
+    escribe("ay");
+  }
 }
 
 void funcion sort() {
   escribe("i");
 }
 
-void funcion imprimir_arreglo() {
+void imprimir_arreglo() {
   entero i;
   escribe("arreglo");
-  desde arr[1] = 0 hasta 9 {
+  desde i = 0 hasta 9 {
     escribe(arreglo[i]);
   }
   escribe("finarreglo");
@@ -41,5 +50,5 @@ principal() {
   llenar_arreglo();
   imprimir_arreglo();
   sort();
-  imprimir_arreglo();
+  imprimir_arreglo()
 }
