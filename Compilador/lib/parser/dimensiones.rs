@@ -128,6 +128,7 @@ fn generar_cuadruplo_acceder(variable: TipoVar, valor: TipoVar, asignacion: bool
   }
   if !asignacion {
     let mut pila_valores = PILA_VALORES.lock().unwrap();
+
     let apuntador = pila_valores.pop().unwrap();
     drop(pila_valores);
     match cuadruplos.agregar_cuadruplo_acceder(apuntador) {
@@ -197,30 +198,30 @@ pub fn con_dim(id_valor: &str, asignacion: bool) -> impl FnMut(&str)  -> IResult
       }
     };
 
-    match corchete(next) {
-      Ok((next_input, _)) => {
-        pushear_dimension(variable.clone(), 2);
-        match tuple((delimited(ws, exp, ws), tag("]")))(next_input) {
-          Ok((next_i, _)) => {
-            let valor = generar_cuadruplo_verificar(variable.clone(), 1);
-            generar_cuadruplo_acceder(variable.clone(), valor.clone(), asignacion, 2);
-            popear_dimension();
-            return Ok((next_i, "con_dim"));
-          },
-          Err(err) => return Err(err)
+    if hubo_dimensiones {
+      match corchete(next) {
+        Ok((next_input, _)) => {
+          pushear_dimension(variable.clone(), 2);
+          match tuple((delimited(ws, exp, ws), tag("]")))(next_input) {
+            Ok((next_i, _)) => {
+              let valor = generar_cuadruplo_verificar(variable.clone(), 1);
+              generar_cuadruplo_acceder(variable.clone(), valor.clone(), asignacion, 2);
+              popear_dimension();
+              return Ok((next_i, "con_dim"));
+            },
+            Err(err) => return Err(err)
+          }
+        },
+        Err(_) => {
+          if variable.dimensiones.len() == 2 {
+            return Err(nom::Err::Error(nom::error::Error {
+              input: next,
+              code: nom::error::ErrorKind::Tag
+            }));
+          }
         }
-      },
-      Err(_) => {
-        if variable.dimensiones.len() == 2 {
-          return Err(nom::Err::Error(nom::error::Error {
-            input: next,
-            code: nom::error::ErrorKind::Tag
-          }));
-        }
-      }
-    };
-
-    if !hubo_dimensiones {
+      };
+    } else {
       PILA_VALORES.lock().unwrap().push(variable.clone());
     }
     Ok((next, "con_dim"))
