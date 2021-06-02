@@ -4,6 +4,7 @@ import io
 import sys
 from globales import *
 
+# Función que lee los cuadruplo
 def leerCuadruplos(txt_cuadruplos):
   readStr = 0
   while readStr < len(txt_cuadruplos):
@@ -16,10 +17,11 @@ def leerCuadruplos(txt_cuadruplos):
     cantidades = cantidades[ cantidades.find(',') + 2:]
     guardar = int(cantidades[ :cantidades.find( ')' ) ] )
 
-    lista_cuadruplos.append((operador, varIzq, varDer, guardar))
+    lista_cuadruplos.append((operador, varIzq, varDer, guardar))  # Guardar los cuadruplos
     
-    readStr = txt_cuadruplos.find('\n', readStr) + 1
+    readStr = txt_cuadruplos.find('\n', readStr) + 1 # Avanzar a la siguiente linea
 
+# Función que lee los parametros
 def guardarParams(direcciones_params, i):
   readStr = 0
   count = 0
@@ -31,8 +33,9 @@ def guardarParams(direcciones_params, i):
     tipo = cantidades[:cantidades.find(')')]
     readStr = direcciones_params.find('\n', readStr) + 1
     parm.append((direccion, tipo))
-  funciones[i].append(parm)
+  funciones[i].append(parm) # Guardar toda la info. de la fucion, incluyendo sus parametros
 
+# Función que lee las funciones
 def guardarFunciones(direcciones_funcs):
   readStr = 0
   i = 0
@@ -68,11 +71,14 @@ def guardarFunciones(direcciones_funcs):
     funciones[i].append((cntIntNormal, cntIntTemp))
     funciones[i].append((cntFloatNormal, cntFloatTemp))
     funciones[i].append((cntCharNormal, cntCharTemp))
+
+    # Registro de valores para los parámetros de la función en lectura
     guardarParams(direcciones_funcs[direcciones_funcs.find("PARAMS") + 7:direcciones_funcs.find("FIN_PARAMS")], i)
     direcciones_funcs = direcciones_funcs[direcciones_funcs.find("FIN_PARAMS", readStr) + 11:direcciones_funcs.find("FIN_FUNCIONES", readStr)]
     readStr = 0
     i += 1
-  
+
+# Función que lee las variables globales
 def guardarMapaGlobs(direcciones_globs):
   readStr = 0
   cantidades = direcciones_globs[readStr:direcciones_globs.find('\n', readStr)]
@@ -100,6 +106,7 @@ def guardarMapaGlobs(direcciones_globs):
   mapa_memoria[0][2][0] = [None] * int(cntCharNormal)
   mapa_memoria[0][2][1] = [None] * int(cntCharTemp)
 
+# Función que lee las variables constantes
 def guardarMapaCons(direcciones_const):
   readStr = 0
   cantidades = direcciones_const[readStr:direcciones_const.find('\n', readStr)]
@@ -136,6 +143,7 @@ def guardarMapaCons(direcciones_const):
 
     readStr = direcciones_const.find('\n', readStr) + 1
 
+# Función principal que lee el .txt
 def leer_obj():
   # Lectura y normalizacion de archivo
   cwd = getcwd()
@@ -151,8 +159,10 @@ def leer_obj():
   # Registro de valores para globales en mapa de memoria
   guardarMapaGlobs(stringTxt[stringTxt.find("GLOBALES") + 9:stringTxt.find("FIN_GLOBALES")])
 
+  # Registro de valores para las funciones
   guardarFunciones(stringTxt[stringTxt.find("FUNCIONES") + 10:stringTxt.find("FIN_FUNCIONES")])
   
+  #
   leerCuadruplos(stringTxt[stringTxt.find("CUADRUPLOS") + 11:stringTxt.find("FIN_CUADRUPLOS")])
   '''
   print("Aqui estan las variables globales")
