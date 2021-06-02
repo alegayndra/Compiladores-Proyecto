@@ -31,8 +31,8 @@ void funcion buscar() {
   }
 }
 
-void funcion sort(entero var) {
-  
+void funcion sort() {
+  escribe("i");
 }
 
 void imprimir_arreglo() {
