@@ -9,14 +9,36 @@ Máquina virtual desarrollada en _python_.
 
 ### Correr programa
 
-Para correr el programa, se necesita tener instalado el ambiente de desarrollo rust. Una vez instalado, se corre `cargo build` dentro de la carpeta para instalar las dependencias y `cargo run nombre_archivo` para correr el programa, donde `nombre_archivo` es el nombre del archivo con el código a compilar. EL nombre del archivo debe ser ingresado sin el `.eo`. Por ejemplo, para compilar el acrhivo `sumas_y_restas.eo`, se debe correr `cargo run sumas_y_restas`.
+Para correr el compilador y la máquina virtual, se necesita tener instalado el ambiente de desarrollo rust y de python. Una vez instalados, se siguen las siguientes instrucciones dentro de la carpeta principal.
 
-También se tiene que crear un directorio llamado `cuadruplos` para que se pueda generar el archivo de salida.
+Para correr el compilador se corre el siguiente comando:
+
+```bash
+$ cargo run nombre_archivo
+```
+
+Donde `nombre_archivo` es el nombre del archivo con el código a compilar sin la terminación de `.eo`. Por ejemplo, para compilar el acrhivo `sumas_y_restas.eo`, se debe correr `cargo run sumas_y_restas`.
+
+También se tiene que crear un directorio llamado `cuadruplos` para que se pueda generar el archivo de sálida.
+
+Una vez generado el archivo de sálida con el código intermedio, para poder ejectutarlo, se corre el siguiente comando para correr la máquina virtual:
+
+```bash
+linux: 
+$ python3 Maquina_Virtual/main.py
+
+windows:
+$ python Maquina_Virtual/main.py
+```
 
 ### Pruebas
 
 #### Pruebas unitarias
-Para correr las pruebas unitarias dentro de Rust, se corre `cargo test -- --test-threads=1`.
+Para correr las pruebas unitarias dentro de Rust, se corre el siguiente comando: `cargo test -- --test-threads=1`.
+
+```bash
+cargo test -- --test-threads=1
+```
 
 #### Pruebas de compilador
 Para correr los diferentes archivos de prueba, se corre `cargo run Pruebas/archivo`, donde `archivo` es el nombre del archivo deseado a correr. Luego, para correr la maquina virtual, se corre `python3 Maquina_Virtual/main.py`.
