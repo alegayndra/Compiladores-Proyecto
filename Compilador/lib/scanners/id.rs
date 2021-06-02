@@ -17,7 +17,7 @@ use crate::parser::dimensiones::*;
 ///
 /// # Ejemplo
 ///
-/// ```
+/// ```ignore
 /// match id("id_variable") {
 ///   Ok((next_input, res)) => res, // parseo éxitoso
 ///   Err(err) => err, // error en parseo
@@ -36,7 +36,7 @@ pub fn id(input: &str) -> IResult<&str, &str> {
 ///
 /// # Ejemplo
 ///
-/// ```
+/// ```ignore
 /// match id_con_dim_decl("id[10][10]") {
 ///   Ok((next_input, res)) => res, // parseo éxitoso
 ///   Err(err) => err, // error en parseo

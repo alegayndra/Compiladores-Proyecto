@@ -22,7 +22,7 @@ use crate::semantica::tabla_variables::*;
 ///
 /// # Ejemplo
 ///
-/// ```
+/// ```ignore
 /// buscar_variable("nombre");
 /// ```
 pub fn buscar_variable(id_valor: &str) -> TipoVar {
@@ -45,14 +45,14 @@ pub fn buscar_variable(id_valor: &str) -> TipoVar {
       match tabla_clases.buscar_variable_metodo(contexto_clase.clone(), contexto_funcion.clone(), id_valor.to_owned()) {
         Ok((_, _, _, var)) => return var,
         Err(err) => {
-          println!("{:?}", err);
+          // println!("{:?}", err);
         }
       };
     } else {
       match tabla_clases.buscar_atributo(contexto_clase.clone(), id_valor.to_owned()) {
         Ok((_, _, var)) => return var,
         Err(err) => {
-          println!("{:?}", err);
+          // println!("{:?}", err);
         }
       };
     }
@@ -60,10 +60,17 @@ pub fn buscar_variable(id_valor: &str) -> TipoVar {
     match tabla_funciones.buscar_variable(contexto_funcion.clone(), id_valor.to_owned()) {
       Ok((_, _, var)) => return var,
       Err(err) => {
-        println!("{:?}", err);
+        // println!("{:?}", err);
       }
     };
   }
+
+  match tabla_funciones.buscar_variable(ID_PROGRAMA.lock().unwrap().clone(), id_valor.to_owned()) {
+    Ok((_, _, var)) => return var,
+    Err(err) => {
+      println!("{:?}", err);
+    }
+  };
 
   drop(contexto_funcion);
   drop(contexto_clase);
@@ -89,7 +96,7 @@ pub fn buscar_variable(id_valor: &str) -> TipoVar {
 ///
 /// # Ejemplo
 ///
-/// ```
+/// ```ignore
 /// match corchete("[") {
 ///   Ok((next_input, res)) => res, // parseo éxitoso
 ///   Err(err) => err, // error en parseo
@@ -108,7 +115,7 @@ pub fn corchete(input: &str) -> IResult<&str, &str> {
 ///
 /// # Ejemplo
 ///
-/// ```
+/// ```ignore
 /// match ws_vec("id") {
 ///   Ok((next_input, res)) => res, // parseo éxitoso
 ///   Err(err) => err, // error en parseo
@@ -128,7 +135,7 @@ pub fn ws_vec(input: &str) -> IResult<&str, Vec<&str>> {
 ///
 /// # Ejemplo
 ///
-/// ```
+/// ```ignore
 /// pushear_dimension(TipoVar {
 ///   nombre: "arreglo".to_owned(),
 ///   tipo: "entero".to_owned(),
@@ -146,7 +153,7 @@ fn pushear_dimension(variable: TipoVar, dim: i64) {
 ///
 /// # Ejemplo
 ///
-/// ```
+/// ```ignore
 /// popear_dimension();
 /// ```
 fn popear_dimension() {
@@ -164,7 +171,7 @@ fn popear_dimension() {
 ///
 /// # Ejemplo
 ///
-/// ```
+/// ```ignore
 /// generar_cuadruplo_verificar(TipoVar {
 ///   nombre: "arreglo".to_owned(),
 ///   tipo: "entero".to_owned(),
@@ -197,7 +204,7 @@ fn generar_cuadruplo_verificar(variable: TipoVar, dim: usize) -> TipoVar {
 ///
 /// # Ejemplo
 ///
-/// ```
+/// ```ignore
 /// generar_cuadruplo_acceder(TipoVar {
 ///   nombre: "arreglo".to_owned(),
 ///   tipo: "entero".to_owned(),
@@ -268,7 +275,7 @@ fn generar_cuadruplo_acceder(variable: TipoVar, valor: TipoVar, asignacion: bool
 ///
 /// # Ejemplo
 ///
-/// ```
+/// ```ignore
 /// generar_cuadruplo_offset(TipoVar {
 ///   nombre: "arreglo".to_owned(),
 ///   tipo: "entero".to_owned(),
@@ -306,7 +313,7 @@ fn generar_cuadruplo_offset(variable: TipoVar, valor: TipoVar) {
 ///
 /// # Gramática
 ///
-/// ```
+/// ```ignore
 /// [ EXP ] [ EXP ]
 /// ```
 ///
@@ -314,7 +321,7 @@ fn generar_cuadruplo_offset(variable: TipoVar, valor: TipoVar) {
 ///
 /// # Ejemplo
 ///
-/// ```
+/// ```ignore
 /// match con_dim_decl("[10]") {
 ///   Ok((next_input, res)) => res, // parseo éxitoso
 ///   Err(err) => err, // error en parseo
@@ -328,10 +335,10 @@ pub fn con_dim(id_valor: &str, asignacion: bool) -> impl FnMut(&str)  -> IResult
     let variable = buscar_variable(id_valor);
 
     // Primera dimensión
-    let mut hubo_dimensiones: bool = false;
+    // let mut hubo_dimensiones: bool = false;
     next = match corchete(next) {
       Ok((next_input, _)) => {
-        hubo_dimensiones = true;
+        // hubo_dimensiones = true;
         match variable.dimensiones.len() {
           0 => {
             // Marca error cuando se intenta indexar una variable atómica
@@ -351,7 +358,24 @@ pub fn con_dim(id_valor: &str, asignacion: bool) -> impl FnMut(&str)  -> IResult
                 // Checa que haya otra dimensión para saber si generar el cuadruplo de offset o de acceso
                 match variable.dimensiones.len() {
                   1 => { generar_cuadruplo_acceder(variable.clone(), valor.clone(), asignacion, 1); },
-                  2 => { generar_cuadruplo_offset(variable.clone(), valor.clone()); },
+                  2 => {
+                    generar_cuadruplo_offset(variable.clone(), valor.clone());
+                    match corchete(next_i) {
+                      Ok((next_input, _)) => {
+                        pushear_dimension(variable.clone(), 2);
+                        match tuple((delimited(ws, exp, ws), tag("]")))(next_input) {
+                          Ok((next_i, _)) => {
+                            let valor = generar_cuadruplo_verificar(variable.clone(), 1);
+                            generar_cuadruplo_acceder(variable.clone(), valor.clone(), asignacion, 2);
+                            popear_dimension();
+                            return Ok((next_i, "con_dim"));
+                          },
+                          Err(err) => return Err(err)
+                        }
+                      },
+                      Err(err) => return Err(err)
+                    };
+                  },
                   _ => ()
                 };
                 next_i
@@ -363,7 +387,8 @@ pub fn con_dim(id_valor: &str, asignacion: bool) -> impl FnMut(&str)  -> IResult
       },
       Err(_) => {
         if variable.dimensiones.len() >= 1 {
-          return Err(nom::Err::Error(nom::error::Error {
+            println!("Falta dimensión");
+            return Err(nom::Err::Error(nom::error::Error {
             input: next,
             code: nom::error::ErrorKind::Tag
           }));
@@ -373,32 +398,7 @@ pub fn con_dim(id_valor: &str, asignacion: bool) -> impl FnMut(&str)  -> IResult
       }
     };
 
-    if hubo_dimensiones {
-      match corchete(next) {
-        Ok((next_input, _)) => {
-          pushear_dimension(variable.clone(), 2);
-          match tuple((delimited(ws, exp, ws), tag("]")))(next_input) {
-            Ok((next_i, _)) => {
-              let valor = generar_cuadruplo_verificar(variable.clone(), 1);
-              generar_cuadruplo_acceder(variable.clone(), valor.clone(), asignacion, 2);
-              popear_dimension();
-              return Ok((next_i, "con_dim"));
-            },
-            Err(err) => return Err(err)
-          }
-        },
-        Err(_) => {
-          if variable.dimensiones.len() == 2 {
-            return Err(nom::Err::Error(nom::error::Error {
-              input: next,
-              code: nom::error::ErrorKind::Tag
-            }));
-          }
-        }
-      };
-    } else {
-      PILA_VALORES.lock().unwrap().push(variable.clone());
-    }
+    PILA_VALORES.lock().unwrap().push(variable.clone());
     Ok((next, "con_dim"))
   }
 }
@@ -412,7 +412,7 @@ pub fn con_dim(id_valor: &str, asignacion: bool) -> impl FnMut(&str)  -> IResult
 ///
 /// # Ejemplo
 ///
-/// ```
+/// ```ignore
 /// match dimension_decl("[10]") {
 ///   Ok((next_input, res)) => res, // parseo éxitoso
 ///   Err(err) => err, // error en parseo
@@ -434,7 +434,7 @@ pub fn dimension_decl(input: &str) -> IResult<&str, Vec<&str>> {
 ///
 /// # Ejemplo
 ///
-/// ```
+/// ```ignore
 /// match dos_dimensiones_decl("[4][10]") {
 ///   Ok((next_input, res)) => res, // parseo éxitoso
 ///   Err(err) => err, // error en parseo
@@ -456,7 +456,7 @@ fn dos_dimensiones_decl(input: &str) -> IResult<&str, Vec<&str>> {
 ///
 /// # Gramática
 ///
-/// ```
+/// ```ignore
 /// [ num_entero ] [ num_entero ]
 /// ```
 ///
@@ -464,7 +464,7 @@ fn dos_dimensiones_decl(input: &str) -> IResult<&str, Vec<&str>> {
 ///
 /// # Ejemplo
 ///
-/// ```
+/// ```ignore
 /// match con_dim_decl("[10]") {
 ///   Ok((next_input, res)) => res, // parseo éxitoso
 ///   Err(err) => err, // error en parseo
@@ -511,12 +511,14 @@ mod tests {
   fn test_con_dim() {
     let hola = "hola";
     let adios = "adios";
+    let wiii = "wiii";
     let mut tabla_variables = VARIABLES.lock().unwrap();
     tabla_variables.agregar_variable(hola.to_owned(), "entero".to_owned(), vec![5], 200);
     tabla_variables.agregar_variable(adios.to_owned(), "entero".to_owned(), vec![5, 10], 400);
+    tabla_variables.agregar_variable(wiii.to_owned(), "entero".to_owned(), vec![], 600);
     drop(tabla_variables);
-    assert_eq!(con_dim(hola)("[id]"),     Ok(("", "con_dim")));
-    assert_eq!(con_dim(adios)("[id][id]"), Ok(("", "con_dim")));
-    assert_eq!(con_dim(hola)("aaaa"),     Ok(("aaaa", "con_dim")));
+    assert_eq!(con_dim(hola, false)("[id]"),     Ok(("", "con_dim")));
+    assert_eq!(con_dim(adios, false)("[id][id]"), Ok(("", "con_dim")));
+    assert_eq!(con_dim(wiii, false)("aaaa"),     Ok(("aaaa", "con_dim")));
   }
 }

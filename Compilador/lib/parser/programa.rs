@@ -21,13 +21,13 @@ use crate::semantica::globales::*;
 ///
 /// # Gramática
 ///
-/// ```
+/// ```ignore
 /// programa id DECLARACIONES principal() BLOQUE
 /// ```
 ///
 /// # Ejemplo
 ///
-/// ```
+/// ```ignore
 /// match programa("programa idPrograma principal(){}") {
 ///   Ok((next_input, res)) => res, // parseo éxitoso
 ///   Err(err) => err, // error en parseo

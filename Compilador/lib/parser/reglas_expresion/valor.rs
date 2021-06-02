@@ -24,7 +24,7 @@ use crate::semantica::globales::*;
 ///
 /// # Ejemplo
 ///
-/// ```
+/// ```ignore
 /// agregar_constante_a_tabla("10", "entero");
 fn agregar_constante_a_tabla(valor: &str, tipo: &str) {
   let mut pila_valores = PILA_VALORES.lock().unwrap();
@@ -41,7 +41,7 @@ fn agregar_constante_a_tabla(valor: &str, tipo: &str) {
 ///
 /// # Ejemplo
 ///
-/// ```
+/// ```ignore
 /// match valor_cte("10") {
 ///   Ok((next_input, res)) => res, // parseo éxitoso
 ///   Err(err) => err, // error en parseo
@@ -63,7 +63,7 @@ fn valor_cte(input: &str) -> IResult<&str, &str> {
 ///
 /// # Ejemplo
 ///
-/// ```
+/// ```ignore
 /// agregar_cuadruplo_asignacion_return_funcion("variable");
 fn agregar_cuadruplo_asignacion_return_funcion(id_func: &str) {
   let funcion;
@@ -107,7 +107,7 @@ fn agregar_cuadruplo_asignacion_return_funcion(id_func: &str) {
 ///
 /// # Ejemplo
 ///
-/// ```
+/// ```ignore
 /// match parentesis("(") {
 ///   Ok((next_input, res)) => res, // parseo éxitoso
 ///   Err(err) => err, // error en parseo
@@ -126,7 +126,7 @@ fn parentesis(input: &str) -> IResult<&str, &str> {
 ///
 /// # Ejemplo
 ///
-/// ```
+/// ```ignore
 /// match valor_id("func(10, i * 2)") {
 ///   Ok((next_input, res)) => res, // parseo éxitoso
 ///   Err(err) => err, // error en parseo
@@ -242,13 +242,13 @@ fn valor_id(input: &str) -> IResult<&str, &str> {
 ///
 /// # Gramática
 ///
-/// ```
+/// ```ignore
 /// num_entero | num_flotante | caracter | VALOR_ID
 /// ```
 ///
 /// # Ejemplo
 ///
-/// ```
+/// ```ignore
 /// match valor("arr[10 + i]") {
 ///   Ok((next_input, res)) => res, // parseo éxitoso
 ///   Err(err) => err, // error en parseo
@@ -275,10 +275,12 @@ mod tests {
   #[test]
   fn test_valor_id() {
     let id = "abr";
+    let id2 = "abr2";
     let mut tabla_variables = VARIABLES.lock().unwrap();
     tabla_variables.agregar_variable(id.to_owned(), "entero".to_owned(), vec![5], 200);
+    tabla_variables.agregar_variable(id2.to_owned(), "entero".to_owned(), vec![], 200);
     drop(tabla_variables);
-    assert_eq!(valor_id("abr"),                                  Ok(("", "valor_id")));
-    assert_eq!(valor_id("abr[10]"),                                  Ok(("", "valor_id")));
+    assert_eq!(valor_id("abr2"),    Ok(("", "valor_id")));
+    assert_eq!(valor_id("abr[10]"), Ok(("", "valor_id")));
   }
 }

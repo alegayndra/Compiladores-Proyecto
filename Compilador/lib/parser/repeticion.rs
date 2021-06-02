@@ -17,7 +17,7 @@ use crate::semantica::globales::*;
 ///
 /// # Ejemplo
 ///
-/// ```
+/// ```ignore
 /// agregar_cuadruplo_a_pila_saltos();
 /// ```
 fn agregar_cuadruplo_a_pila_saltos() {
@@ -28,7 +28,7 @@ fn agregar_cuadruplo_a_pila_saltos() {
 ///
 /// # Ejemplo
 ///
-/// ```
+/// ```ignore
 /// generar_gotof_mientras();
 /// ```
 fn generar_gotof_mientras() {
@@ -59,7 +59,7 @@ fn generar_gotof_mientras() {
 ///
 /// # Ejemplo
 ///
-/// ```
+/// ```ignore
 /// generar_gotof_desde();
 /// ```
 fn generar_gotof_desde() -> i64 {
@@ -84,7 +84,7 @@ fn generar_gotof_desde() -> i64 {
 ///
 /// # Ejemplo
 ///
-/// ```
+/// ```ignore
 /// generar_gotos_final();
 /// ```
 fn generar_gotos_final() {
@@ -131,13 +131,13 @@ fn generar_gotos_final() {
 ///
 /// # Gramática
 ///
-/// ```
+/// ```ignore
 /// mientras (EXP_LOGICA) BLOQUE;
 /// ```
 ///
 /// # Ejemplo
 ///
-/// ```
+/// ```ignore
 /// match desde("desde id = valor hasta valor {}") {
 ///   Ok((next_input, res)) => res, // parseo éxitoso
 ///   Err(err) => err, // error en parseo
@@ -184,11 +184,11 @@ pub fn mientras(input: &str) -> IResult<&str, &str> {
 ///
 /// # Gramática
 ///
-/// ```
+/// ```ignore
 /// desde id DIMENSIONES = EXP hasta EXP BLOQUE;
 /// ```
 ///
-/// ```
+/// ```ignore
 /// match desde("desde id = valor hasta valor {}") {
 ///   Ok((next_input, res)) => res, // parseo éxitoso
 ///   Err(err) => err, // error en parseo
@@ -243,7 +243,7 @@ pub fn desde(input: &str) -> IResult<&str, &str> {
 ///
 /// # Ejemplo
 ///
-/// ```
+/// ```ignore
 /// match repeticion("mientras(1){}") {
 ///   Ok((next_input, res)) => res, // parseo éxitoso
 ///   Err(err) => err, // error en parseo
@@ -277,8 +277,8 @@ mod tests {
     tabla_variables.agregar_variable(parte.to_owned(), "entero".to_owned(), vec![5, 10], 400);
     drop(tabla_variables);
     assert_eq!(desde("desde wiii = 10 hasta 20 {}"),         Ok(("", "desde")));
-    assert_eq!(desde("desde id[id] = 10 hasta 20 {}"),     Ok(("", "desde")));
-    assert_eq!(desde("desde parte[id][id] = 10 hasta 20 {}"), Ok(("", "desde")));
+    assert_eq!(desde("desde id[10] = 10 hasta 20 {}"),     Ok(("", "desde")));
+    assert_eq!(desde("desde parte[10][10] = 10 hasta 20 {}"), Ok(("", "desde")));
     // assert_eq!(desde("desde id.id[id] = 10 hasta 20 {}"),  Ok(("", "desde")));
     // assert_eq!(desde("desde id.id = 15 hasta 25 {}"),      Ok(("", "desde")));
   }

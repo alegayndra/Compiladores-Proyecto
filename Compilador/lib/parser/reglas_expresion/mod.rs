@@ -14,7 +14,7 @@ use crate::semantica::globales::*;
 ///
 /// # Ejemplo
 ///
-/// ```
+/// ```ignore
 /// checar_lista_operadores();
 /// ```
 fn generar_cuadruplo_operacion(op: &str) {

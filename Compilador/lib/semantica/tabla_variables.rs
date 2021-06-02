@@ -15,7 +15,8 @@ use crate::semantica::cubo_semantico::*;
 /// * `dimensiones` - Arreglo de las dimensiones de la variable
 ///
 /// # Ejemplo de creación
-/// ```
+///
+/// ```ignore
 /// let variable: TipoVar = TipoVar {
 ///   nombre: "nombre".to_owned(),
 ///   direccion: 200,
@@ -39,7 +40,8 @@ pub struct TipoVar {
 /// * `tabla` - HashMap de variables
 ///
 /// # Ejemplo de creación
-/// ```
+///
+/// ```ignore
 /// let tabla_variables: TablaVariables = TablaVariables {
 ///   tabla: HashMap::new()
 /// };
@@ -63,7 +65,7 @@ impl TablaVariables {
   ///
   /// # Ejemplo
   ///
-  /// ```
+  /// ```ignore
   /// let tabla_variables: TablaVariables = TablaVariables { tabla: HashMap::new() };
   /// 
   /// match tabla_variables.agregar_variable("nombre".to_owned(), "entero".to_owned(), vec![], 100) { 
@@ -98,7 +100,7 @@ impl TablaVariables {
   ///
   /// # Ejemplo
   ///
-  /// ```
+  /// ```ignore
   /// let tabla_variables: TablaVariables = TablaVariables { tabla: HashMap::new() };
   /// 
   /// match tabla_variables.buscar_variable("nombre".to_owned()) { 
@@ -123,7 +125,7 @@ impl TablaVariables {
   ///
   /// # Ejemplo
   ///
-  /// ```
+  /// ```ignore
   /// let tabla_variables: TablaVariables = TablaVariables { tabla: HashMap::new() };
   /// 
   /// let constante = tabla_variables.agregar_constante("10".to_owned(), "entero".to_owned());

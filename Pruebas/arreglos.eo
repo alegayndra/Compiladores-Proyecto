@@ -1,8 +1,10 @@
 programa arreglos;
 
 entero arr[10];
+entero a;
 
 void funcion llenar_arreglo() {
+  a = 10;
   arr[0] = 2;
   arr[1] = 1;
   arr[2] = 0;

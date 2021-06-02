@@ -34,7 +34,7 @@ $ python Maquina_Virtual/main.py
 ### Pruebas
 
 #### Pruebas unitarias
-Para correr las pruebas unitarias dentro de Rust, se corre el siguiente comando: `cargo test -- --test-threads=1`.
+Para correr las pruebas unitarias dentro de Rust, se corre el siguiente comando:
 
 ```bash
 cargo test -- --test-threads=1

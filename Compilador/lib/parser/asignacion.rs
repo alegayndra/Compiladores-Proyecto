@@ -22,7 +22,7 @@ use crate::semantica::tabla_variables::*;
 ///
 /// # Ejemplo
 ///
-/// ```
+/// ```ignore
 /// generar_cuadruplo_asignacion(TipoVar {
 ///   nombre: "numero".to_owned()
 ///   tipo: "entero".to_owned()
@@ -74,7 +74,7 @@ fn generar_cuadruplo_asignacion(variable: TipoVar) {
 ///
 /// # Ejemplo
 ///
-/// ```
+/// ```ignore
 /// match asignacion_interna("num = 10") {
 ///   Ok((next_input, res)) => res, // parseo éxitoso
 ///   Err(err) => err, // error en parseo
@@ -132,13 +132,13 @@ pub fn asignacion_interna(input: &str) -> IResult<&str, &str> {
 ///
 /// # Gramática
 ///
-/// ```
+/// ```ignore
 /// id DIMENSIONES = EXP ;
 /// ```
 ///
 /// # Ejemplo
 ///
-/// ```
+/// ```ignore
 /// match asignacion("num = 10;") {
 ///   Ok((next_input, res)) => res, // parseo éxitoso
 ///   Err(err) => err, // error en parseo

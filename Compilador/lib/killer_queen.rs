@@ -19,7 +19,7 @@ use crate::semantica::globales::*;
 ///
 /// # Ejemplo
 ///
-/// ```
+/// ```ignore
 /// escribir_archivo();
 /// ```
 fn escribir_archivo() {
@@ -135,7 +135,7 @@ fn escribir_archivo() {
 ///
 /// # Ejemplo
 ///
-/// ```
+/// ```ignore
 /// iniciar_compilador();
 /// ```
 pub fn iniciar_compilador() {

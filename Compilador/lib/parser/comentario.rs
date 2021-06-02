@@ -15,7 +15,7 @@ use nom::{
 ///
 /// # Ejemplo
 ///
-/// ```
+/// ```ignore
 /// match lista_estatutos("num = 10; %% comentario %%") {
 ///   Ok((next_input, res)) => res, // parseo éxitoso
 ///   Err(err) => err, // error en parseo

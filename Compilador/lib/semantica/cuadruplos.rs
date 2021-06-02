@@ -11,7 +11,8 @@ use crate::semantica::globales::*;
 /// * `lista` - Lista de cuadruplos
 ///
 /// # Ejemplo de creación
-/// ```
+///
+/// ```ignore
 /// let cuadruplos: ListaCuadruplos = ListaCuadruplos {
 ///   lista: vec![]
 /// };
@@ -34,7 +35,7 @@ static mut NUM_TEMPORAL: i64 = 0;
 ///
 /// # Ejemplo
 ///
-/// ```
+/// ```ignore
 /// agregar_temporal_a_tabla("temporal1".to_owned(), "entero".to_owned(), 5); // Suma entre enteros
 /// ```
 pub fn agregar_temporal_a_tabla(var: String, tipo_var: String, dir: i64) {
@@ -79,7 +80,7 @@ impl ListaCuadruplos {
   ///
   /// # Ejemplo
   ///
-  /// ```
+  /// ```ignore
   /// let cuadruplos: ListaCuadruplos = ListaCuadruplos { lista: vec![] };
   /// 
   /// cuadruplos.agregar_cuadruplo("+", "entero", "entero"); // Suma entre enteros
@@ -173,7 +174,7 @@ impl ListaCuadruplos {
   ///
   /// # Ejemplo
   ///
-  /// ```
+  /// ```ignore
   /// let cuadruplos: ListaCuadruplos = ListaCuadruplos { lista: vec![] };
   /// 
   /// cuadruplos.agregar_cuadruplo_for(100); // Suma entre enteros
@@ -193,7 +194,7 @@ impl ListaCuadruplos {
   ///
   /// # Ejemplo
   ///
-  /// ```
+  /// ```ignore
   /// let cuadruplos: ListaCuadruplos = ListaCuadruplos { lista: vec![] };
   /// 
   /// cuadruplos.agregar_cuadruplo_asignacion(TipoVar { /* atributos */ }, TipoVar { /* atributos */ }); // Suma entre enteros
@@ -224,7 +225,7 @@ impl ListaCuadruplos {
   ///
   /// # Ejemplo
   ///
-  /// ```
+  /// ```ignore
   /// let cuadruplos: ListaCuadruplos = ListaCuadruplos { lista: vec![] };
   /// 
   /// cuadruplos.agregar_cuadruplo_asignacion_arreglo(TipoVar { /* atributos */ }, TipoVar { /* atributos */ }); // Suma entre enteros
@@ -255,7 +256,7 @@ impl ListaCuadruplos {
   ///
   /// # Ejemplo
   ///
-  /// ```
+  /// ```ignore
   /// let cuadruplos: ListaCuadruplos = ListaCuadruplos { lista: vec![] };
   /// 
   /// cuadruplos.agregar_cuadruplo_escritura(TipoVar { /* atributos */ }); // Suma entre enteros
@@ -274,7 +275,7 @@ impl ListaCuadruplos {
   ///
   /// # Ejemplo
   ///
-  /// ```
+  /// ```ignore
   /// let cuadruplos: ListaCuadruplos = ListaCuadruplos { lista: vec![] };
   /// 
   /// cuadruplos.agregar_cuadruplo_lectura(TipoVar { /* atributos */ }); // Suma entre enteros
@@ -289,7 +290,7 @@ impl ListaCuadruplos {
   ///
   /// # Ejemplo
   ///
-  /// ```
+  /// ```ignore
   /// let cuadruplos: ListaCuadruplos = ListaCuadruplos { lista: vec![] };
   /// 
   /// cuadruplos.agregar_cuadruplo_goto(); // Suma entre enteros
@@ -308,7 +309,7 @@ impl ListaCuadruplos {
   ///
   /// # Ejemplo
   ///
-  /// ```
+  /// ```ignore
   /// let cuadruplos: ListaCuadruplos = ListaCuadruplos { lista: vec![] };
   /// 
   /// cuadruplos.agregar_cuadruplo_lectura(5); // Suma entre enteros
@@ -329,7 +330,7 @@ impl ListaCuadruplos {
   ///
   /// # Ejemplo
   ///
-  /// ```
+  /// ```ignore
   /// let cuadruplos: ListaCuadruplos = ListaCuadruplos { lista: vec![] };
   /// 
   /// cuadruplos.modificar_cuadruplo_goto_sino(1); // Suma entre enteros
@@ -349,7 +350,7 @@ impl ListaCuadruplos {
   ///
   /// # Ejemplo
   ///
-  /// ```
+  /// ```ignore
   /// let cuadruplos: ListaCuadruplos = ListaCuadruplos { lista: vec![] };
   /// 
   /// cuadruplos.agregar_cuadruplo_gotof(TipoVar { /* atributos */ }); // Suma entre enteros
@@ -375,7 +376,7 @@ impl ListaCuadruplos {
   ///
   /// # Ejemplo
   ///
-  /// ```
+  /// ```ignore
   /// let cuadruplos: ListaCuadruplos = ListaCuadruplos { lista: vec![] };
   /// 
   /// cuadruplos.agregar_cuadruplo_gotof_desde(); // Suma entre enteros
@@ -412,7 +413,7 @@ impl ListaCuadruplos {
   ///
   /// # Ejemplo
   ///
-  /// ```
+  /// ```ignore
   /// let cuadruplos: ListaCuadruplos = ListaCuadruplos { lista: vec![] };
   /// 
   /// cuadruplos.agregar_cuadruplo_acceder_desde(10); // Suma entre enteros
@@ -453,7 +454,7 @@ impl ListaCuadruplos {
   ///
   /// # Ejemplo
   ///
-  /// ```
+  /// ```ignore
   /// let cuadruplos: ListaCuadruplos = ListaCuadruplos { lista: vec![] };
   /// 
   /// cuadruplos.agregar_cuadruplo_endfunc(); // Suma entre enteros
@@ -473,7 +474,7 @@ impl ListaCuadruplos {
   ///
   /// # Ejemplo
   ///
-  /// ```
+  /// ```ignore
   /// let cuadruplos: ListaCuadruplos = ListaCuadruplos { lista: vec![] };
   /// 
   /// cuadruplos.agregar_cuadruplo_return(TipoVar { /* atributos */ }, 10); // Suma entre enteros
@@ -492,7 +493,7 @@ impl ListaCuadruplos {
   ///
   /// # Ejemplo
   ///
-  /// ```
+  /// ```ignore
   /// let cuadruplos: ListaCuadruplos = ListaCuadruplos { lista: vec![] };
   /// 
   /// cuadruplos.agregar_cuadruplo_era(10); // Suma entre enteros
@@ -512,7 +513,7 @@ impl ListaCuadruplos {
   ///
   /// # Ejemplo
   ///
-  /// ```
+  /// ```ignore
   /// let cuadruplos: ListaCuadruplos = ListaCuadruplos { lista: vec![] };
   /// 
   /// cuadruplos.agregar_cuadruplo_param(TipoVar { /* atributos */ }, TipoVar { /* atributos */ }); // Suma entre enteros
@@ -542,7 +543,7 @@ impl ListaCuadruplos {
   ///
   /// # Ejemplo
   ///
-  /// ```
+  /// ```ignore
   /// let cuadruplos: ListaCuadruplos = ListaCuadruplos { lista: vec![] };
   /// 
   /// cuadruplos.agregar_cuadruplo_gosub(10); // Suma entre enteros
@@ -562,7 +563,7 @@ impl ListaCuadruplos {
   ///
   /// # Ejemplo
   ///
-  /// ```
+  /// ```ignore
   /// let cuadruplos: ListaCuadruplos = ListaCuadruplos { lista: vec![] };
   /// 
   /// cuadruplos.agregar_cuadruplo_verificar(10, 20); // Suma entre enteros
@@ -587,7 +588,7 @@ impl ListaCuadruplos {
   ///
   /// # Ejemplo
   ///
-  /// ```
+  /// ```ignore
   /// let cuadruplos: ListaCuadruplos = ListaCuadruplos { lista: vec![] };
   /// 
   /// cuadruplos.agregar_cuadruplo_acceder(TipoVar { /* atributos */ }); // Suma entre enteros
@@ -634,7 +635,7 @@ impl ListaCuadruplos {
   ///
   /// # Ejemplo
   ///
-  /// ```
+  /// ```ignore
   /// let cuadruplos: ListaCuadruplos = ListaCuadruplos { lista: vec![] };
   /// 
   /// cuadruplos.agregar_cuadruplo_asignacion_valor_funcion(100, "entero".to_owned()); // Suma entre enteros
