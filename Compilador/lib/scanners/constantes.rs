@@ -8,6 +8,21 @@ use nom::{
   bytes::complete::{tag, take_while_m_n}
 };
 
+/// Scanner para leer números enteros constantes.  
+/// Regresa un IResult, un Result nativo modificado de la libreria de Nom que incluye el input restante.
+///
+/// # Parametros
+///
+/// * `input`- Input a parsear
+///
+/// # Ejemplo
+///
+/// ```
+/// match num_entero("100") {
+///   Ok((next_input, res)) => res, // parseo éxitoso
+///   Err(err) => err, // error en parseo
+/// };
+/// ```
 pub fn num_entero(input: &str) -> IResult<&str, (&str, &str)> {
   recognize(many1(terminated(one_of("0123456789"), many0(char('_')))))(input)
   .map(|(next_input, res)| {
@@ -15,6 +30,21 @@ pub fn num_entero(input: &str) -> IResult<&str, (&str, &str)> {
   })
 }
 
+/// Scanner para leer un carácter.  
+/// Regresa un IResult, un Result nativo modificado de la libreria de Nom que incluye el input restante.
+///
+/// # Parametros
+///
+/// * `input`- Input a parsear
+///
+/// # Ejemplo
+///
+/// ```
+/// match caracter("\"a\"") {
+///   Ok((next_input, res)) => res, // parseo éxitoso
+///   Err(err) => err, // error en parseo
+/// };
+/// ```
 pub fn caracter(input: &str) -> IResult<&str, (&str, &str)> {
   delimited(tag("\""), take_while_m_n(1, 1, |c| c != ' '), tag("\""))(input)
   .map(|(next_input, res)| {
@@ -22,6 +52,21 @@ pub fn caracter(input: &str) -> IResult<&str, (&str, &str)> {
   })
 }
 
+/// Scanner para leer números flotantes constantes.  
+/// Regresa un IResult, un Result nativo modificado de la libreria de Nom que incluye el input restante.
+///
+/// # Parametros
+///
+/// * `input`- Input a parsear
+///
+/// # Ejemplo
+///
+/// ```
+/// match num_flotante("10.1") {
+///   Ok((next_input, res)) => res, // parseo éxitoso
+///   Err(err) => err, // error en parseo
+/// };
+/// ```
 pub fn num_flotante(input: &str) -> IResult<&str, (&str, &str)> {
   alt((
     // Case one: .42

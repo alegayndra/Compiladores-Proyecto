@@ -1,3 +1,4 @@
+//! Módulo que se encarga del analisis de las repeticiones.
 use nom::{
   branch::alt,
   bytes::complete::tag,
@@ -12,10 +13,24 @@ use crate::parser::bloque::*;
 use crate::parser::asignacion::*;
 use crate::semantica::globales::*;
 
+/// Función auxiliar que agrega el cuadruplo siguiente a la pila de saltos.
+///
+/// # Ejemplo
+///
+/// ```
+/// agregar_cuadruplo_a_pila_saltos();
+/// ```
 fn agregar_cuadruplo_a_pila_saltos() {
   PILA_SALTOS.lock().unwrap().push((CUADRUPLOS.lock().unwrap().lista.len()) as i64);
 }
 
+/// Función auxiliar que genera el gotof del ciclo _mientras_.
+///
+/// # Ejemplo
+///
+/// ```
+/// generar_gotof_mientras();
+/// ```
 fn generar_gotof_mientras() {
   let mut cuadruplos = CUADRUPLOS.lock().unwrap();
   let mut lista_valores = PILA_VALORES.lock().unwrap();
@@ -39,7 +54,15 @@ fn generar_gotof_mientras() {
   drop(saltos);
 }
 
-fn generar_gotof_desde() -> i64{
+/// Función auxiliar que genera el gotof del ciclo _desde_.  
+/// Regresa la dirección de memoria de la variable del _desde_.
+///
+/// # Ejemplo
+///
+/// ```
+/// generar_gotof_desde();
+/// ```
+fn generar_gotof_desde() -> i64 {
   let mut cuadruplos = CUADRUPLOS.lock().unwrap();
 
   let dir = match cuadruplos.agregar_cuadruplo_gotof_desde() {
@@ -57,7 +80,15 @@ fn generar_gotof_desde() -> i64{
   dir
 }
 
+/// Función auxiliar que genera el goto de regreso a la condicional de al repetición y actualiza el goto para salirse del ciclo.
+///
+/// # Ejemplo
+///
+/// ```
+/// generar_gotos_final();
+/// ```
 fn generar_gotos_final() {
+  // Consigue los dos últimos valores dentro de la pila de saltos
   let mut saltos = PILA_SALTOS.lock().unwrap();
   let final_dec = match saltos.pop() {
     Some(val) => val,
@@ -71,6 +102,7 @@ fn generar_gotos_final() {
 
   let mut cuadruplos = CUADRUPLOS.lock().unwrap();
 
+  // Agrega el cuadruplo del goto para regresarse a la condicional
   match cuadruplos.agregar_cuadruplo_goto() {
     Ok(_res) => (),
     Err(err) => {
@@ -81,6 +113,7 @@ fn generar_gotos_final() {
   let tamanio_cuadruplos = cuadruplos.lista.len() - 1;
   cuadruplos.lista[tamanio_cuadruplos].3 = return_dec;
 
+  // Modifica el gotof para saltarse el código dentro del bloque del ciclo
   match cuadruplos.modificar_cuadruplo_goto(final_dec as usize) {
     Ok(_res) => (),
     Err(err) => {
@@ -89,8 +122,30 @@ fn generar_gotos_final() {
   };
 }
 
+/// No terminal de mientras.  
+/// Regresa un IResult, un Result nativo modificado de la libreria de Nom que incluye el input restante.
+///
+/// # Parametros
+///
+/// * `input`- Input a parsear
+///
+/// # Gramática
+///
+/// ```
+/// mientras (EXP_LOGICA) BLOQUE;
+/// ```
+///
+/// # Ejemplo
+///
+/// ```
+/// match desde("desde id = valor hasta valor {}") {
+///   Ok((next_input, res)) => res, // parseo éxitoso
+///   Err(err) => err, // error en parseo
+/// };
+/// ```
 pub fn mientras(input: &str) -> IResult<&str, &str> {
   let mut next: &str = input;
+
   next = match tag("mientras")(next) {
     Ok((next_input, _)) => {
       agregar_cuadruplo_a_pila_saltos();
@@ -99,6 +154,7 @@ pub fn mientras(input: &str) -> IResult<&str, &str> {
     Err(err) => return Err(err)
   };
 
+  // Condicional
   next = match tuple((ws, tag("("), ws, exp_logica, ws, tag(")")))(next) {
     Ok((next_input, _)) => {
       generar_gotof_mientras();
@@ -107,6 +163,7 @@ pub fn mientras(input: &str) -> IResult<&str, &str> {
     Err(err) => return Err(err)
   };
 
+  // Bloque de código del ciclo
   match tuple((ws, bloque))(next) {
     Ok((next_input, _)) => {
       generar_gotos_final();
@@ -116,9 +173,32 @@ pub fn mientras(input: &str) -> IResult<&str, &str> {
   }
 }
 
+/// No terminal de repetición.  
+/// Regresa un IResult, un Result nativo modificado de la libreria de Nom que incluye el input restante.
+///
+/// # Parametros
+///
+/// * `input`- Input a parsear
+///
+/// # Ejemplo
+///
+/// # Gramática
+///
+/// ```
+/// desde id DIMENSIONES = EXP hasta EXP BLOQUE;
+/// ```
+///
+/// ```
+/// match desde("desde id = valor hasta valor {}") {
+///   Ok((next_input, res)) => res, // parseo éxitoso
+///   Err(err) => err, // error en parseo
+/// };
+/// ```
 pub fn desde(input: &str) -> IResult<&str, &str> {
   let mut next: &str = input;
   let variable: i64;
+
+  // Asignación inicial del _desde_
   next = match preceded(tuple((tag("desde"), necessary_ws)), asignacion_interna)(next) {
     Ok((next_input, _)) => {
       agregar_cuadruplo_a_pila_saltos();
@@ -127,6 +207,7 @@ pub fn desde(input: &str) -> IResult<&str, &str> {
     Err(err) => return Err(err)
   };
 
+  // Valor final del ciclo
   next = match tuple((necessary_ws, tag("hasta"), necessary_ws, exp))(next) {
     Ok((next_input, _)) => {
       variable = generar_gotof_desde();
@@ -135,6 +216,7 @@ pub fn desde(input: &str) -> IResult<&str, &str> {
     Err(err) => return Err(err)
   };
 
+  // Bloque de código del ciclo
   match tuple((necessary_ws, bloque))(next) {
     Ok((next_input, _)) => {
       let mut cuadruplos = CUADRUPLOS.lock().unwrap();
@@ -152,6 +234,21 @@ pub fn desde(input: &str) -> IResult<&str, &str> {
   }
 }
 
+/// Función auxiliar para agrupar las diferentes repeticiones.  
+/// Regresa un IResult, un Result nativo modificado de la libreria de Nom que incluye el input restante.
+///
+/// # Parametros
+///
+/// * `input`- Input a parsear
+///
+/// # Ejemplo
+///
+/// ```
+/// match repeticion("mientras(1){}") {
+///   Ok((next_input, res)) => res, // parseo éxitoso
+///   Err(err) => err, // error en parseo
+/// };
+/// ```
 pub fn repeticion(input: &str) -> IResult<&str, &str> {
   alt((mientras, desde))(input)
   .map(|(next_input, _res)| {

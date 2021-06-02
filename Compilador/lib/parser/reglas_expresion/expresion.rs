@@ -1,3 +1,5 @@
+//! Módulo que se encarga de las expresiones relacionales.
+
 use nom::{
   IResult,
   sequence::{tuple, preceded},
@@ -7,35 +9,24 @@ use nom::{
 use crate::scanners::ws::*;
 use crate::scanners::operadores::*;
 use crate::parser::reglas_expresion::exp::*;
+use crate::parser::reglas_expresion::*;
 use crate::semantica::globales::*;
 
+/// Función auxiliar que checa si debe generar un cuadruplo de operación.
+///
+/// # Ejemplo
+///
+/// ```
+/// checar_lista_operadores();
+/// ```
 fn checar_lista_operadores() {
   let mut lista_operadores = PILA_OPERADORS.lock().unwrap();
+  // Checa que el operador sea relacional
   match lista_operadores.pop() {
     Some(op) => {
       match op_relacional(&op) {
         Ok(_) => {
-          let mut pila_val = PILA_VALORES.lock().unwrap();
-          let der = match pila_val.pop() {
-            Some(val) => val,
-            _ => return
-          };
-          let izq = match pila_val.pop() {
-            Some(val) => val,
-            _ => {
-              println!("Stack de valores vacío en EXPRESION");
-              return;
-            }
-          };
-
-          drop(pila_val);
-
-          match CUADRUPLOS.lock().unwrap().agregar_cuadruplo(&op, izq, der) {
-            Ok(_) => (),
-            Err(err) => {
-              println!("{:?}", err);
-            },
-          };
+          generar_cuadruplo_operacion(&op);
         },
         Err(_) => { lista_operadores.push(op); }
       }
@@ -44,11 +35,28 @@ fn checar_lista_operadores() {
   }
 }
 
+/// Función auxiliar para leer la expresión opcional relacional.  
+/// Regresa un IResult, un Result nativo modificado de la libreria de Nom que incluye el input restante.
+///
+/// # Parametros
+///
+/// * `input`- Input a parsear
+///
+/// # Ejemplo
+///
+/// ```
+/// match exp_extra("> 0") {
+///   Ok((next_input, res)) => res, // parseo éxitoso
+///   Err(err) => err, // error en parseo
+/// };
+/// ```
 fn exp_extra(input: &str) -> IResult<&str, &str> {
-  let mut next : &str = input;
+  let mut next: &str = input;
 
+  // Busca un operador relacional
   next = match opt(preceded(ws, op_relacional))(next) {
     Ok((next_input, Some(operador))) => {
+        // Agrega operador a la pila de operadores
       PILA_OPERADORS.lock().unwrap().push(operador.to_owned());
       next_input
     }
@@ -56,7 +64,8 @@ fn exp_extra(input: &str) -> IResult<&str, &str> {
     Ok((next_input, None)) => next_input 
   };
 
-  match opt(preceded(ws, exp))(next) {
+  // Lee una expresión
+  match preceded(ws, exp)(next) {
     Ok((next_input, _)) => {
       checar_lista_operadores();
       Ok((next_input, "termino"))
@@ -65,6 +74,21 @@ fn exp_extra(input: &str) -> IResult<&str, &str> {
   }
 }
 
+/// Función auxiliar para manejar la expresión opcional relacional.  
+/// Regresa un IResult, un Result nativo modificado de la libreria de Nom que incluye el input restante.
+///
+/// # Parametros
+///
+/// * `input`- Input a parsear
+///
+/// # Ejemplo
+///
+/// ```
+/// match exp_opcional("> 0") {
+///   Ok((next_input, res)) => res, // parseo éxitoso
+///   Err(err) => err, // error en parseo
+/// };
+/// ```
 fn exp_opcional(input: &str) -> IResult<&str, &str> {
   match opt(exp_extra)(input) {
     Ok((next_input, Some(res))) => Ok((next_input, res)), 
@@ -72,6 +96,27 @@ fn exp_opcional(input: &str) -> IResult<&str, &str> {
   }
 }
 
+/// No terminal de exp_logica. Sirve para las operaciones de lógica con los operadores relacionales  
+/// Regresa un IResult, un Result nativo modificado de la libreria de Nom que incluye el input restante.
+///
+/// # Parametros
+///
+/// * `input`- Input a parsear
+///
+/// # Gramática
+///
+/// ```
+/// EXP > EXP
+/// ```
+///
+/// # Ejemplo
+///
+/// ```
+/// match expresion("10 > 0") {
+///   Ok((next_input, res)) => res, // parseo éxitoso
+///   Err(err) => err, // error en parseo
+/// };
+/// ```
 pub fn expresion(input: &str) -> IResult<&str, &str> {
   tuple((exp, exp_opcional))(input)
   .map(|(next_input, _res)| {

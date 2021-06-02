@@ -1,3 +1,5 @@
+//! Módulo que se encarga de las expresiones de suma/resta.
+
 use nom::{
   IResult,
   sequence::delimited,
@@ -7,35 +9,24 @@ use nom::{
 use crate::scanners::ws::*;
 use crate::scanners::operadores::*;
 use crate::parser::reglas_expresion::termino::*;
+use crate::parser::reglas_expresion::*;
 use crate::semantica::globales::*;
 
+/// Función auxiliar que checa si debe generar un cuadruplo de operación.
+///
+/// # Ejemplo
+///
+/// ```
+/// checar_lista_operadores();
+/// ```
 fn checar_lista_operadores() {
   let mut lista_operadores = PILA_OPERADORS.lock().unwrap();
+  // Checa que el operador sea suma/resta
   match lista_operadores.pop() {
     Some(op) => {
       match op_sumsub(&op) {
         Ok(_) => {
-          let mut pila_val = PILA_VALORES.lock().unwrap();
-          let der = match pila_val.pop() {
-            Some(val) => val,
-            _ => return
-          };
-          let izq = match pila_val.pop() {
-            Some(val) => val,
-            _ => {
-              println!("Stack de valores vacío en EXP");
-              return;
-            }
-          };
-
-          drop(pila_val);
-
-          match CUADRUPLOS.lock().unwrap().agregar_cuadruplo(&op, izq, der) {
-            Ok(_) => (),
-            Err(err) => {
-              println!("{:?}", err);
-            },
-          };
+          generar_cuadruplo_operacion(&op);
         },
         Err(_) => { lista_operadores.push(op); }
       }
@@ -45,9 +36,32 @@ fn checar_lista_operadores() {
   drop(lista_operadores);
 }
 
+/// No terminal de exp. Sirve para las operaciones de lógica con los operadores '+' y '-'  
+/// Regresa un IResult, un Result nativo modificado de la libreria de Nom que incluye el input restante.
+///
+/// # Parametros
+///
+/// * `input`- Input a parsear
+///
+/// # Gramática
+///
+/// ```
+/// TERMINO + TERMINO
+/// TERMINO - TERMINO
+/// ```
+///
+/// # Ejemplo
+///
+/// ```
+/// match exp_logica("10 & 0") {
+///   Ok((next_input, res)) => res, // parseo éxitoso
+///   Err(err) => err, // error en parseo
+/// };
+/// ```
 pub fn exp(input: &str) -> IResult<&str, &str> {
   let mut next : &str = input;
 
+  // Lee una expresión
   next = match termino(next) {
     Ok((next_input, _)) => {
       checar_lista_operadores();
@@ -56,13 +70,13 @@ pub fn exp(input: &str) -> IResult<&str, &str> {
     Err(err) => return Err(err)
   };
 
+  // Itera sobre posibles expresiones extra
   loop {
+    // Checa que haya un operador, indicando otra expresion
     next = match opt(delimited(ws, op_sumsub, ws))(next) {
       Ok((next_input, Some(operador))) => {
-        let mut lista_operadores = PILA_OPERADORS.lock().unwrap();
-        lista_operadores.push(operador.to_owned());
-        drop(lista_operadores);
-
+        // Agrega operador a la pila de operadores
+        PILA_OPERADORS.lock().unwrap().push(operador.to_owned());
         next_input
       },
       _ => {
@@ -70,6 +84,7 @@ pub fn exp(input: &str) -> IResult<&str, &str> {
       }
     };
 
+    // Lee una expresión
     next = match termino(next) {
       Ok((next_input, _)) => {
         checar_lista_operadores();

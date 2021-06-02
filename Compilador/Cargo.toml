@@ -1,17 +1,31 @@
 [package]
-name = "Compilador"
+name = "KillerQueen"
 version = "0.1.0"
 authors = ["Ale <alegayndra@gmail.com>", "JC <jose.carlos4013@gmail.com>"]
 edition = "2018"
+readme = "../README.md"
+description = "Lenguaje de programación Killer Queen"
+repository = "https://github.com/alegayndra/KillerQueen"
+
+include = [
+  "../README.md",
+  "../.gitignore",
+  "../LICENSE",
+  "Cargo.toml",
+  "src/*.rs",
+  "src/*/*.rs",
+  "lib/*.rs",
+  "lib/*/*.rs"
+]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [lib]
-name = "compilador"
-path = "lib/compilador.rs"
+name = "killer_queen"
+path = "lib/killer_queen.rs"
 
 [[bin]]
-name = "compilador_exe"
+name = "killer_queen_exe"
 path = "src/main.rs"
 
 [dependencies]

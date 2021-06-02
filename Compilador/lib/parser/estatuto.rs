@@ -1,3 +1,5 @@
+//! Módulo que se encarga de los diferentes estatutos.
+
 use nom::{
   branch::alt,
   IResult,
@@ -11,7 +13,27 @@ use crate::parser::decision::*;
 use crate::parser::comentario::*;
 use crate::parser::regresa::*;
 
-
+/// No terminal de los diferentes estatutos.  
+/// Regresa un IResult, un Result nativo modificado de la libreria de Nom que incluye el input restante.
+///
+/// # Parametros
+///
+/// * `input`- Input a parsear
+///
+/// # Gramática
+///
+/// ```
+/// COMENTARIO | REGRESA | FUNC_ESP | REPETICION | DECISION | ASIGNACION | LLAMA_FUNC
+/// ```
+///
+/// # Ejemplo
+///
+/// ```
+/// match estatuto("id = 10;") {
+///   Ok((next_input, res)) => res, // parseo éxitoso
+///   Err(err) => err, // error en parseo
+/// };
+/// ```
 pub fn estatuto(input: &str) -> IResult<&str, &str> {
   alt((comentario, regresa, funcion_esp, repeticion, decision, asignacion, llama_func))(input)
 }

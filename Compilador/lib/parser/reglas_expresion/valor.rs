@@ -1,3 +1,5 @@
+//! Módulo que se encarga de acceder a valores constantes o de variables.
+
 use nom::{
   branch::alt,
   bytes::complete::tag,
@@ -105,7 +107,7 @@ fn valor_id(input: &str) -> IResult<&str, &str> {
           if pos >= params.len() {
             println!("Se excedió la cantidad de parametros dentro de la llamada a función");
           } else {
-            generar_cuadruplo_param(params.clone(), pos);
+            generar_cuadruplo_param(params[pos].clone());
             pos += 1;
           }
           next_input
@@ -128,7 +130,7 @@ fn valor_id(input: &str) -> IResult<&str, &str> {
               if pos >= params.len() {
                 println!("Se excedió la cantidad de parametros dentro de la llamada a función");
               } else {
-                generar_cuadruplo_param(params.clone(), pos);
+                generar_cuadruplo_param(params[pos].clone());
                 pos += 1;
               }
               next_input

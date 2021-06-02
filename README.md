@@ -1,4 +1,4 @@
-# Compiladores-Proyecto
+# Killer Queen
 Repo para el proyecto final de la clase de Diseño de Compiladores
 
 ## Instrucciones

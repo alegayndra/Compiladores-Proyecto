@@ -1,17 +1,25 @@
+//! Módulo que se encarga de las funciones especiales (_leer_ y _escribir_).
+
 use nom::{
   branch::alt,
   bytes::complete::tag,
   IResult,
-  sequence::tuple,
-  combinator::opt
+  sequence::tuple
 };
 
 use crate::scanners::ws::*;
 use crate::scanners::texto::*;
-use crate::parser::reglas_expresion::expresion::*;
+use crate::parser::reglas_expresion::exp::*;
 use crate::parser::reglas_expresion::valor::*;
 use crate::semantica::globales::*;
 
+/// Función auxiliar para generar cuadruplo de escritura.  
+///
+/// # Ejemplo
+///
+/// ```
+/// generar_cuadruplo_lectura();
+/// ```
 fn generar_cuadruplo_lectura() {
   let mut cuadruplos = CUADRUPLOS.lock().unwrap();
   let var = PILA_VALORES.lock().unwrap().pop().unwrap();
@@ -25,6 +33,13 @@ fn generar_cuadruplo_lectura() {
   drop(cuadruplos);
 }
 
+/// Función auxiliar para generar cuadruplo de escritura.  
+///
+/// # Ejemplo
+///
+/// ```
+/// generar_cuadruplo_escritura();
+/// ```
 fn generar_cuadruplo_escritura() {
   match PILA_VALORES.lock().unwrap().pop() {
     Some(valor) => {
@@ -41,14 +56,37 @@ fn generar_cuadruplo_escritura() {
   };
 }
 
+/// No terminal leer. Sirve para pedir valores al usuario.  
+/// Regresa un IResult, un Result nativo modificado de la libreria de Nom que incluye el input restante.
+///
+/// # Parametros
+///
+/// * `input`- Input a parsear
+///
+/// # Gramática
+///
+/// ```
+/// lee ( id ) ;
+/// ```
+///
+/// # Ejemplo
+///
+/// ```
+/// match escribir("leer(num);") {
+///   Ok((next_input, res)) => res, // parseo éxitoso
+///   Err(err) => err, // error en parseo
+/// };
+/// ```
 pub fn leer(input: &str) -> IResult<&str, &str> {
-  let mut next : &str = input;
+  let mut next: &str = input;
 
+  // Lee inicio de función
   next = match tuple((tag("lee"), ws, tag("("), ws))(next) {
     Ok((next_input, _)) => next_input,
     Err(err) => return Err(err)
   };
 
+  // Lee valor a pedir
   next = match valor(next) {
     Ok((next_input, _)) => {
       generar_cuadruplo_lectura();
@@ -57,12 +95,15 @@ pub fn leer(input: &str) -> IResult<&str, &str> {
     Err(err) => return Err(err)
   };
 
+  // Itera sobre los siguientes valores
   loop {
-    next = match opt(tuple((ws, tag(","), ws)))(next) {
-      Ok((next_input, Some(_))) => next_input,
+    // Checa que haya una coma, indicando otro valor
+    next = match tuple((ws, tag(","), ws))(next) {
+      Ok((next_input, _)) => next_input,
       _ => break
     };
 
+    // Lee valor a pedir
     next = match valor(next) {
       Ok((next_input, _)) => {
         generar_cuadruplo_lectura();
@@ -78,6 +119,17 @@ pub fn leer(input: &str) -> IResult<&str, &str> {
   }
 }
 
+/// Función auxiliar para agregar un texto a la tablas de constantes.  
+///
+/// # Parametros
+///
+/// * `valor`- Texto que se quiere agregar a la tabla de constantes
+///
+/// # Ejemplo
+///
+/// ```
+/// generar_cuadruplo_offset("texto");
+/// ```
 fn agregar_texto_a_tabla(valor: &str) {
   let mut pila_valores = PILA_VALORES.lock().unwrap();
   pila_valores.push(CONSTANTES.lock().unwrap().agregar_constante(valor.to_owned(), "texto".to_owned()));
@@ -85,21 +137,45 @@ fn agregar_texto_a_tabla(valor: &str) {
   generar_cuadruplo_escritura();
 }
 
+/// No terminal escribir. Sirve para imprimir valores a consola.  
+/// Regresa un IResult, un Result nativo modificado de la libreria de Nom que incluye el input restante.
+///
+/// # Parametros
+///
+/// * `input`- Input a parsear
+///
+/// # Gramática
+///
+/// ```
+/// escribe ( texto | EXP ) ;
+/// ```
+///
+/// # Ejemplo
+///
+/// ```
+/// match escribir("escribe(10);") {
+///   Ok((next_input, res)) => res, // parseo éxitoso
+///   Err(err) => err, // error en parseo
+/// };
+/// ```
 pub fn escribir(input: &str) -> IResult<&str, &str> {
-  let mut next : &str = input;
+  let mut next: &str = input;
 
+  // Lee el inicio de función
   next = match tuple((tag("escribe"), ws, tag("("), ws))(next) {
     Ok((next_input, _)) => next_input,
     Err(err) => return Err(err)
   };
 
+  // Lee constantes de texto
   next = match texto(next) {
     Ok((next_i, texto_const)) => {
       agregar_texto_a_tabla(texto_const);
       next_i
     },
     Err(_) => {
-      match expresion(next) {
+      // En caso de no encontrar texto, lee una expresión
+      match exp(next) {
         Ok((next_input, _)) => {
           generar_cuadruplo_escritura();
           next_input
@@ -109,19 +185,23 @@ pub fn escribir(input: &str) -> IResult<&str, &str> {
     }
   };
 
+  // Itera sobre los siguientes valores
   loop {
-    next = match opt(tuple((ws, tag(","), ws)))(next) {
-      Ok((next_input, Some(_))) => next_input,
+    // Checa que haya una coma, indicando otro valor
+    next = match tuple((ws, tag(","), ws))(next) {
+      Ok((next_input, _)) => next_input,
       _ => break
     };
 
+    // Lee constantes de texto
     next = match texto(next) {
       Ok((next_i, texto_const)) => {
         agregar_texto_a_tabla(texto_const);
         next_i
       },
       Err(_) => {
-        match expresion(next) {
+        // En caso de no encontrar texto, lee una expresión
+        match exp(next) {
           Ok((next_input, _)) => {
             generar_cuadruplo_escritura();
             next_input
@@ -132,12 +212,34 @@ pub fn escribir(input: &str) -> IResult<&str, &str> {
     };
   };
 
+  // Lee el final de la función
   match tuple((ws, tag(")"), tag(";")))(next) {
     Ok((next_input, _)) => Ok((next_input, "escribir")),
     Err(err) => Err(err)
   }
 }
 
+/// No terminal func_esp. Sirve para leer ambas funciones especiales (_leer_ y _escribir_).  
+/// Regresa un IResult, un Result nativo modificado de la libreria de Nom que incluye el input restante.
+///
+/// # Parametros
+///
+/// * `input`- Input a parsear
+///
+/// # Gramática
+///
+/// ```
+/// ESCRIBIR | LEER
+/// ```
+///
+/// # Ejemplo
+///
+/// ```
+/// match funcion_esp("escribe(10);") {
+///   Ok((next_input, res)) => res, // parseo éxitoso
+///   Err(err) => err, // error en parseo
+/// };
+/// ```
 pub fn funcion_esp(input: &str) -> IResult<&str, &str> {
   alt((leer, escribir))(input)
   .map(|(next_input, _)| {

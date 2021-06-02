@@ -3,10 +3,40 @@ use nom::{
   IResult,
 };
 
+/// Scanner para leer espacíos vacíos opcionales.  
+/// Regresa un IResult, un Result nativo modificado de la libreria de Nom que incluye el input restante.
+///
+/// # Parametros
+///
+/// * `input`- Input a parsear
+///
+/// # Ejemplo
+///
+/// ```
+/// match ws("") {
+///   Ok((next_input, res)) => res, // parseo éxitoso
+///   Err(err) => err, // error en parseo
+/// };
+/// ```
 pub fn ws(input: &str) -> IResult<&str, &str> {
   take_while(|c: char| c == ' ' || c == '\n' || c == '\t' || c == '\r')(input)
 }
 
+/// Scanner para leer al menos un espacío vacío.  
+/// Regresa un IResult, un Result nativo modificado de la libreria de Nom que incluye el input restante.
+///
+/// # Parametros
+///
+/// * `input`- Input a parsear
+///
+/// # Ejemplo
+///
+/// ```
+/// match necessary_ws(" ") {
+///   Ok((next_input, res)) => res, // parseo éxitoso
+///   Err(err) => err, // error en parseo
+/// };
+/// ```
 pub fn necessary_ws(input: &str) -> IResult<&str, &str> {
   take_while1(|c: char| c == ' ' || c == '\n' || c == '\t' || c == '\r')(input)
 }

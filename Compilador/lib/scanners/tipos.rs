@@ -6,14 +6,59 @@ use nom::{
 
 use crate::scanners::id::*;
 
+/// Scanner para leer palabras reservadas de tipos primitivos.  
+/// Regresa un IResult, un Result nativo modificado de la libreria de Nom que incluye el input restante.
+///
+/// # Parametros
+///
+/// * `input`- Input a parsear
+///
+/// # Ejemplo
+///
+/// ```
+/// match tipo("entero") {
+///   Ok((next_input, res)) => res, // parseo éxitoso
+///   Err(err) => err, // error en parseo
+/// };
+/// ```
 pub fn tipo(input: &str) -> IResult<&str, &str> {
   alt((tag("entero"), tag("flotante"), tag("char")))(input)
 }
 
+/// Scanner para leer tipos compuestas.  
+/// Regresa un IResult, un Result nativo modificado de la libreria de Nom que incluye el input restante.
+///
+/// # Parametros
+///
+/// * `input`- Input a parsear
+///
+/// # Ejemplo
+///
+/// ```
+/// match tipo_compuesto("Persona") {
+///   Ok((next_input, res)) => res, // parseo éxitoso
+///   Err(err) => err, // error en parseo
+/// };
+/// ```
 pub fn tipo_compuesto(input: &str) -> IResult<&str, &str> {
   alt((tipo, id))(input)
 }
 
+/// Scanner para leer tipos de retorno.  
+/// Regresa un IResult, un Result nativo modificado de la libreria de Nom que incluye el input restante.
+///
+/// # Parametros
+///
+/// * `input`- Input a parsear
+///
+/// # Ejemplo
+///
+/// ```
+/// match tipo_retorno("void") {
+///   Ok((next_input, res)) => res, // parseo éxitoso
+///   Err(err) => err, // error en parseo
+/// };
+/// ```
 pub fn tipo_retorno(input: &str) -> IResult<&str, &str> {
   alt((tipo, tag("void")))(input)
 }

@@ -1,3 +1,5 @@
+//! Módulo que se encarga de la decisión.
+
 use nom::{
   bytes::complete::tag,
   IResult,
@@ -9,6 +11,13 @@ use crate::parser::reglas_expresion::exp_logica::*;
 use crate::parser::bloque::*;
 use crate::semantica::globales::*;
 
+/// Función auxiliar para actualizar el cuadruplo de gotof de la decisión y crear el goto del sino.  
+///
+/// # Ejemplo
+///
+/// ```
+/// generar_goto_sino();
+/// ```
 fn generar_goto_sino() {
   let mut cuadruplos = CUADRUPLOS.lock().unwrap();
   let mut saltos = PILA_SALTOS.lock().unwrap();
@@ -37,6 +46,27 @@ fn generar_goto_sino() {
   drop(saltos);
 }
 
+/// No terminal de sino.  
+/// Regresa un IResult, un Result nativo modificado de la librería de Nom que incluye el input restante.
+///
+/// # Parametros
+///
+/// * `input`- Input a parsear
+///
+/// # Gramática
+///
+/// ```
+/// sino BLOQUE
+/// ```
+///
+/// # Ejemplo
+///
+/// ```
+/// match sino("sino {id = 9;}") {
+///   Ok((next_input, res)) => res, // parseo éxitoso
+///   Err(err) => err, // error en parseo
+/// };
+/// ```
 fn sino(input: &str) -> IResult<&str, &str> {
   let mut next: &str = input;
 
@@ -54,6 +84,13 @@ fn sino(input: &str) -> IResult<&str, &str> {
   }
 }
 
+/// Función auxiliar para crear el cuadruplo de gotof de la decisión.  
+///
+/// # Ejemplo
+///
+/// ```
+/// generar_gotof();
+/// ```
 fn generar_gotof() {
   let mut cuadruplos = CUADRUPLOS.lock().unwrap();
   let mut lista_valores = PILA_VALORES.lock().unwrap();
@@ -76,6 +113,13 @@ fn generar_gotof() {
   drop(saltos);
 }
 
+/// Función auxiliar para actualizar el cuadruplo de gotof de la decisión.  
+///
+/// # Ejemplo
+///
+/// ```
+/// actualizar_gotof();
+/// ```
 fn actualizar_gotof() {
   let mut cuadruplos = CUADRUPLOS.lock().unwrap();
   let mut saltos = PILA_SALTOS.lock().unwrap();
@@ -95,9 +139,31 @@ fn actualizar_gotof() {
   drop(saltos);
 }
 
+/// No terminal de decision.  
+/// Regresa un IResult, un Result nativo modificado de la librería de Nom que incluye el input restante.
+///
+/// # Parametros
+///
+/// * `input`- Input a parsear
+///
+/// # Gramática
+///
+/// ```
+/// si ( EXP_LOGICA ) BLOQUE SINO
+/// ```
+///
+/// # Ejemplo
+///
+/// ```
+/// match decision("si (10) {id = 10;}") {
+///   Ok((next_input, res)) => res, // parseo éxitoso
+///   Err(err) => err, // error en parseo
+/// };
+/// ```
 pub fn decision(input: &str) -> IResult<&str, &str> {
   let mut next: &str = input;
 
+  // Genera condicional
   next = match tuple((tag("si"), ws, tag("("), ws, exp_logica, ws, tag(")")))(next) {
     Ok((next_input, _)) => {
       generar_gotof();
@@ -106,6 +172,7 @@ pub fn decision(input: &str) -> IResult<&str, &str> {
     Err(err) => return Err(err)
   };
 
+  // Genera bloque de código
   match tuple((ws, bloque, sino))(next) {
     Ok((next_input, _)) => {
       actualizar_gotof();

@@ -1,9 +1,10 @@
+//! Módulo que se encarga del analisis de las variables
+
 use nom::{
   branch::alt,
   bytes::complete::tag,
   IResult,
-  sequence::tuple,
-  combinator::opt,
+  sequence::{tuple, preceded}
 };
 
 use crate::scanners::ws::*;
@@ -11,11 +12,33 @@ use crate::scanners::tipos::*;
 use crate::scanners::id::*;
 use crate::semantica::globales::*;
 
+/// Función axuliar para parsear las variabes de tipos personalizados.  
+/// Regresa un IResult, un Result nativo modificado de la libreria de Nom que incluye el input restante.
+///
+/// # Parametros
+///
+/// * `input`- Input a parsear
+///
+/// # Ejemplo
+///
+/// # Gramática
+///
+/// ```
+/// TIPO_COMPUESTO id;
+/// ```
+///
+/// ```
+/// match variable_compuesta("Persona nombre;") {
+///   Ok((next_input, res)) => res, // parseo éxitoso
+///   Err(err) => err, // error en parseo
+/// };
+/// ```
 fn variable_compuesta(input: &str) -> IResult<&str, &str> {
-  let mut next : &str;
-  let tipo_var : &str;
+  let mut next: &str = input;
+  let tipo_var: &str;
 
-  next = match id(input) {
+  // Consigue tipo de la variable
+  next = match id(next) {
     Ok((next_input, res)) => {
       tipo_var = res;
       next_input
@@ -23,42 +46,51 @@ fn variable_compuesta(input: &str) -> IResult<&str, &str> {
     Err(err) => return Err(err)
   };
 
-  next = match ws(next) {
-    Ok((next_input, _)) => next_input,
-    Err(err) => return Err(err)
-  };
-
-  next = match id_sin_dim(next) {
-    Ok((next_input, (var, dims))) => {
-      agregar_variable_a_tabla(var, tipo_var, dims);
+  // Consigue el ID
+  next = match preceded(ws, id)(next) {
+    Ok((next_input, var)) => {
+      agregar_variable_a_tabla(var, tipo_var, vec![]);
       next_input
     },
     Err(err) => return Err(err)
   };
 
+  // Itera sobre las diferentes variables declaradas
   loop {
-    next = match opt(tuple((ws, tag(","), ws)))(next) {
-      Ok((next_input, Some(_))) => next_input,
+    // Checa que haya una coma, indicando que se está declarando otra variable
+    next = match tuple((ws, tag(","), ws))(next) {
+      Ok((next_input, _)) => next_input,
       _ => {
         break;
       }
     };
 
-    next = match id_sin_dim(next) {
-      Ok((next_input, (var, dims))) => {
-        agregar_variable_a_tabla(var, tipo_var, dims);
+    // Consigue ID y sus dimensiones
+    next = match id(next) {
+      Ok((next_input, var)) => {
+        agregar_variable_a_tabla(var, tipo_var, vec![]);
         next_input
       },
       Err(err) => return Err(err)
     };
   };
 
-  match ws(next) {
-    Ok((next_input, _)) => Ok((next_input, "variable compuesta")),
-    Err(err) => Err(err)
-  }
+  Ok((next, "variable compuesta"))
 }
 
+/// Función axuliar agregar una variable a las tablas de variables de la semántica
+///
+/// # Parametros
+///
+/// * `var`- ID de la variable
+/// * `tipo_var`- Tipo de la variable
+/// * `dims`- Dimensiones de la variable
+///
+/// # Ejemplo
+///
+/// ```
+/// agregar_variable_a_tabla("numero", "entero", vec!["3"]);
+/// ```
 fn agregar_variable_a_tabla(var: &str, tipo_var: &str, dims: Vec<&str>) {
   let mut dims_nums : Vec<i64> = vec![];
   for dim in dims {
@@ -109,11 +141,33 @@ fn agregar_variable_a_tabla(var: &str, tipo_var: &str, dims: Vec<&str>) {
   }
 }
 
+/// Función axuliar para parsear las variabes de tipos primitivos.  
+/// Regresa un IResult, un Result nativo modificado de la libreria de Nom que incluye el input restante.
+///
+/// # Parametros
+///
+/// * `input`- Input a parsear
+///
+/// # Gramática
+///
+/// ```
+/// TIPO id DIMENSIONES;
+/// ```
+///
+/// # Ejemplo
+///
+/// ```
+/// match variable_normal("entero nombre;") {
+///   Ok((next_input, res)) => res, // parseo éxitoso
+///   Err(err) => err, // error en parseo
+/// };
+/// ```
 fn variable_normal(input: &str) -> IResult<&str, &str> {
-  let mut next : &str;
-  let tipo_var : &str;
+  let mut next: &str = input;
+  let tipo_var: &str;
 
-  next = match tipo(input) {
+  // Consigue tipo de la variable
+  next = match tipo(next) {
     Ok((next_input, res)) => {
       tipo_var = res;
       next_input
@@ -121,12 +175,8 @@ fn variable_normal(input: &str) -> IResult<&str, &str> {
     Err(err) => return Err(err)
   };
 
-  next = match ws(next) {
-    Ok((next_input, _)) => next_input,
-    Err(err) => return Err(err)
-  };
-
-  next = match id_con_dim_decl(next) {
+  // Consigue el ID y sus dimensiones
+  next = match preceded(ws, id_con_dim_decl)(next) {
     Ok((next_input, (var, dims))) => {
       agregar_variable_a_tabla(var, tipo_var, dims);
       next_input
@@ -134,14 +184,17 @@ fn variable_normal(input: &str) -> IResult<&str, &str> {
     Err(err) => return Err(err)
   };
 
+  // Itera sobre las diferentes variables declaradas
   loop {
-    next = match opt(tuple((ws, tag(","), ws)))(next) {
-      Ok((next_input, Some(_))) => next_input,
+    // Checa que haya una coma, indicando que se está declarando otra variable
+    next = match tuple((ws, tag(","), ws))(next) {
+      Ok((next_input, _)) => next_input,
       _ => {
         break;
       }
     };
 
+    // Consigue ID y sus dimensiones
     next = match id_con_dim_decl(next) {
       Ok((next_input, (var, dims))) => {
         agregar_variable_a_tabla(var, tipo_var, dims);
@@ -151,14 +204,26 @@ fn variable_normal(input: &str) -> IResult<&str, &str> {
     };
   };
 
-  match ws(next) {
-    Ok((next_input, _)) => Ok((next_input, "variable normal")),
-    Err(err) => Err(err)
-  }
+  Ok((next, "variable normal"))
 }
 
+/// No terminal de la declaracion de variables.  
+/// Regresa un IResult, un Result nativo modificado de la libreria de Nom que incluye el input restante.
+///
+/// # Parametros
+///
+/// * `input`- Input a parsear
+///
+/// # Ejemplo
+///
+/// ```
+/// match diferentes_declaraciones("entero nombre;") {
+///   Ok((next_input, res)) => res, // parseo éxitoso
+///   Err(err) => err, // error en parseo
+/// };
+/// ```
 pub fn variables(input: &str) -> IResult<&str, &str> {
-  tuple((ws, alt((variable_normal, variable_compuesta)), tag(";"), ws))
+  tuple((ws, alt((variable_normal, variable_compuesta)), ws, tag(";"), ws))
   (input)
   .map(|(next_input, _res)| {
     (next_input, "variables")

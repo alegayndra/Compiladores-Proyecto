@@ -1,4 +1,4 @@
-extern crate compilador;
+extern crate killer_queen;
 
 use std::fs::File;
 use std::io::prelude::*;
@@ -6,9 +6,14 @@ use std::path::Path;
 use std::env;
 use std::fs;
 
-use compilador::parser::programa::*;
-use compilador::semantica::globales::*;
+use killer_queen::parser::programa::*;
+use killer_queen::semantica::globales::*;
 
+/// Escribe el archivo de salida
+///
+/// # Parametros
+///
+/// * `nombre_archivo`- Nombre del archivo
 fn escribir_archivo(nombre_archivo: &str) {
   let arch = format!("cuadruplos/{}.txt", nombre_archivo);
 	let path = Path::new(&arch);
@@ -140,6 +145,7 @@ fn escribir_archivo(nombre_archivo: &str) {
 	}
 }
 
+/// Inicio del programa
 fn main() {
   let args: Vec<String> = env::args().collect();
   let nombre_archivo = &args[1];

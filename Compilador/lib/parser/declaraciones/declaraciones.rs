@@ -1,3 +1,5 @@
+//! Módulo que se encarga de las diferentes declaraciones.
+
 use nom::{
   IResult,
   sequence::tuple,
@@ -12,21 +14,58 @@ use crate::parser::declaraciones::funcion::*;
 use crate::parser::declaraciones::variables::*;
 use crate::semantica::globales::*;
 
+/// Función auxiliar para todos las diferentes declaraciones.
+/// Regresa un IResult, un Result nativo modificado de la libreria de Nom que incluye el input restante.
+///
+/// # Parametros
+///
+/// * `input`- Input a parsear
+///
+/// # Ejemplo
+///
+/// ```
+/// match diferentes_declaraciones("entero nombre;") {
+///   Ok((next_input, res)) => res, // parseo éxitoso
+///   Err(err) => err, // error en parseo
+/// };
+/// ```
 fn diferentes_declaraciones(input: &str) -> IResult<&str, &str> {
   match alt((clase, funcion, variables))(input) {
     Ok((next_input, res)) => {
+      // Resetea las variables globales
       let mut contexto_funcion = CONTEXTO_FUNCION.lock().unwrap();
       *contexto_funcion = ID_PROGRAMA.lock().unwrap().to_string();
       let mut contexto_clase = CONTEXTO_CLASE.lock().unwrap();
       *contexto_clase = "".to_owned();
+
+      resetear_direcciones_locales();
       
       VARIABLES.lock().unwrap().tabla.drain();
+      
+      unsafe {
+        RETURN_EXISTENTE = false;
+      }
       Ok((next_input, res))
     },
     Err(err) => Err(err)
   }
 }
 
+/// Función auxiliar para tener una lista de declaraciones.
+/// Regresa un IResult, un Result nativo modificado de la libreria de Nom que incluye el input restante.
+///
+/// # Parametros
+///
+/// * `input`- Input a parsear
+///
+/// # Ejemplo
+///
+/// ```
+/// match lista_declaraciones("entero nombre; void funcion hola() {} clase Persona {}") {
+///   Ok((next_input, res)) => res, // parseo éxitoso
+///   Err(err) => err, // error en parseo
+/// };
+/// ```
 fn lista_declaraciones(input: &str) -> IResult<&str, &str> {
   tuple((diferentes_declaraciones, many0(tuple((ws, diferentes_declaraciones)))))(input)
   .map(|(next_input, _)| {
@@ -34,6 +73,27 @@ fn lista_declaraciones(input: &str) -> IResult<&str, &str> {
   })
 }
 
+/// No terminal de las diferentes declaraciones (clases, funciones y variables) que existen.  
+/// Regresa un IResult, un Result nativo modificado de la libreria de Nom que incluye el input restante.
+///
+/// # Parametros
+///
+/// * `input`- Input a parsear
+///
+/// # Gramática
+///
+/// ```
+/// CLASE | FUNCION | VARIABLES 
+/// ```
+///
+/// # Ejemplo
+///
+/// ```
+/// match declaraciones("entero nombre;") {
+///   Ok((next_input, res)) => res, // parseo éxitoso
+///   Err(err) => err, // error en parseo
+/// };
+/// ```
 pub fn declaraciones(input: &str) -> IResult<&str, &str> {
   opt(lista_declaraciones)(input)
   .map(|(next_input, _)| {

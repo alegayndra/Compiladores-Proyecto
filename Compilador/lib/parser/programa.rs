@@ -1,6 +1,8 @@
+//! Módulo que se encarga de las dimensiones.
+
 use nom::{
   IResult,
-  sequence::tuple,
+  sequence::{tuple, preceded},
   bytes::complete::tag
 };
 
@@ -10,21 +12,36 @@ use crate::parser::declaraciones::declaraciones::*;
 use crate::parser::bloque::*;
 use crate::semantica::globales::*;
 
+/// Inicio del parser del programa.  
+/// Regresa un IResult, un Result nativo modificado de la librería de Nom que incluye el input restante.
+///
+/// # Parametros
+///
+/// * `input`- Input a parsear
+///
+/// # Gramática
+///
+/// ```
+/// programa id DECLARACIONES principal() BLOQUE
+/// ```
+///
+/// # Ejemplo
+///
+/// ```
+/// match programa("programa idPrograma principal(){}") {
+///   Ok((next_input, res)) => res, // parseo éxitoso
+///   Err(err) => err, // error en parseo
+/// };
+/// ```
 pub fn programa(input: &str) -> IResult<&str, &str> {
-  let mut next: &str;
-  
-  next = match tuple((ws, tag("programa"), necessary_ws))(input) {
-    Ok((next_input, _)) => next_input,
-    Err(err) => return Err(err)
-  };
-
+  let mut next: &str = input;
   let id_programa: &str;
-
-  // Conseguir id del programa
-  match id(next) {
+  
+  // Marca el inicio del programa y consigue el id del programa
+  next = match preceded(tuple((ws, tag("programa"), necessary_ws)), id)(next) {
     Ok((next_input, id)) => {
-      next = next_input;
       id_programa = id;
+      next_input
     },
     Err(err) => return Err(err)
   };
@@ -58,6 +75,7 @@ pub fn programa(input: &str) -> IResult<&str, &str> {
     *ID_PROGRAMA.lock().unwrap() = id_programa.to_owned();
   }
 
+  // Lee las declaraciones de clases, funciones y variables globales
   next = match tuple((ws, tag(";"), ws, declaraciones, ws, tag("principal()"), ws))(next) {
     Ok((next_input, _)) => next_input,
     Err(err) => return Err(err)
@@ -85,12 +103,8 @@ pub fn programa(input: &str) -> IResult<&str, &str> {
     }
   }
 
-  next = match bloque(next) {
-    Ok((next_input, _)) => next_input,
-    Err(err) => return Err(err),
-  };
-
-  match ws(next) {
+  // Lee el bloque de la función principal
+  match tuple((bloque, ws))(next) {
     Ok((_, _)) => Ok(("", "programa")),
     Err(err) => Err(err),
   }

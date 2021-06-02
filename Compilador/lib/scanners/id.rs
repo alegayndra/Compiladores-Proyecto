@@ -5,16 +5,41 @@ use nom::{
 };
 
 use crate::parser::dimensiones::*;
-use crate::parser::dimensiones_decl::*;
 
+/// Scanner para leer ids;  
+/// Regresa un IResult, un Result nativo modificado de la libreria de Nom que incluye el input restante.
+///
+/// # Parametros
+///
+/// * `input`- Input a parsear
+///
+/// # Ejemplo
+///
+/// ```
+/// match id("id_variable") {
+///   Ok((next_input, res)) => res, // parseo éxitoso
+///   Err(err) => err, // error en parseo
+/// };
+/// ```
 pub fn id(input: &str) -> IResult<&str, &str> {
-  take_while1(|c: char| c.is_alphanumeric() || c == '_' || c == '-')(input)
+  take_while1(|c: char| c.is_alphanumeric() || c == '_')(input)
 }
 
-pub fn id_sin_dim(input: &str) -> IResult<&str, (&str, Vec<&str>)> {
-  tuple((id, ws_vec))(input)
-}
-
+/// Función auxiliar para leer declaraciones de ids con dimensiones;  
+/// Regresa un IResult, un Result nativo modificado de la libreria de Nom que incluye el input restante.
+///
+/// # Parametros
+///
+/// * `input`- Input a parsear
+///
+/// # Ejemplo
+///
+/// ```
+/// match id_con_dim_decl("id[10][10]") {
+///   Ok((next_input, res)) => res, // parseo éxitoso
+///   Err(err) => err, // error en parseo
+/// };
+/// ```
 pub fn id_con_dim_decl(input: &str) -> IResult<&str, (&str, Vec<&str>)> {
   tuple((id, con_dim_decl))(input)
 }
@@ -32,13 +57,6 @@ mod tests {
     assert_eq!(id("1aa_123"),   Ok(("", "1aa_123")));
     assert_eq!(id("1aa_123  "), Ok(("  ", "1aa_123")));
     assert_eq!(id("1aa_ 123"),  Ok((" 123", "1aa_")));
-  }
-
-  #[test]
-  fn test_id_sin_dim() {
-    assert_eq!(id_sin_dim("id"),     Ok(("", ("id", vec![]))));
-    assert_eq!(id_sin_dim("aaa123"), Ok(("", ("aaa123", vec![]))));
-    assert_eq!(id_sin_dim("1aa123"), Ok(("", ("1aa123", vec![]))));
   }
 
   #[test]
