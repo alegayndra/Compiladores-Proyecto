@@ -215,7 +215,6 @@ fn conseguir_contexto(contexto_num: usize) -> String {
 /// };
 /// ```
 pub fn conseguir_direccion(tipo_var: &str, contexto: &str, temporal: usize, dims: Vec<i64>) -> Result<i64, String> {
-  println!("conseguir_direccion {}", tipo_var);
   let contexto_num: usize;
   let tipo_num: usize;
   // Busca si el contexto es constante, local o global
