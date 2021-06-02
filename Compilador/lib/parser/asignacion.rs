@@ -156,6 +156,21 @@ mod tests {
   use super::*;
 
   #[test]
+  fn test_asignacion_interna() {
+    let asig = "asig";
+    let asig2 = "asig2";
+    let asig3 = "asig3";
+    let mut tabla_variables = VARIABLES.lock().unwrap();
+    tabla_variables.agregar_variable(asig.to_owned(), "entero".to_owned(), vec![], 600);
+    tabla_variables.agregar_variable(asig2.to_owned(), "entero".to_owned(), vec![5], 200);
+    tabla_variables.agregar_variable(asig3.to_owned(), "entero".to_owned(), vec![5, 10], 400);
+    drop(tabla_variables);
+    assert_eq!(asignacion_interna("asig = 10"), Ok(("", "asignacion_interna")));
+    assert_eq!(asignacion_interna("asig2[10] = 10"), Ok(("", "asignacion_interna")));
+    assert_eq!(asignacion_interna("asig3[10][0] = 10"), Ok(("", "asignacion_interna")));
+  }
+
+  #[test]
   fn test_asignacion() {
     assert_eq!(asignacion("id = 10;"), Ok(("", "asignacion")));
   }

@@ -56,7 +56,6 @@ fn parametro(input: &str) -> IResult<&str, (&str, &str)> {
 /// ```
 fn agregar_param(tipo_param: &str, id_param: &str) {
   // Consigue dirección de memoria para el parametro 
-  println!("agregar_param - conseguir_direccion, id_param: {}, tipo_param: {} ", id_param, tipo_param);
   let dir = match conseguir_direccion(tipo_param, "variable", 0, vec![]) {
     Ok(num) => num,
     Err(err) => { println!("{:?}", err); return; }
