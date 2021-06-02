@@ -1,4 +1,4 @@
-from os import DirEntry, read
+from os import DirEntry, read, getcwd
 from pathlib import Path
 import io
 import sys
@@ -72,7 +72,6 @@ def guardarFunciones(direcciones_funcs):
     direcciones_funcs = direcciones_funcs[direcciones_funcs.find("FIN_PARAMS", readStr) + 11:direcciones_funcs.find("FIN_FUNCIONES", readStr)]
     readStr = 0
     i += 1
-  print(funciones[0])
   
 def guardarMapaGlobs(direcciones_globs):
   readStr = 0
@@ -139,15 +138,17 @@ def guardarMapaCons(direcciones_const):
 
 def leer_obj():
   # Lectura y normalizacion de archivo
-  prueba_cuadruplos = Path("C:/Users/delca/Documents/Tareas TEC/Compiladores/Compiladores-Proyecto/Compilador/cuadruplos")
-  abrir = prueba_cuadruplos / "Killer_queen.txt"
+  cwd = getcwd()
+  prueba_cuadruplos = Path(cwd + "/Compilador/cuadruplos")
+  archivo = input("Nombre programa ")
+  abrir = prueba_cuadruplos / (archivo + ".txt")
   file_opened = open(abrir, 'r')
   stringTxt = file_opened.read()
 
-  #Registro de valores para constantes en mapa de memoria
+  # Registro de valores para constantes en mapa de memoria
   guardarMapaCons(stringTxt[stringTxt.find("CONSTANTES") + 11:stringTxt.find("FIN_CONSTANTES")])
 
-  #Registro de valores para globales en mapa de memoria
+  # Registro de valores para globales en mapa de memoria
   guardarMapaGlobs(stringTxt[stringTxt.find("GLOBALES") + 9:stringTxt.find("FIN_GLOBALES")])
 
   guardarFunciones(stringTxt[stringTxt.find("FUNCIONES") + 10:stringTxt.find("FIN_FUNCIONES")])

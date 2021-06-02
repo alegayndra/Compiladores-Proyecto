@@ -2,7 +2,7 @@ name: Rust
 
 on:
   push:
-    branches: [ main, dev ]
+    branches: [ main, develop ]
   pull_request:
     branches: [ main ]
 
@@ -17,6 +17,8 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Build
+      working-directory: ./Compilador
       run: cargo build --verbose
     - name: Run tests
+      working-directory: ./Compilador
       run: cargo test -- --test-threads=1

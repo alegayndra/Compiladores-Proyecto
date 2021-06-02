@@ -19,6 +19,20 @@ dir_memoria = [
   ],
 ]
 
+limitesVarsLocales = [
+  # Normales Temporales
+  [ 4665,     5500 ], # Enteros
+  [ 7164,     8000 ], # Flotantes
+  [ 8666,     9000 ], # Caracteres
+]
+
+cantVarsLocales = [
+  # Normales Temporales
+  [ 0,     0 ], # Enteros
+  [ 0,     0 ], # Flotantes
+  [ 0,     0 ], # Caracteres
+]
+
 auxLocales = [
   # Normales Temporales
   [ [],      [] ], # Enteros
@@ -43,7 +57,7 @@ mapa_memoria = [
 ]
 
 funciones = []
-memoriaFuncionEnProgreso = [0]
+memoriaFuncionEnProgreso = []
 
 pila_cuadruplos = []
 lista_cuadruplos = []
