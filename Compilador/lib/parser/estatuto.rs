@@ -18,7 +18,7 @@ use crate::parser::regresa::*;
 ///
 /// # Parametros
 ///
-/// * `input`- Input a parsear
+/// * `input` - Input a parsear
 ///
 /// # Gramática
 ///

@@ -15,7 +15,7 @@ use crate::semantica::globales::*;
 ///
 /// # Parametros
 ///
-/// * `input`- Input a parsear
+/// * `input` - Input a parsear
 ///
 /// # Gramática
 ///

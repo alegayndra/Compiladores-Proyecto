@@ -1,3 +1,5 @@
+//! Módulo que se encarga del _scannear_ los diferentes tipos.
+
 use nom::{
   branch::alt,
   bytes::complete::tag,
@@ -11,7 +13,7 @@ use crate::scanners::id::*;
 ///
 /// # Parametros
 ///
-/// * `input`- Input a parsear
+/// * `input` - Input a parsear
 ///
 /// # Ejemplo
 ///
@@ -30,7 +32,7 @@ pub fn tipo(input: &str) -> IResult<&str, &str> {
 ///
 /// # Parametros
 ///
-/// * `input`- Input a parsear
+/// * `input` - Input a parsear
 ///
 /// # Ejemplo
 ///
@@ -49,7 +51,7 @@ pub fn tipo_compuesto(input: &str) -> IResult<&str, &str> {
 ///
 /// # Parametros
 ///
-/// * `input`- Input a parsear
+/// * `input` - Input a parsear
 ///
 /// # Ejemplo
 ///

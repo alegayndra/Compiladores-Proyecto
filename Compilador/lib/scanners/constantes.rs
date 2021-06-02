@@ -1,3 +1,5 @@
+//! Módulo que se encarga del _scannear_ las diferentes constantes.
+
 use nom::{
   IResult,
   combinator::{recognize, opt},
@@ -5,7 +7,7 @@ use nom::{
   character::complete::{one_of, char},
   sequence::{terminated, tuple, delimited},
   branch::alt,
-  bytes::complete::{tag, take_while_m_n}
+  bytes::complete::{tag, take_while_m_n, take_while}
 };
 
 /// Scanner para leer números enteros constantes.  
@@ -13,7 +15,7 @@ use nom::{
 ///
 /// # Parametros
 ///
-/// * `input`- Input a parsear
+/// * `input` - Input a parsear
 ///
 /// # Ejemplo
 ///
@@ -35,7 +37,7 @@ pub fn num_entero(input: &str) -> IResult<&str, (&str, &str)> {
 ///
 /// # Parametros
 ///
-/// * `input`- Input a parsear
+/// * `input` - Input a parsear
 ///
 /// # Ejemplo
 ///
@@ -57,7 +59,7 @@ pub fn caracter(input: &str) -> IResult<&str, (&str, &str)> {
 ///
 /// # Parametros
 ///
-/// * `input`- Input a parsear
+/// * `input` - Input a parsear
 ///
 /// # Ejemplo
 ///
@@ -90,6 +92,28 @@ pub fn num_flotante(input: &str) -> IResult<&str, (&str, &str)> {
   })
 }
 
+/// Scanner para leer textos constantes.  
+/// Regresa un IResult, un Result nativo modificado de la libreria de Nom que incluye el input restante.
+///
+/// # Parametros
+///
+/// * `input` - Input a parsear
+///
+/// # Ejemplo
+///
+/// ```
+/// match texto("\"texto\"") {
+///   Ok((next_input, res)) => res, // parseo éxitoso
+///   Err(err) => err, // error en parseo
+/// };
+/// ```
+pub fn texto(input: &str) -> IResult<&str, &str> {
+  match delimited(tag("\""), take_while(|c: char| c.is_alphanumeric()), tag("\""))(input) {
+    Ok(res) => Ok(res),
+    Err(err) => Err(err)
+  }
+}
+
 #[cfg(test)]
 mod tests {
   use super::*;
@@ -114,5 +138,10 @@ mod tests {
     assert_eq!(num_flotante("112.3131"),  Ok(("", ("112.3131", "flotante"))));
     assert_eq!(num_flotante("0.3131"),    Ok(("", ("0.3131", "flotante"))));
     assert_eq!(num_flotante(".3131"),     Ok(("", (".3131", "flotante"))));
+  }
+
+  #[test]
+  fn test_texto() {
+    assert_eq!(texto("\"a\""),      Ok(("", "a")));
   }
 }

@@ -1,3 +1,5 @@
+//! Módulo que se encarga del cubo semántico.
+
 /*
   Tipos de datos:
   - Entero : 0
@@ -27,6 +29,7 @@
     - = : 12
 */
 
+/// Lista con los valores de retorno entre los diferentes tipos dependiendo de la operación que se les aplique
 static CUBO_SEMANTICO: [[[i64; 13]; 6]; 6] = [
   [ // Entero
     // +  -  *  /  >  <  >=  <=  ==  !=  &  |  =
@@ -84,10 +87,36 @@ static CUBO_SEMANTICO: [[[i64; 13]; 6]; 6] = [
   ],
 ];
 
+/// Función auxiliar para checa el cubo semántico.  
+/// Regresa un número que representa el tipo de dato de retorno.
+///
+/// # Parametros
+///
+/// * `op` - Número del operador
+/// * `izq` - Número del operando izquierda
+/// * `der` - Número del operando derecho
+///
+/// # Ejemplo
+///
+/// ```
+/// let tipo_resultado = checar_cubo_semantico(0, 0, 0); // Suma entre enteros
+/// ```
 pub fn checar_cubo_semantico(op: usize, izq: usize, der: usize) -> i64{
   CUBO_SEMANTICO[izq][der][op]
 }
 
+/// Función auxiliar para conseguir el número del operador.  
+/// Regresa un número que representa el operador.
+///
+/// # Parametros
+///
+/// * `operador` - String del operador
+///
+/// # Ejemplo
+///
+/// ```
+/// let op_num = conseguir_num_operador("+");
+/// ```
 pub fn conseguir_num_operador(operador: &str) -> i64 {
   match operador {
     "+"       => 0,
@@ -120,6 +149,18 @@ pub fn conseguir_num_operador(operador: &str) -> i64 {
   }
 }
 
+/// Función auxiliar para conseguir el número de un tipo.  
+/// Regresa un número que representa el tipo de dato.
+///
+/// # Parametros
+///
+/// * `tipo` - String del tipo
+///
+/// # Ejemplo
+///
+/// ```
+/// let tipo_num = conseguir_num_tipo("entero");
+/// ```
 pub fn conseguir_num_tipo(tipo: &str) -> i64 {
   match tipo {
     "entero"    => 0,
@@ -131,6 +172,18 @@ pub fn conseguir_num_tipo(tipo: &str) -> i64 {
   }
 }
 
+/// Función auxiliar para conseguir el tipo de acuerdo a un número.  
+/// Regresa un el tipo.
+///
+/// # Parametros
+///
+/// * `tipo` - Número del tipo
+///
+/// # Ejemplo
+///
+/// ```
+/// let tipo_str = conseguir_tipo_num(1); // Regresa "flotante"
+/// ```
 pub fn conseguir_tipo_num(tipo: i64) -> String {
   match tipo {
     0 => "entero",

@@ -1,3 +1,5 @@
+//! Módulo que se encarga del _scannear_los diferentes operadores.
+
 use nom::{
   branch::alt,
   bytes::complete::tag,
@@ -9,7 +11,7 @@ use nom::{
 ///
 /// # Parametros
 ///
-/// * `input`- Input a parsear
+/// * `input` - Input a parsear
 ///
 /// # Ejemplo
 ///
@@ -28,7 +30,7 @@ pub fn op_sumsub(input: &str) -> IResult<&str, &str> {
 ///
 /// # Parametros
 ///
-/// * `input`- Input a parsear
+/// * `input` - Input a parsear
 ///
 /// # Ejemplo
 ///
@@ -47,7 +49,7 @@ pub fn op_multdiv(input: &str) -> IResult<&str, &str> {
 ///
 /// # Parametros
 ///
-/// * `input`- Input a parsear
+/// * `input` - Input a parsear
 ///
 /// # Ejemplo
 ///
@@ -66,7 +68,7 @@ pub fn op_relacional(input: &str) -> IResult<&str, &str> {
 ///
 /// # Parametros
 ///
-/// * `input`- Input a parsear
+/// * `input` - Input a parsear
 ///
 /// # Ejemplo
 ///

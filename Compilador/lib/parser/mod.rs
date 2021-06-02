@@ -1,4 +1,4 @@
-//! Módulo que se encarga del _parseo_ del lenguaje
+//! Módulo que se encarga del analisis sintatico del lenguaje.
 
 // Folders
 pub mod reglas_expresion;

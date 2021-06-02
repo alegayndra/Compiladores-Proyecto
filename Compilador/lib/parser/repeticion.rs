@@ -127,7 +127,7 @@ fn generar_gotos_final() {
 ///
 /// # Parametros
 ///
-/// * `input`- Input a parsear
+/// * `input` - Input a parsear
 ///
 /// # Gramática
 ///
@@ -178,7 +178,7 @@ pub fn mientras(input: &str) -> IResult<&str, &str> {
 ///
 /// # Parametros
 ///
-/// * `input`- Input a parsear
+/// * `input` - Input a parsear
 ///
 /// # Ejemplo
 ///
@@ -239,7 +239,7 @@ pub fn desde(input: &str) -> IResult<&str, &str> {
 ///
 /// # Parametros
 ///
-/// * `input`- Input a parsear
+/// * `input` - Input a parsear
 ///
 /// # Ejemplo
 ///

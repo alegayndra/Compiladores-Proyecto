@@ -51,7 +51,7 @@ fn generar_goto_sino() {
 ///
 /// # Parametros
 ///
-/// * `input`- Input a parsear
+/// * `input` - Input a parsear
 ///
 /// # Gramática
 ///
@@ -144,7 +144,7 @@ fn actualizar_gotof() {
 ///
 /// # Parametros
 ///
-/// * `input`- Input a parsear
+/// * `input` - Input a parsear
 ///
 /// # Gramática
 ///

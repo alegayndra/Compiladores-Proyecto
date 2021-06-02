@@ -17,7 +17,7 @@ use crate::semantica::globales::*;
 /// 
 /// # Parametros
 ///
-/// * `id_func`- Función a la cual se le quiere crear su era
+/// * `id_func` - Función a la cual se le quiere crear su era
 ///
 /// # Ejemplo
 ///
@@ -67,7 +67,7 @@ pub fn generar_cuadruplo_era(id_func: &str) -> Vec<TipoVar> {
 ///
 /// # Parametros
 ///
-/// * `id_func`- Función a la cual se quiere ir
+/// * `id_func` - Función a la cual se quiere ir
 ///
 /// # Ejemplo
 ///
@@ -113,7 +113,7 @@ pub fn generar_cuadruplo_gosub(id_func: &str) {
 ///
 /// # Parametros
 ///
-/// * `param`- Parametro al cual se le quiere asignar un valor
+/// * `param` - Parametro al cual se le quiere asignar un valor
 ///
 /// # Ejemplo
 ///
@@ -150,7 +150,7 @@ pub fn generar_cuadruplo_param(param: TipoVar) {
 ///
 /// # Parametros
 ///
-/// * `input`- Input a parsear
+/// * `input` - Input a parsear
 ///
 /// # Gramática
 ///
@@ -194,6 +194,9 @@ pub fn llama_func(input: &str) -> IResult<&str, &str> {
     Err(err) => return Err(err)
   };
 
+  // Agrega fondo falso a la pila de operadores
+  { PILA_OPERADORS.lock().unwrap().push("(".to_owned()); }
+
   // Genera cuadruplo de era
   let params = generar_cuadruplo_era(id_func);
   let mut pos: usize = 0;
@@ -218,9 +221,10 @@ pub fn llama_func(input: &str) -> IResult<&str, &str> {
     }
   };
 
+  // Checa si debe seguir leyendo argumentos
   if continuar {
+    // Itera sobre los parametros
     loop {
-
       // Checa que haya una coma, indicando que hay otro argumento
       next = match tuple((ws, tag(",")))(next) {
         Ok((next_input, _)) => next_input,
@@ -246,6 +250,8 @@ pub fn llama_func(input: &str) -> IResult<&str, &str> {
   // Lee fin de llamada a función
   match tuple((ws, tag(")"), ws, tag(";")))(next) {
     Ok((next_input, _)) => {
+      // Elimina fondo falso y genera cuadruplo de gosub 
+      { PILA_OPERADORS.lock().unwrap().pop(); }
       generar_cuadruplo_gosub(id_func);
       Ok((next_input, "llama_func"))
     },

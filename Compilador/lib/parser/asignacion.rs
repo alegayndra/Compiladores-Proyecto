@@ -18,7 +18,7 @@ use crate::semantica::tabla_variables::*;
 ///
 /// # Parametros
 ///
-/// * `variable`- Variable a la cual se le quiere asignar el valor
+/// * `variable` - Variable a la cual se le quiere asignar el valor
 ///
 /// # Ejemplo
 ///
@@ -70,7 +70,7 @@ fn generar_cuadruplo_asignacion(variable: TipoVar) {
 ///
 /// # Parametros
 ///
-/// * `input`- Input a parsear
+/// * `input` - Input a parsear
 ///
 /// # Ejemplo
 ///
@@ -129,7 +129,7 @@ pub fn asignacion_interna(input: &str) -> IResult<&str, &str> {
 ///
 /// # Parametros
 ///
-/// * `input`- Input a parsear
+/// * `input` - Input a parsear
 ///
 /// # Gramática
 ///

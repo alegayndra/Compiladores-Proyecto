@@ -18,7 +18,7 @@ use crate::semantica::globales::*;
 ///
 /// # Parametros
 ///
-/// * `input`- Input a parsear
+/// * `input` - Input a parsear
 ///
 /// # Gramática
 ///
@@ -46,8 +46,8 @@ fn parametro(input: &str) -> IResult<&str, (&str, &str)> {
 ///
 /// # Parametros
 ///
-/// * `tipo_param`- Tipo del parámetro
-/// * `id_param`- ID del parámetro
+/// * `tipo_param` - Tipo del parámetro
+/// * `id_param` - ID del parámetro
 ///
 /// # Ejemplo
 ///
@@ -97,8 +97,8 @@ fn agregar_param(tipo_param: &str, id_param: &str) {
 ///
 /// # Parametros
 ///
-/// * `id_f`- ID de la función
-/// * `tipo_func`- Tipo de la función
+/// * `id_f` - ID de la función
+/// * `tipo_func` - Tipo de la función
 ///
 /// # Ejemplo
 ///
@@ -168,7 +168,7 @@ fn agregar_funcion(id_f: &str, tipo_func: &str) {
 ///
 /// # Parametros
 ///
-/// * `input`- Input a parsear
+/// * `input` - Input a parsear
 ///
 /// # Ejemplo
 ///
@@ -219,7 +219,7 @@ fn parametros_varios(input: &str) -> IResult<&str, &str> {
 ///
 /// # Parametros
 ///
-/// * `input`- Input a parsear
+/// * `input` - Input a parsear
 ///
 /// # Gramática
 ///

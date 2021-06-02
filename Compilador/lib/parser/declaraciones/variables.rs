@@ -17,7 +17,7 @@ use crate::semantica::globales::*;
 ///
 /// # Parametros
 ///
-/// * `input`- Input a parsear
+/// * `input` - Input a parsear
 ///
 /// # Ejemplo
 ///
@@ -82,9 +82,9 @@ fn variable_compuesta(input: &str) -> IResult<&str, &str> {
 ///
 /// # Parametros
 ///
-/// * `var`- ID de la variable
-/// * `tipo_var`- Tipo de la variable
-/// * `dims`- Dimensiones de la variable
+/// * `var` - ID de la variable
+/// * `tipo_var` - Tipo de la variable
+/// * `dims` - Dimensiones de la variable
 ///
 /// # Ejemplo
 ///
@@ -146,7 +146,7 @@ fn agregar_variable_a_tabla(var: &str, tipo_var: &str, dims: Vec<&str>) {
 ///
 /// # Parametros
 ///
-/// * `input`- Input a parsear
+/// * `input` - Input a parsear
 ///
 /// # Gramática
 ///
@@ -212,7 +212,7 @@ fn variable_normal(input: &str) -> IResult<&str, &str> {
 ///
 /// # Parametros
 ///
-/// * `input`- Input a parsear
+/// * `input` - Input a parsear
 ///
 /// # Ejemplo
 ///

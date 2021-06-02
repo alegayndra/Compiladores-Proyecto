@@ -43,7 +43,7 @@ fn checar_lista_operadores() {
 ///
 /// # Parametros
 ///
-/// * `input`- Input a parsear
+/// * `input` - Input a parsear
 ///
 /// # Gramática
 ///

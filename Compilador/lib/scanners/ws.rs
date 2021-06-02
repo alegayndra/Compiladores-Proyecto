@@ -1,3 +1,5 @@
+//! Módulo que se encarga del _scannear_ los espacios vacíos.
+
 use nom::{
   bytes::complete::{take_while1, take_while},
   IResult,
@@ -8,7 +10,7 @@ use nom::{
 ///
 /// # Parametros
 ///
-/// * `input`- Input a parsear
+/// * `input` - Input a parsear
 ///
 /// # Ejemplo
 ///
@@ -27,7 +29,7 @@ pub fn ws(input: &str) -> IResult<&str, &str> {
 ///
 /// # Parametros
 ///
-/// * `input`- Input a parsear
+/// * `input` - Input a parsear
 ///
 /// # Ejemplo
 ///

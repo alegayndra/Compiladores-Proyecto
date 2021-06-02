@@ -18,7 +18,7 @@ use crate::semantica::tabla_variables::*;
 ///
 /// # Parametros
 ///
-/// * `id_valor`- ID de variable que se quiere buscar
+/// * `id_valor` - ID de variable que se quiere buscar
 ///
 /// # Ejemplo
 ///
@@ -81,11 +81,11 @@ pub fn buscar_variable(id_valor: &str) -> TipoVar {
   }
 }
 
-/// Función auxiliar checar corchete al principio de una dimensión, esto para evitar una ambigüedad de tipos.  
+/// Función auxiliar checar un corchete izquierdo al principio de una dimensión, esto para evitar una ambigüedad de tipos al llamar el _scanner_ de _nom_.  
 ///
 /// # Parametros
 ///
-/// * `input`- Input a parsear
+/// * `input` - Input a parsear
 ///
 /// # Ejemplo
 ///
@@ -104,7 +104,7 @@ pub fn corchete(input: &str) -> IResult<&str, &str> {
 ///
 /// # Parametros
 ///
-/// * `input`- Input a parsear
+/// * `input` - Input a parsear
 ///
 /// # Ejemplo
 ///
@@ -123,8 +123,8 @@ pub fn ws_vec(input: &str) -> IResult<&str, Vec<&str>> {
 ///
 /// # Parametros
 ///
-/// * `variable`- Variable no atómica
-/// * `dim`- Dimensión de la variable
+/// * `variable` - Variable no atómica
+/// * `dim` - Dimensión de la variable
 ///
 /// # Ejemplo
 ///
@@ -159,8 +159,8 @@ fn popear_dimension() {
 ///
 /// # Parametros
 ///
-/// * `variable`- Variable no atómica
-/// * `dim`- Dimensión de la variable - 1
+/// * `variable` - Variable no atómica
+/// * `dim` - Dimensión de la variable - 1
 ///
 /// # Ejemplo
 ///
@@ -190,8 +190,8 @@ fn generar_cuadruplo_verificar(variable: TipoVar, dim: usize) -> TipoVar {
 ///
 /// # Parametros
 ///
-/// * `variable`- Variable no atómica base
-/// * `valor`- Valor con el que se quiere indexar la variable no atómica
+/// * `variable` - Variable no atómica base
+/// * `valor` - Valor con el que se quiere indexar la variable no atómica
 ///
 /// # Ejemplo
 ///
@@ -239,8 +239,8 @@ fn generar_cuadruplo_acceder(variable: TipoVar, valor: TipoVar) {
 ///
 /// # Parametros
 ///
-/// * `variable`- Variable no atómica base
-/// * `valor`- Valor con el que se quiere indexar la variable no atómica
+/// * `variable` - Variable no atómica base
+/// * `valor` - Valor con el que se quiere indexar la variable no atómica
 ///
 /// # Ejemplo
 ///
@@ -277,7 +277,7 @@ fn generar_cuadruplo_offset(variable: TipoVar, valor: TipoVar) {
 ///
 /// # Parametros
 ///
-/// * `input`- Input a parsear
+/// * `input` - Input a parsear
 ///
 /// # Gramática
 ///
@@ -411,7 +411,7 @@ pub fn con_dim(id_valor: &str) -> impl FnMut(&str)  -> IResult<&str, &str> + '_ 
 ///
 /// # Parametros
 ///
-/// * `input`- Input a parsear
+/// * `input` - Input a parsear
 ///
 /// # Ejemplo
 ///
@@ -433,7 +433,7 @@ pub fn dimension_decl(input: &str) -> IResult<&str, Vec<&str>> {
 ///
 /// # Parametros
 ///
-/// * `input`- Input a parsear
+/// * `input` - Input a parsear
 ///
 /// # Ejemplo
 ///
@@ -455,7 +455,7 @@ fn dos_dimensiones_decl(input: &str) -> IResult<&str, Vec<&str>> {
 ///
 /// # Parametros
 ///
-/// * `input`- Input a parsear
+/// * `input` - Input a parsear
 ///
 /// # Gramática
 ///

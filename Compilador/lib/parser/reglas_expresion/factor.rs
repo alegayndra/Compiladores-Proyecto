@@ -42,7 +42,7 @@ fn checar_pila_operadores() {
 ///
 /// # Parametros
 ///
-/// * `input`- Input a parsear
+/// * `input` - Input a parsear
 ///
 /// # Ejemplo
 ///
@@ -89,7 +89,7 @@ fn op_vacio(input: &str) -> IResult<&str, &str> {
 ///
 /// # Parametros
 ///
-/// * `op_valor`- Operador
+/// * `op_valor` - Operador
 ///
 /// # Ejemplo
 ///
@@ -129,7 +129,7 @@ fn checar_lista_operadores(op_valor: &str) {
 ///
 /// # Parametros
 ///
-/// * `input`- Input a parsear
+/// * `input` - Input a parsear
 ///
 /// # Ejemplo
 ///
@@ -167,7 +167,7 @@ fn valor_factor(input: &str) -> IResult<&str, &str> {
 ///
 /// # Parametros
 ///
-/// * `input`- Input a parsear
+/// * `input` - Input a parsear
 ///
 /// # Gramática
 ///

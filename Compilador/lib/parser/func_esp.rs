@@ -8,7 +8,7 @@ use nom::{
 };
 
 use crate::scanners::ws::*;
-use crate::scanners::texto::*;
+use crate::scanners::constantes::*;
 use crate::parser::reglas_expresion::exp::*;
 use crate::parser::reglas_expresion::valor::*;
 use crate::semantica::globales::*;
@@ -61,7 +61,7 @@ fn generar_cuadruplo_escritura() {
 ///
 /// # Parametros
 ///
-/// * `input`- Input a parsear
+/// * `input` - Input a parsear
 ///
 /// # Gramática
 ///
@@ -123,7 +123,7 @@ pub fn leer(input: &str) -> IResult<&str, &str> {
 ///
 /// # Parametros
 ///
-/// * `valor`- Texto que se quiere agregar a la tabla de constantes
+/// * `valor` - Texto que se quiere agregar a la tabla de constantes
 ///
 /// # Ejemplo
 ///
@@ -142,7 +142,7 @@ fn agregar_texto_a_tabla(valor: &str) {
 ///
 /// # Parametros
 ///
-/// * `input`- Input a parsear
+/// * `input` - Input a parsear
 ///
 /// # Gramática
 ///
@@ -224,7 +224,7 @@ pub fn escribir(input: &str) -> IResult<&str, &str> {
 ///
 /// # Parametros
 ///
-/// * `input`- Input a parsear
+/// * `input` - Input a parsear
 ///
 /// # Gramática
 ///

@@ -1,3 +1,5 @@
+//! Módulo que se encarga del _scannear_ los ids.
+
 use nom::{
   bytes::complete::take_while1,
   IResult,
@@ -11,7 +13,7 @@ use crate::parser::dimensiones::*;
 ///
 /// # Parametros
 ///
-/// * `input`- Input a parsear
+/// * `input` - Input a parsear
 ///
 /// # Ejemplo
 ///
@@ -30,7 +32,7 @@ pub fn id(input: &str) -> IResult<&str, &str> {
 ///
 /// # Parametros
 ///
-/// * `input`- Input a parsear
+/// * `input` - Input a parsear
 ///
 /// # Ejemplo
 ///
