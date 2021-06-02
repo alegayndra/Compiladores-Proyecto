@@ -439,7 +439,7 @@ impl ListaCuadruplos {
 
     // Crea cuadruplo
     self.lista.push((op_num, dir, -1, -1));
-    Ok(("GOTOF desde bueno", dir))
+    Ok(("GOTOF desde bueno", dir_guadalupano))
   }
 
   /// Función para generar un cuadruplo de acceso a un apuntador dentro de un `desde`.  
