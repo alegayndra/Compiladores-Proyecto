@@ -8,25 +8,25 @@ description = "Lenguaje de programación Killer Queen"
 repository = "https://github.com/alegayndra/KillerQueen"
 
 include = [
-  "../README.md",
-  "../.gitignore",
-  "../LICENSE",
+  "README.md",
+  "gitignore",
+  "LICENSE",
   "Cargo.toml",
-  "src/*.rs",
-  "src/*/*.rs",
-  "lib/*.rs",
-  "lib/*/*.rs"
+  "Compilador/src/*.rs",
+  "Compilador/src/*/*.rs",
+  "Compilador/lib/*.rs",
+  "Compilador/lib/*/*.rs"
 ]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [lib]
 name = "killer_queen"
-path = "lib/killer_queen.rs"
+path = "Compilador/lib/killer_queen.rs"
 
 [[bin]]
 name = "killer_queen_exe"
-path = "src/main.rs"
+path = "Compilador/src/main.rs"
 
 [dependencies]
 nom = "6.1.2"

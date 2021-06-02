@@ -17,18 +17,14 @@ use crate::semantica::globales::*;
 
 /// Escribe el archivo de salida.
 ///
-/// # Parametros
-///
-/// * `nombre_archivo` - Nombre del archivo
-///
 /// # Ejemplo
 ///
 /// ```
-/// escribir_archivo("archivo");
+/// escribir_archivo();
 /// ```
-fn escribir_archivo(nombre_archivo: &str) {
-  let arch = format!("cuadruplos/{}.txt", nombre_archivo);
-	let path = Path::new(&arch);
+fn escribir_archivo() {
+	let arch = "Compilador/cuadruplos/killer_queen.txt";
+	let path = Path::new(arch);
 
 	let display = path.display();
 
@@ -115,29 +111,6 @@ fn escribir_archivo(nombre_archivo: &str) {
 		texto_archivo = format!("{}FUNCIONES\n{}FIN_FUNCIONES\n", texto_archivo, texto_funciones);
 	}
 
-	// Escritura clases
-	{
-		// let mut texto_clases: String = "".to_owned();
-		// for (_key, val) in tabla_clases.tabla.iter() {
-		// 	let clase_string: String = format!("({}, {})", val.nombre, val.padre);
-		// 	texto_clases = format!("{}{}\n", texto_clases, clase_string);
-		// 	let mut texto_metodos: String = "".to_owned();
-		// 	for (_key_m, metodo) in val.metodos.tabla.iter() {
-		// 		let metodo_string: String = format!("({}, {}, {})", metodo.nombre, metodo.direccion, metodo.tipo);
-		// 		texto_metodos = format!("{}{}\n", texto_metodos, metodo_string);
-		// 		let mut lista_parametros: String = "".to_owned();
-		// 		for param in metodo.parametros.iter() {
-		// 			let param_string: String = format!("({}, {}, {})", param.nombre, param.direccion, param.tipo);
-		// 			lista_parametros = format!("{}{}\n", lista_parametros, param_string);
-		// 		}
-		// 		texto_metodos = format!("{}PARAMS\n{}FIN_PARAMS\n", texto_metodos, metodo_string);
-		// 	}
-		// 	texto_clases = format!("{}METODOS\n{}FIN_METODOS\n", texto_clases, texto_metodos);
-		// }
-	
-		// texto_archivo = format!("{}CLASES\n{}FIN_CLASES\n", texto_archivo, texto_clases);
-	}
-
 	// Escritura cuadruplos
 	{
 		let mut lista_cuadruplos: String = "".to_owned();
@@ -181,14 +154,7 @@ pub fn iniciar_compilador() {
   // Analiza el código fuente dado y genera el archivo de sálida en caso de que sea un éxito
   match programa(&contents) {
     Ok(_) => {
-			{
-				// println!("Funciones  {:?}", FUNCIONES.lock().unwrap());
-				// println!("Clases     {:?}", CLASES.lock().unwrap());
-				// println!("Variables {:?}", VARIABLES.lock().unwrap());
-				// println!("Constantes {:?}", CONSTANTES.lock().unwrap());
-				// println!("Cuadruplos {:?}", CUADRUPLOS.lock().unwrap());
-			}
-      escribir_archivo(nombre_archivo);
+      escribir_archivo();
     },
     Err(err) => {
       println!("{:?}", err);

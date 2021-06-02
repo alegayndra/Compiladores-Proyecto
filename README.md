@@ -1,5 +1,9 @@
 # Killer Queen
-Repo para el proyecto final de la clase de Diseño de Compiladores
+Repo para el proyecto final de la clase de Diseño de Compiladores.
+
+Compilador desarrollado en _rust_, con las librerías de _nom_ y _lazy static_.
+
+Máquina virtual desarrollada en _python_.
 
 ## Instrucciones
 
@@ -9,63 +13,14 @@ Para correr el programa, se necesita tener instalado el ambiente de desarrollo r
 
 También se tiene que crear un directorio llamado `cuadruplos` para que se pueda generar el archivo de salida.
 
-### Correr pruebas
-Para correr las pruebas unitarias se corre `cargo test -- --test-threads=1`.
+### Pruebas
 
-## Código de ejemplo
+#### Pruebas unitarias
+Para correr las pruebas unitarias dentro de Rust, se corre `cargo test -- --test-threads=1`.
 
-Copia y pega este código de ejemplo en un archivo de terminación `.eo` para poder correr el programa.
+#### Pruebas de compilador
+Para correr los diferentes archivos de prueba, se corre `cargo run Pruebas/archivo`, donde `archivo` es el nombre del archivo deseado a correr. Luego, para correr la maquina virtual, se corre `python3 Maquina_Virtual/main.py`.
 
-```
-programa idPrograma;
+### Generar documentación
 
-entero i;
-char letra;
-flotante promedio;
-
-principal() {
-  %% asignaciones %%
-  i = 20;
-  promedio = 10.1;
-  letra = "2";
-
-  %% imprimir valores a consola %%
-  escribe("i", i);
-  escribe("promedio", promedio);
-  escribe("letra", letra);
-
-  %% lectura de valores %%
-  escribe("i");
-  lee(i);
-
-  escribe("promedio");
-  lee(promedio);
-
-  escribe("letra");
-  lee(letra);
-
-  %% deciciones %%
-  si (i > 10) {
-    escribe("hola");
-  } sino {
-    escribe("adios");
-  }
-
-
-  %% ciclos %%
-  i = 20;
-  mientras (i > 10) {
-    escribe(i);
-    i = i - 1;
-  }
-
-  desde i = 10 hasta 20 {
-    escribe(i);
-  }
-}
-```
-
-### Entrega 7
-- Implementación y uso de tablas de variables, funciones y clases.
-- Generación de cuadruplos de expresiones aritmeticas, relacionales y lógicas.
-- Modificación gramática funcion para permitir varios returns.
+Para generar y abrir la documentación corre `cargo doc --lib --open`.

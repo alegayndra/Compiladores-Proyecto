@@ -34,7 +34,7 @@ use crate::semantica::tabla_variables::*;
 use crate::semantica::cuadruplos::*;
 use crate::semantica::cubo_semantico::*;
 
-/// Variables globales que se necesitan crear en ejecución
+// Variables globales que se necesitan crear en ejecución
 lazy_static! {
   /// Tabla de clases globales
   pub static ref CLASES: Mutex<TablaClases> = {
