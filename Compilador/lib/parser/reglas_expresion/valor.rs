@@ -15,6 +15,17 @@ use crate::parser::dimensiones::*;
 use crate::parser::reglas_expresion::exp::*;
 use crate::semantica::globales::*;
 
+/// Función auxiliar que agrega constante a tabla de constantes.  
+///
+/// # Parametros
+///
+/// * `valor`- Input a parsear
+/// * `tipo`- Input a parsear
+///
+/// # Ejemplo
+///
+/// ```
+/// agregar_constante_a_tabla("10", "entero");
 fn agregar_constante_a_tabla(valor: &str, tipo: &str) {
   let mut pila_valores = PILA_VALORES.lock().unwrap();
   pila_valores.push(CONSTANTES.lock().unwrap().agregar_constante(valor.to_owned(), tipo.to_owned()));
