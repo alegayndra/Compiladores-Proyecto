@@ -17,7 +17,7 @@ use crate::semantica::globales::*;
 ///
 /// # Ejemplo
 ///
-/// ```
+/// ```ignore
 /// checar_pila_operadores();
 /// ```
 fn checar_pila_operadores() {
@@ -46,7 +46,7 @@ fn checar_pila_operadores() {
 ///
 /// # Ejemplo
 ///
-/// ```
+/// ```ignore
 /// match retorna_expresion("10") {
 ///   Ok((next_input, res)) => res, // parseo éxitoso
 ///   Err(err) => err, // error en parseo
@@ -93,7 +93,7 @@ fn op_vacio(input: &str) -> IResult<&str, &str> {
 ///
 /// # Ejemplo
 ///
-/// ```
+/// ```ignore
 /// checar_lista_operadores();
 /// ```
 fn checar_lista_operadores(op_valor: &str) {
@@ -133,7 +133,7 @@ fn checar_lista_operadores(op_valor: &str) {
 ///
 /// # Ejemplo
 ///
-/// ```
+/// ```ignore
 /// match valor_factor("10") {
 ///   Ok((next_input, res)) => res, // parseo éxitoso
 ///   Err(err) => err, // error en parseo
@@ -171,14 +171,14 @@ fn valor_factor(input: &str) -> IResult<&str, &str> {
 ///
 /// # Gramática
 ///
-/// ```
+/// ```ignore
 /// ( EXP_LOGICA )
 /// VALOR
 /// ```
 ///
 /// # Ejemplo
 ///
-/// ```
+/// ```ignore
 /// match factor("10") {
 ///   Ok((next_input, res)) => res, // parseo éxitoso
 ///   Err(err) => err, // error en parseo

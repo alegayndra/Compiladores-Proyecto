@@ -2,7 +2,8 @@
 //! 
 //! # _Mutex_
 //! Para acceder a cualquiera de los `Mutex` encontrados en este archivo se hace de la siguiente manera:
-//! ```
+//!
+//! ```ignore
 //! MUTEX.lock().unwrap();
 //! 
 //! // Por ejemplo
@@ -12,7 +13,8 @@
 //! 
 //! # _Statics_
 //! Para acceder a cualquiera de las `statics` encontrados en este archivo se hace de la siguiente manera:
-//! ```
+//!
+//! ```ignore
 //! unsafe {
 //!   VARIABLE;
 //! }
@@ -182,7 +184,7 @@ pub static mut DIRECCIONES: [[[[i64 ; 3] ; 2] ; 3] ; 3] = [
 ///
 /// # Ejemplo
 ///
-/// ```
+/// ```ignore
 /// conseguir_contexto(1);
 /// ```
 fn conseguir_contexto(contexto_num: usize) -> String {
@@ -206,13 +208,14 @@ fn conseguir_contexto(contexto_num: usize) -> String {
 ///
 /// # Ejemplo
 ///
-/// ```
+/// ```ignore
 /// match conseguir_direccion("entero", "constante", 0, vec![]) { 
 ///   Ok(direccion) => direccion, // Se separó la memoria éxitosamente
 ///   Err(err) => err, // Error al agregar la variable
 /// };
 /// ```
 pub fn conseguir_direccion(tipo_var: &str, contexto: &str, temporal: usize, dims: Vec<i64>) -> Result<i64, String> {
+  println!("conseguir_direccion {}", tipo_var);
   let contexto_num: usize;
   let tipo_num: usize;
   // Busca si el contexto es constante, local o global
@@ -235,6 +238,7 @@ pub fn conseguir_direccion(tipo_var: &str, contexto: &str, temporal: usize, dims
   tipo_num = match conseguir_num_tipo(tipo_var) {
     3 => return Err("Variable de tipo error".to_owned()),
     4 => return Err("Variable de tipo objeto".to_owned()),
+    6 => return Err("Variable de tipo void".to_owned()),
     5 => 2 as usize,
     n => n as usize
   };
@@ -256,7 +260,7 @@ pub fn conseguir_direccion(tipo_var: &str, contexto: &str, temporal: usize, dims
 ///
 /// # Ejemplo
 ///
-/// ```
+/// ```ignore
 /// resetear_direcciones_locales();
 /// ```
 pub fn resetear_direcciones_locales()  {

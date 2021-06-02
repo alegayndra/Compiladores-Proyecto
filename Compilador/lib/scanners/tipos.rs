@@ -17,7 +17,7 @@ use crate::scanners::id::*;
 ///
 /// # Ejemplo
 ///
-/// ```
+/// ```ignore
 /// match tipo("entero") {
 ///   Ok((next_input, res)) => res, // parseo éxitoso
 ///   Err(err) => err, // error en parseo
@@ -36,7 +36,7 @@ pub fn tipo(input: &str) -> IResult<&str, &str> {
 ///
 /// # Ejemplo
 ///
-/// ```
+/// ```ignore
 /// match tipo_compuesto("Persona") {
 ///   Ok((next_input, res)) => res, // parseo éxitoso
 ///   Err(err) => err, // error en parseo
@@ -55,7 +55,7 @@ pub fn tipo_compuesto(input: &str) -> IResult<&str, &str> {
 ///
 /// # Ejemplo
 ///
-/// ```
+/// ```ignore
 /// match tipo_retorno("void") {
 ///   Ok((next_input, res)) => res, // parseo éxitoso
 ///   Err(err) => err, // error en parseo

@@ -15,7 +15,7 @@ use nom::{
 ///
 /// # Ejemplo
 ///
-/// ```
+/// ```ignore
 /// match op_sumsub("+") {
 ///   Ok((next_input, res)) => res, // parseo éxitoso
 ///   Err(err) => err, // error en parseo
@@ -34,7 +34,7 @@ pub fn op_sumsub(input: &str) -> IResult<&str, &str> {
 ///
 /// # Ejemplo
 ///
-/// ```
+/// ```ignore
 /// match op_multdiv("*") {
 ///   Ok((next_input, res)) => res, // parseo éxitoso
 ///   Err(err) => err, // error en parseo
@@ -53,7 +53,7 @@ pub fn op_multdiv(input: &str) -> IResult<&str, &str> {
 ///
 /// # Ejemplo
 ///
-/// ```
+/// ```ignore
 /// match op_relacional(">") {
 ///   Ok((next_input, res)) => res, // parseo éxitoso
 ///   Err(err) => err, // error en parseo
@@ -72,7 +72,7 @@ pub fn op_relacional(input: &str) -> IResult<&str, &str> {
 ///
 /// # Ejemplo
 ///
-/// ```
+/// ```ignore
 /// match op_logica("&") {
 ///   Ok((next_input, res)) => res, // parseo éxitoso
 ///   Err(err) => err, // error en parseo

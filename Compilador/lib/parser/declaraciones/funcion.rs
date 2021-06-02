@@ -22,13 +22,13 @@ use crate::semantica::globales::*;
 ///
 /// # Gramática
 ///
-/// ```
+/// ```ignore
 /// TIPO id
 /// ```
 ///
 /// # Ejemplo
 ///
-/// ```
+/// ```ignore
 /// match parametro("entero b") {
 ///   Ok((next_input, res)) => res, // parseo éxitoso
 ///   Err(err) => err, // error en parseo
@@ -51,11 +51,12 @@ fn parametro(input: &str) -> IResult<&str, (&str, &str)> {
 ///
 /// # Ejemplo
 ///
-/// ```
+/// ```ignore
 /// agregar_funcion("suma", "void");
 /// ```
 fn agregar_param(tipo_param: &str, id_param: &str) {
   // Consigue dirección de memoria para el parametro 
+  println!("agregar_param - conseguir_direccion, id_param: {}, tipo_param: {} ", id_param, tipo_param);
   let dir = match conseguir_direccion(tipo_param, "variable", 0, vec![]) {
     Ok(num) => num,
     Err(err) => { println!("{:?}", err); return; }
@@ -102,7 +103,7 @@ fn agregar_param(tipo_param: &str, id_param: &str) {
 ///
 /// # Ejemplo
 ///
-/// ```
+/// ```ignore
 /// agregar_funcion("suma", "void");
 /// ```
 fn agregar_funcion(id_f: &str, tipo_func: &str) {
@@ -113,6 +114,7 @@ fn agregar_funcion(id_f: &str, tipo_func: &str) {
 
   // Separa una dirección de memoria para el return de la función en el caso que la función no sea void
   let cuad: i64 = CUADRUPLOS.lock().unwrap().lista.len() as i64;
+
   let dir = match tipo_func {
     "void" => -8, 
     _ => match conseguir_direccion(tipo_func, "variable", 0, vec![]) {
@@ -175,7 +177,7 @@ fn agregar_funcion(id_f: &str, tipo_func: &str) {
 ///
 /// # Ejemplo
 ///
-/// ```
+/// ```ignore
 /// match parametros_varios("entero b, entero a)") {
 ///   Ok((next_input, res)) => res, // parseo éxitoso
 ///   Err(err) => err, // error en parseo
@@ -226,13 +228,13 @@ fn parametros_varios(input: &str) -> IResult<&str, &str> {
 ///
 /// # Gramática
 ///
-/// ```
+/// ```ignore
 /// TIPO funcion id (PARAMS) BLOQUE_FUNCION
 /// ```
 ///
 /// # Ejemplo
 ///
-/// ```
+/// ```ignore
 /// match funcion("void funcion suma(entero a, entero b) { regresa a + b; }") {
 ///   Ok((next_input, res)) => res, // parseo éxitoso
 ///   Err(err) => err, // error en parseo

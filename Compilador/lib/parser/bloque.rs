@@ -21,7 +21,7 @@ use crate::parser::declaraciones::variables::*;
 ///
 /// # Ejemplo
 ///
-/// ```
+/// ```ignore
 /// match lista_estatutos("num = 10; %% comentario %%") {
 ///   Ok((next_input, res)) => res, // parseo éxitoso
 ///   Err(err) => err, // error en parseo
@@ -43,13 +43,13 @@ pub fn lista_estatutos(input: &str) -> IResult<&str, &str> {
 ///
 /// # Gramática
 ///
-/// ```
+/// ```ignore
 /// { ESTATUTOS }
 /// ```
 ///
 /// # Ejemplo
 ///
-/// ```
+/// ```ignore
 /// match bloque("{ num = 10; }") {
 ///   Ok((next_input, res)) => res, // parseo éxitoso
 ///   Err(err) => err, // error en parseo
@@ -72,7 +72,7 @@ pub fn bloque(input: &str) -> IResult<&str, &str> {
 ///
 /// # Ejemplo
 ///
-/// ```
+/// ```ignore
 /// match lista_estatutos_funcion("num = 10; %% comentario %%") {
 ///   Ok((next_input, res)) => res, // parseo éxitoso
 ///   Err(err) => err, // error en parseo
@@ -94,13 +94,13 @@ pub fn lista_estatutos_funcion(input: &str) -> IResult<&str, &str> {
 ///
 /// # Gramática
 ///
-/// ```
+/// ```ignore
 /// { ESTATUTOS }
 /// ```
 ///
 /// # Ejemplo
 ///
-/// ```
+/// ```ignore
 /// match bloque("{ num = 10; }") {
 ///   Ok((next_input, res)) => res, // parseo éxitoso
 ///   Err(err) => err, // error en parseo

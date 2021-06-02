@@ -98,7 +98,7 @@ static CUBO_SEMANTICO: [[[i64; 13]; 6]; 6] = [
 ///
 /// # Ejemplo
 ///
-/// ```
+/// ```ignore
 /// let tipo_resultado = checar_cubo_semantico(0, 0, 0); // Suma entre enteros
 /// ```
 pub fn checar_cubo_semantico(op: usize, izq: usize, der: usize) -> i64{
@@ -114,7 +114,7 @@ pub fn checar_cubo_semantico(op: usize, izq: usize, der: usize) -> i64{
 ///
 /// # Ejemplo
 ///
-/// ```
+/// ```ignore
 /// let op_num = conseguir_num_operador("+");
 /// ```
 pub fn conseguir_num_operador(operador: &str) -> i64 {
@@ -158,7 +158,7 @@ pub fn conseguir_num_operador(operador: &str) -> i64 {
 ///
 /// # Ejemplo
 ///
-/// ```
+/// ```ignore
 /// let tipo_num = conseguir_num_tipo("entero");
 /// ```
 pub fn conseguir_num_tipo(tipo: &str) -> i64 {
@@ -168,6 +168,7 @@ pub fn conseguir_num_tipo(tipo: &str) -> i64 {
     "char"      => 2,
     "error"     => 3,
     "texto"     => 5,
+    "void"      => 6,
     _           => 4, // objeto
   }
 }
@@ -181,7 +182,7 @@ pub fn conseguir_num_tipo(tipo: &str) -> i64 {
 ///
 /// # Ejemplo
 ///
-/// ```
+/// ```ignore
 /// let tipo_str = conseguir_tipo_num(1); // Regresa "flotante"
 /// ```
 pub fn conseguir_tipo_num(tipo: i64) -> String {
@@ -191,6 +192,7 @@ pub fn conseguir_tipo_num(tipo: i64) -> String {
     2 => "char",
     3 => "error",
     5 => "texto",
+    6 => "void",
     _ => "clase",
   }.to_owned()
 }

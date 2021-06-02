@@ -18,7 +18,8 @@ use crate::semantica::cubo_semantico::*;
 /// * `era` - Tamaño de la función
 ///
 /// # Ejemplo de creación
-/// ```
+///
+/// ```ignore
 /// let función: TipoFunc = TipoFunc {
 ///   nombre: "func".to_owned(),
 ///   tipo: "void".to_owned(),
@@ -53,7 +54,8 @@ pub struct TipoFunc {
 /// * `tabla` - HashMap de funciones
 ///
 /// # Ejemplo de creación
-/// ```
+///
+/// ```ignore
 /// let tabla_funciones: TablaFunciones = TablaFunciones {
 ///   tabla: HashMap::new()
 /// };
@@ -74,7 +76,7 @@ impl TipoFunc {
   ///
   /// # Ejemplo
   ///
-  /// ```
+  /// ```ignore
   /// let funcion: TipoFunc = TipoFunc { /* Atributos */ };
   /// 
   /// match funcion.modificar_era("entero".to_owned(), 1); // Se está agregando un temporal entero
@@ -106,7 +108,7 @@ impl TablaFunciones {
   ///
   /// # Ejemplo
   ///
-  /// ```
+  /// ```ignore
   /// let tabla_funciones: TablaFunciones = TablaFunciones { tabla: HashMap::new() };
   /// 
   /// match tabla_funciones.agregar_variable("func".to_owned(), "void".to_owned(), -8, 5) { 
@@ -148,7 +150,7 @@ impl TablaFunciones {
   ///
   /// # Ejemplo
   ///
-  /// ```
+  /// ```ignore
   /// let tabla_funciones: TablaFunciones = TablaFunciones { tabla: HashMap::new() };
   /// 
   /// match tabla_funciones.buscar_funcion("func".to_owned()) { 
@@ -176,7 +178,7 @@ impl TablaFunciones {
   ///
   /// # Ejemplo
   ///
-  /// ```
+  /// ```ignore
   /// let tabla_funciones: TablaFunciones = TablaFunciones { tabla: HashMap::new() };
   /// 
   /// match tabla_funciones.agregar_variable("func".to_owned(), "nombre".to_owned(), "entero".to_owned(), vec![], 100) { 
@@ -208,7 +210,7 @@ impl TablaFunciones {
   ///
   /// # Ejemplo
   ///
-  /// ```
+  /// ```ignore
   /// let tabla_variables: TablaVariables = TablaVariables { tabla: HashMap::new() };
   /// 
   /// match tabla_variables.buscar_variable("func".to_owned(), "nombre".to_owned()) { 
@@ -240,7 +242,7 @@ impl TablaFunciones {
   ///
   /// # Ejemplo
   ///
-  /// ```
+  /// ```ignore
   /// let tabla_funciones: TablaFunciones = TablaFunciones { tabla: HashMap::new() };
   /// 
   /// match tabla_funciones.agregar_parametro("func".to_owned(), "nombre".to_owned(), "entero".to_owned(), vec![], 100) { 

@@ -23,20 +23,20 @@ use crate::parser::declaraciones::variables::*;
 ///
 /// # Gramática
 ///
-/// ```
+/// ```ignore
 /// COMENTARIO | REGRESA | FUNC_ESP | REPETICION | DECISION | ASIGNACION | LLAMA_FUNC
 /// ```
 ///
 /// # Ejemplo
 ///
-/// ```
+/// ```ignore
 /// match estatuto("id = 10;") {
 ///   Ok((next_input, res)) => res, // parseo éxitoso
 ///   Err(err) => err, // error en parseo
 /// };
 /// ```
 pub fn estatuto(input: &str) -> IResult<&str, &str> {
-  alt((comentario, regresa, funcion_esp, variables, repeticion, decision, llama_func, asignacion))(input)
+  alt((comentario, funcion_esp, repeticion, decision, regresa, variables, llama_func, asignacion))(input)
 }
 
 #[cfg(test)]

@@ -15,7 +15,7 @@ use crate::semantica::globales::*;
 ///
 /// # Ejemplo
 ///
-/// ```
+/// ```ignore
 /// generar_goto_sino();
 /// ```
 fn generar_goto_sino() {
@@ -55,13 +55,13 @@ fn generar_goto_sino() {
 ///
 /// # Gramática
 ///
-/// ```
+/// ```ignore
 /// sino BLOQUE
 /// ```
 ///
 /// # Ejemplo
 ///
-/// ```
+/// ```ignore
 /// match sino("sino {id = 9;}") {
 ///   Ok((next_input, res)) => res, // parseo éxitoso
 ///   Err(err) => err, // error en parseo
@@ -88,7 +88,7 @@ fn sino(input: &str) -> IResult<&str, &str> {
 ///
 /// # Ejemplo
 ///
-/// ```
+/// ```ignore
 /// generar_gotof();
 /// ```
 fn generar_gotof() {
@@ -117,7 +117,7 @@ fn generar_gotof() {
 ///
 /// # Ejemplo
 ///
-/// ```
+/// ```ignore
 /// actualizar_gotof();
 /// ```
 fn actualizar_gotof() {
@@ -148,13 +148,13 @@ fn actualizar_gotof() {
 ///
 /// # Gramática
 ///
-/// ```
+/// ```ignore
 /// si ( EXP_LOGICA ) BLOQUE SINO
 /// ```
 ///
 /// # Ejemplo
 ///
-/// ```
+/// ```ignore
 /// match decision("si (10) {id = 10;}") {
 ///   Ok((next_input, res)) => res, // parseo éxitoso
 ///   Err(err) => err, // error en parseo

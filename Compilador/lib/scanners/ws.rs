@@ -14,7 +14,7 @@ use nom::{
 ///
 /// # Ejemplo
 ///
-/// ```
+/// ```ignore
 /// match ws("") {
 ///   Ok((next_input, res)) => res, // parseo éxitoso
 ///   Err(err) => err, // error en parseo
@@ -33,7 +33,7 @@ pub fn ws(input: &str) -> IResult<&str, &str> {
 ///
 /// # Ejemplo
 ///
-/// ```
+/// ```ignore
 /// match necessary_ws(" ") {
 ///   Ok((next_input, res)) => res, // parseo éxitoso
 ///   Err(err) => err, // error en parseo

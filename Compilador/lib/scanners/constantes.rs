@@ -19,7 +19,7 @@ use nom::{
 ///
 /// # Ejemplo
 ///
-/// ```
+/// ```ignore
 /// match num_entero("100") {
 ///   Ok((next_input, res)) => res, // parseo éxitoso
 ///   Err(err) => err, // error en parseo
@@ -41,7 +41,7 @@ pub fn num_entero(input: &str) -> IResult<&str, (&str, &str)> {
 ///
 /// # Ejemplo
 ///
-/// ```
+/// ```ignore
 /// match caracter("\"a\"") {
 ///   Ok((next_input, res)) => res, // parseo éxitoso
 ///   Err(err) => err, // error en parseo
@@ -63,7 +63,7 @@ pub fn caracter(input: &str) -> IResult<&str, (&str, &str)> {
 ///
 /// # Ejemplo
 ///
-/// ```
+/// ```ignore
 /// match num_flotante("10.1") {
 ///   Ok((next_input, res)) => res, // parseo éxitoso
 ///   Err(err) => err, // error en parseo
@@ -101,7 +101,7 @@ pub fn num_flotante(input: &str) -> IResult<&str, (&str, &str)> {
 ///
 /// # Ejemplo
 ///
-/// ```
+/// ```ignore
 /// match texto("\"texto\"") {
 ///   Ok((next_input, res)) => res, // parseo éxitoso
 ///   Err(err) => err, // error en parseo

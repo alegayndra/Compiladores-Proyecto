@@ -17,7 +17,7 @@ use crate::semantica::globales::*;
 ///
 /// # Ejemplo
 ///
-/// ```
+/// ```ignore
 /// generar_cuadruplo_lectura();
 /// ```
 fn generar_cuadruplo_lectura() {
@@ -37,7 +37,7 @@ fn generar_cuadruplo_lectura() {
 ///
 /// # Ejemplo
 ///
-/// ```
+/// ```ignore
 /// generar_cuadruplo_escritura();
 /// ```
 fn generar_cuadruplo_escritura() {
@@ -65,13 +65,13 @@ fn generar_cuadruplo_escritura() {
 ///
 /// # Gramática
 ///
-/// ```
+/// ```ignore
 /// lee ( id ) ;
 /// ```
 ///
 /// # Ejemplo
 ///
-/// ```
+/// ```ignore
 /// match escribir("leer(num);") {
 ///   Ok((next_input, res)) => res, // parseo éxitoso
 ///   Err(err) => err, // error en parseo
@@ -127,7 +127,7 @@ pub fn leer(input: &str) -> IResult<&str, &str> {
 ///
 /// # Ejemplo
 ///
-/// ```
+/// ```ignore
 /// generar_cuadruplo_offset("texto");
 /// ```
 fn agregar_texto_a_tabla(valor: &str) {
@@ -146,13 +146,13 @@ fn agregar_texto_a_tabla(valor: &str) {
 ///
 /// # Gramática
 ///
-/// ```
+/// ```ignore
 /// escribe ( texto | EXP ) ;
 /// ```
 ///
 /// # Ejemplo
 ///
-/// ```
+/// ```ignore
 /// match escribir("escribe(10);") {
 ///   Ok((next_input, res)) => res, // parseo éxitoso
 ///   Err(err) => err, // error en parseo
@@ -228,13 +228,13 @@ pub fn escribir(input: &str) -> IResult<&str, &str> {
 ///
 /// # Gramática
 ///
-/// ```
+/// ```ignore
 /// ESCRIBIR | LEER
 /// ```
 ///
 /// # Ejemplo
 ///
-/// ```
+/// ```ignore
 /// match funcion_esp("escribe(10);") {
 ///   Ok((next_input, res)) => res, // parseo éxitoso
 ///   Err(err) => err, // error en parseo

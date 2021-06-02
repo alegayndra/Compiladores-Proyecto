@@ -23,11 +23,11 @@ use crate::semantica::globales::*;
 ///
 /// # Gramática
 ///
-/// ```
+/// ```ignore
 /// TIPO_COMPUESTO id;
 /// ```
 ///
-/// ```
+/// ```ignore
 /// match variable_compuesta("Persona nombre;") {
 ///   Ok((next_input, res)) => res, // parseo éxitoso
 ///   Err(err) => err, // error en parseo
@@ -88,7 +88,7 @@ fn variable_compuesta(input: &str) -> IResult<&str, &str> {
 ///
 /// # Ejemplo
 ///
-/// ```
+/// ```ignore
 /// agregar_variable_a_tabla("numero", "entero", vec!["3"]);
 /// ```
 fn agregar_variable_a_tabla(var: &str, tipo_var: &str, dims: Vec<&str>) {
@@ -150,13 +150,13 @@ fn agregar_variable_a_tabla(var: &str, tipo_var: &str, dims: Vec<&str>) {
 ///
 /// # Gramática
 ///
-/// ```
+/// ```ignore
 /// TIPO id DIMENSIONES;
 /// ```
 ///
 /// # Ejemplo
 ///
-/// ```
+/// ```ignore
 /// match variable_normal("entero nombre;") {
 ///   Ok((next_input, res)) => res, // parseo éxitoso
 ///   Err(err) => err, // error en parseo
@@ -216,7 +216,7 @@ fn variable_normal(input: &str) -> IResult<&str, &str> {
 ///
 /// # Ejemplo
 ///
-/// ```
+/// ```ignore
 /// match diferentes_declaraciones("entero nombre;") {
 ///   Ok((next_input, res)) => res, // parseo éxitoso
 ///   Err(err) => err, // error en parseo

@@ -19,13 +19,13 @@ use crate::semantica::globales::*;
 ///
 /// # Gramática
 ///
-/// ```
+/// ```ignore
 /// regresa EXP ;
 /// ```
 ///
 /// # Ejemplo
 ///
-/// ```
+/// ```ignore
 /// match regresa("regresa 10;") {
 ///   Ok((next_input, res)) => res, // parseo éxitoso
 ///   Err(err) => err, // error en parseo

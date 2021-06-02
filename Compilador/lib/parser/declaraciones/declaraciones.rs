@@ -23,7 +23,7 @@ use crate::semantica::globales::*;
 ///
 /// # Ejemplo
 ///
-/// ```
+/// ```ignore
 /// match diferentes_declaraciones("entero nombre;") {
 ///   Ok((next_input, res)) => res, // parseo éxitoso
 ///   Err(err) => err, // error en parseo
@@ -60,7 +60,7 @@ fn diferentes_declaraciones(input: &str) -> IResult<&str, &str> {
 ///
 /// # Ejemplo
 ///
-/// ```
+/// ```ignore
 /// match lista_declaraciones("entero nombre; void funcion hola() {} clase Persona {}") {
 ///   Ok((next_input, res)) => res, // parseo éxitoso
 ///   Err(err) => err, // error en parseo
@@ -82,13 +82,13 @@ fn lista_declaraciones(input: &str) -> IResult<&str, &str> {
 ///
 /// # Gramática
 ///
-/// ```
+/// ```ignore
 /// CLASE | FUNCION | VARIABLES 
 /// ```
 ///
 /// # Ejemplo
 ///
-/// ```
+/// ```ignore
 /// match declaraciones("entero nombre;") {
 ///   Ok((next_input, res)) => res, // parseo éxitoso
 ///   Err(err) => err, // error en parseo

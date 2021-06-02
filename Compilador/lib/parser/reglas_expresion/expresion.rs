@@ -16,7 +16,7 @@ use crate::semantica::globales::*;
 ///
 /// # Ejemplo
 ///
-/// ```
+/// ```ignore
 /// checar_lista_operadores();
 /// ```
 fn checar_lista_operadores() {
@@ -44,7 +44,7 @@ fn checar_lista_operadores() {
 ///
 /// # Ejemplo
 ///
-/// ```
+/// ```ignore
 /// match exp_extra("> 0") {
 ///   Ok((next_input, res)) => res, // parseo éxitoso
 ///   Err(err) => err, // error en parseo
@@ -83,7 +83,7 @@ fn exp_extra(input: &str) -> IResult<&str, &str> {
 ///
 /// # Ejemplo
 ///
-/// ```
+/// ```ignore
 /// match exp_opcional("> 0") {
 ///   Ok((next_input, res)) => res, // parseo éxitoso
 ///   Err(err) => err, // error en parseo
@@ -105,13 +105,13 @@ fn exp_opcional(input: &str) -> IResult<&str, &str> {
 ///
 /// # Gramática
 ///
-/// ```
+/// ```ignore
 /// EXP > EXP
 /// ```
 ///
 /// # Ejemplo
 ///
-/// ```
+/// ```ignore
 /// match expresion("10 > 0") {
 ///   Ok((next_input, res)) => res, // parseo éxitoso
 ///   Err(err) => err, // error en parseo
