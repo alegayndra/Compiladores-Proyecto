@@ -1,0 +1,12 @@
+programa idPrograma;
+
+void funcion asignacionArr(){
+  entero arr[3];
+  entero nuevoValor = 22;
+  arr[0] = nuevoValor;
+  escribe(arr[0]);
+}
+
+principal() {
+  asignacionArr();
+}
