@@ -382,23 +382,60 @@ impl ListaCuadruplos {
   /// cuadruplos.agregar_cuadruplo_gotof_desde(); // Suma entre enteros
   /// ```
   pub fn agregar_cuadruplo_gotof_desde<'a>(&mut self) -> Result<(&'a str, i64), (&'a str, i64)>{
+    let op = conseguir_num_operador("<=");
+    let valor;
+    {
+      valor = PILA_VALORES.lock().unwrap().pop().unwrap();
+    }
+
+    // Crear temporal
+    let mut tabla_variables = VARIABLES.lock().unwrap();
+    let dir_temporal = match conseguir_direccion(&valor.tipo, "variable", 1, vec![]) {
+      Ok(num) => num,
+      Err(_err) => {
+        // println!("{:?}", _err);
+        return Err(("Error al conseguir direccion de variable temporal", 0));
+      }
+    };
+    // Itera hasta conseguir un nombre válido de temporal
+    unsafe {
+      loop {
+        let nombre_temporal = format!("temporal{}", NUM_TEMPORAL);
+        match tabla_variables.agregar_variable(nombre_temporal.clone(), valor.tipo.clone(), vec![], dir_temporal) {
+          Ok((_, var)) => {
+            PILA_VALORES.lock().unwrap().push(var);
+            agregar_temporal_a_tabla(nombre_temporal.clone(), valor.tipo.clone(), dir_temporal);
+            break;
+          },
+          Err(_) => {
+            NUM_TEMPORAL += 1;
+          }
+        }
+      }
+    }
+
+    let pos = self.lista.len() - 1;
+    
+    let dir_guadalupano = match self.lista[pos].0 {
+      12 => self.lista[pos].3,
+      25 => {
+        // En el caso que sea una asignación a un elemento no atómico, crea un cuadruplo de acceso al valor de un elemento no atómico
+        match self.agregar_cuadruplo_acceder_desde(self.lista[pos].3) {
+          Ok((_, _, dir_temp)) => dir_temp,
+          Err(_) => return Err(("Error al crear GOTOF desde", -100))
+        }
+      },
+      _ => return Err(("Cuadruplo inválido en GOTOF desde", -8)) // Cuadruplo inválida
+    };
+    self.lista.push((op, dir_guadalupano, valor.direccion, dir_temporal));
+
     let op_num = conseguir_num_operador("GOTOF");
     // Consigue la posición del último cuadruplo
     let pos_arr = self.lista.len() - 1;
 
     // Checa que tipo de operación está en el último cuadruplo
     // Si es una asignación, saca la dirección del destino
-    let dir = match self.lista[pos_arr].0 {
-      12 => self.lista[pos_arr].3,
-      25 => {
-        // En el caso que sea una asignación a un elemento no atómico, crea un cuadruplo de acceso al valor de un elemento no atómico
-        match self.agregar_cuadruplo_acceder_desde(self.lista[pos_arr].3) {
-          Ok((_, _, dir_temp)) => dir_temp,
-          Err(_) => return Err(("Error al crear GOTOF desde", -100))
-        }
-      },
-      _ => return Err(("Cuadruplo inválido en GOTOF desde", -9)) // Cuadruplo inválida
-    };
+    let dir = self.lista[pos_arr].3;
 
     // Crea cuadruplo
     self.lista.push((op_num, dir, -1, -1));
