@@ -10,10 +10,11 @@ use crate::parser::repeticion::*;
 use crate::parser::decision::*;
 use crate::parser::comentario::*;
 use crate::parser::regresa::*;
+use crate::parser::declaraciones::variables::*;
 
 
 pub fn estatuto(input: &str) -> IResult<&str, &str> {
-  alt((comentario, regresa, funcion_esp, repeticion, decision, asignacion, llama_func))(input)
+  alt((comentario, regresa, funcion_esp, variables, repeticion, decision, asignacion, llama_func))(input)
 }
 
 #[cfg(test)]
