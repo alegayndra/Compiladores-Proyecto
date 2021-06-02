@@ -20,8 +20,8 @@ use crate::semantica::globales::*;
 /// ```ignore
 /// agregar_cuadruplo_a_pila_saltos();
 /// ```
-fn agregar_cuadruplo_a_pila_saltos() {
-  PILA_SALTOS.lock().unwrap().push((CUADRUPLOS.lock().unwrap().lista.len()) as i64);
+fn agregar_cuadruplo_a_pila_saltos(offset: i64) {
+  PILA_SALTOS.lock().unwrap().push((CUADRUPLOS.lock().unwrap().lista.len()) as i64 + offset);
 }
 
 /// Función auxiliar que genera el gotof del ciclo _mientras_.
@@ -148,7 +148,7 @@ pub fn mientras(input: &str) -> IResult<&str, &str> {
 
   next = match tag("mientras")(next) {
     Ok((next_input, _)) => {
-      agregar_cuadruplo_a_pila_saltos();
+      agregar_cuadruplo_a_pila_saltos(0);
       next_input
     },
     Err(err) => return Err(err)
@@ -201,7 +201,7 @@ pub fn desde(input: &str) -> IResult<&str, &str> {
   // Asignación inicial del _desde_
   next = match preceded(tuple((tag("desde"), necessary_ws)), asignacion_interna)(next) {
     Ok((next_input, _)) => {
-      agregar_cuadruplo_a_pila_saltos();
+      agregar_cuadruplo_a_pila_saltos(1);
       next_input
     },
     Err(err) => return Err(err)
