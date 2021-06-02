@@ -12,7 +12,7 @@ entero funcion fact_iterativo(entero var){
 
 entero funcion fact_recursivo(entero var) {
   si (var > 1) {
-    regresa var * fact_recursivo(ver - 1);
+    regresa var * fact_recursivo(var - 1);
   }
   regresa 1;
 }

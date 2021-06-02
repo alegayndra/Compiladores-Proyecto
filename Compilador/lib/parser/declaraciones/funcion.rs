@@ -131,7 +131,10 @@ fn agregar_funcion(id_f: &str, tipo_func: &str) {
         }
         num
       },
-      Err(err) => { println!("{:?}", err); return; }
+      Err(err) => {
+        println!("{:?}", err);
+        return; 
+      }
     }
   };
 

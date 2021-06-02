@@ -1,0 +1,14 @@
+programa operaciones;
+
+entero a, b;
+
+void funcion func(entero b) {
+  entero a;
+  a = 10;
+}
+
+principal() {
+  a = 10;
+  b = 5;
+  func(10);
+}

@@ -36,7 +36,7 @@ use crate::parser::declaraciones::variables::*;
 /// };
 /// ```
 pub fn estatuto(input: &str) -> IResult<&str, &str> {
-  alt((comentario, regresa, funcion_esp, variables, repeticion, decision, asignacion, llama_func))(input)
+  alt((comentario, regresa, funcion_esp, variables, repeticion, decision, llama_func, asignacion))(input)
 }
 
 #[cfg(test)]
