@@ -2,6 +2,8 @@ from lectura import *
 from globales import *
 from copy import *
 
+# Funcion principal para obtener una 
+# direccion de memoria en el mapa_memoria
 def extraerMemoria(direccion):
   contexto = len(dir_memoria) - 1
   # Itera sobre todos los contextos
@@ -37,6 +39,8 @@ def operacionNormal(izq, der, op):
   else:
     return None
 
+  # Identificar operación a resolver siguiendo la
+  # tabla de código de operaciones
   if op == 0:
     return opIzq + opDer
   elif op == 1:
@@ -64,6 +68,8 @@ def operacionNormal(izq, der, op):
   else:
     return None
 
+# Almacena valor en cierta dirección de memoria, 
+# dentro de mapa_memoria
 def guardarValor(valor, direccion):
   contexto = len(dir_memoria) - 1
   # Itera sobre todos los contextos
@@ -90,6 +96,8 @@ def guardarValor(valor, direccion):
     contexto -= 1
   return None
 
+# Itera buscando ambas direcciones a la vez,
+# la de valor y la de destino
 def asignacion(valor, destino):
   dirDestino = None
   dirValor = None
@@ -146,9 +154,11 @@ def asignacion(valor, destino):
     else: # Ninguna es local
       mapa_memoria[dirDestino[0]][dirDestino[1]][dirDestino[2]][destino - base_destino] = mapa_memoria[dirValor[0]][dirValor[1]][dirValor[2]][valor - base_valor]
 
+# Despliega lo que se encuentre en dado segmento de memoria
 def escribe(valor):
   print(extraerMemoria(valor))
 
+# Busca dirección de memoria para guardar un valor
 def leerValor(valor, direccion):
   contexto = len(dir_memoria) - 1
   # Itera sobre todos los contextos
@@ -181,33 +191,38 @@ def leerValor(valor, direccion):
     contexto -= 1
   return None
 
+# Actualiza el indicador de nuestro cuádruplo actual
 def goto(cuadruplo):
   num_cuadruplo[0] = cuadruplo - 1
 
+# Hace goto() si lo que se busca en memoria es falso
 def gotof(valor, cuadruplo):
   if not extraerMemoria(valor):
-    # print("entramos")
     goto(cuadruplo)
-  # else:
-  #   print("No entramos")
 
+# Libera memoria de función procesada
 def endfunc():
   mapa_memoria[1].pop()
   goto(pila_cuadruplos[len(pila_cuadruplos) - 1] + 1)
   pila_cuadruplos.pop()
 
+# Regresa valor de la función y cambia de contexto
 def regresa(valor, destino):
   asignacion(valor, destino)
   endfunc()
 
+# Pide input al usuario
 def lee(valor):
   var = input("")
   leerValor(var, valor)
 
+# Creación del Active Record
 def era(funcion):
   memoriaFuncionEnProgreso.append(deepcopy(auxLocales))
   
+  # Busca la función indicada en ejecución
   for i in range(len(funciones)):
+    # Prepara memoria temporal local con valores leídos del .txt
     if funciones[i][0][2] == funcion:
       cntIntNormal   =  funciones[i][1][0]
       cntIntTemp     =  funciones[i][1][1]
@@ -223,6 +238,7 @@ def era(funcion):
       cantVarsLocales[2][0] += cntCharNormal
       cantVarsLocales[2][1] += cntCharTemp
 
+      # Checan que cada segmento no exceda el límite de memoria definido
       if cantVarsLocales[0][0] >= limitesVarsLocales[0][0] + dir_memoria[1][0][0]:
         print("Se excedió la memoria disponibles para enteros dentro del contexto local")
         sys.exit()
@@ -242,6 +258,8 @@ def era(funcion):
         print("Se excedió la memoria disponibles para caracter termporales dentro del contexto local")
         sys.exit()
 
+      # Inicializa la cantidad de memoria requerida por la función,
+      # no más, no menos
       memoriaFuncionEnProgreso[len(memoriaFuncionEnProgreso) - 1][0][0] = [None] * int(cntIntNormal)
       memoriaFuncionEnProgreso[len(memoriaFuncionEnProgreso) - 1][0][1] = [None] * int(cntIntTemp)
       memoriaFuncionEnProgreso[len(memoriaFuncionEnProgreso) - 1][1][0] = [None] * int(cntFloatNormal)
@@ -251,6 +269,7 @@ def era(funcion):
       return
     i += 1
 
+# Extrae valor en memoria para asignarlo a los parámetros de una función
 def param(valor, parametro):
   val = extraerMemoria(valor)
   tipo = len(dir_memoria[1]) - 1
@@ -260,11 +279,14 @@ def param(valor, parametro):
       print('params', memoriaFuncionEnProgreso[len(memoriaFuncionEnProgreso) - 1][tipo][0][parametro - dir_memoria[1][tipo][0]])
     tipo -= 1
   
+# Cambio de contexto y salto al cuádruplo de la función a procesar
 def gosub(cuad_funcion):
   mapa_memoria[1].append(deepcopy(memoriaFuncionEnProgreso[len(memoriaFuncionEnProgreso) - 1]))
   memoriaFuncionEnProgreso.pop()
   pila_cuadruplos.append(num_cuadruplo[0])
   goto(cuad_funcion)
+
+# Valida que la memoria a acceder de una dimension 
 def verificar(lim_inf, lim_sup, val_verificar):
   valor = extraerMemoria(val_verificar)
   if valor >= extraerMemoria(lim_inf) and valor <= extraerMemoria(lim_sup):
@@ -273,14 +295,17 @@ def verificar(lim_inf, lim_sup, val_verificar):
     print("El subindice excede las dimensiones del arreglo")
     sys.exit()
 
+# Busca memoria de dirección de arreglo y guarda la referencia
 def acceder(apuntador, destino):
   asignacion(extraerMemoria(apuntador), destino)
   return
 
+# Realiza la asignación de valor para index de un arreglo
 def asignacionArreglo(valor, destino):
   asignacion(valor, extraerMemoria(destino))
   return
 
+# Identificar acción a ejecutar
 def switchCubo(cuadruplo):
   if cuadruplo[0] >= 0 and cuadruplo[0] <= 11:
     guardarValor(operacionNormal(cuadruplo[1], cuadruplo[2], cuadruplo[0]), cuadruplo[3])
@@ -342,5 +367,5 @@ def ejecutar_programa():
  Funciones que guardan los valores del .txt en memoria
 '''
 
-leer_obj()
-ejecutar_programa()
+leer_obj() # Leer .txt
+ejecutar_programa() # Iniciar ejecución
