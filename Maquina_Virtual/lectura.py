@@ -147,10 +147,10 @@ def guardarMapaCons(direcciones_const):
 def leer_obj():
   # Lectura y normalizacion de archivo
   cwd = getcwd()
-  prueba_cuadruplos = Path(cwd + "/Compilador/cuadruplos")
-  archivo = input("Nombre programa ")
-  abrir = prueba_cuadruplos / (archivo + ".txt")
-  file_opened = open(abrir, 'r')
+  path = Path(cwd + "/Compilador/cuadruplos/killer_queen.txt")
+  # archivo = input("Nombre programa ")
+  # abrir = prueba_cuadruplos / (archivo + ".txt")
+  file_opened = open(path, 'r')
   stringTxt = file_opened.read()
 
   # Registro de valores para constantes en mapa de memoria

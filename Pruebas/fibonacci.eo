@@ -1,0 +1,33 @@
+programa fibonacci;
+
+entero funcion fibo_recursivo(entero var) {
+  si (var > 1) {
+    regresa fibo_recursivo(var - 1) + fibo_recursivo(var - 2);
+  }
+
+  si (var > 0) {
+    regresa 1;
+  }
+
+  regresa 0;
+}
+
+entero funcion fibo_iterativo(entero var) {
+  entero acum, izq, der, valor;
+
+  izq = 0;
+  der = 1;
+  valor = 0;
+
+  desde acum = 1 hasta var {
+    valor = izq + der;
+    der = valor;
+    izq = der;
+  }
+  regresa valor;
+}
+
+principal() {
+  escribe(fibo_iterativo(6));
+  escribe(fibo_recursivo(6));
+}

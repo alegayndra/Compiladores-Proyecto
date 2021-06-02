@@ -1,0 +1,45 @@
+programa prueba_general;
+
+entero i;
+char letra;
+flotante promedio;
+
+principal() {
+  %% asignaciones %%
+  i = 20;
+  promedio = 10.1;
+  letra = "2";
+
+  %% imprimir valores a consola %%
+  escribe("i", i);
+  escribe("promedio", promedio);
+  escribe("letra", letra);
+
+  %% lectura de valores %%
+  escribe("i");
+  lee(i);
+
+  escribe("promedio");
+  lee(promedio);
+
+  escribe("letra");
+  lee(letra);
+
+  %% deciciones %%
+  si (i > 10) {
+    escribe("hola");
+  } sino {
+    escribe("adios");
+  }
+
+  %% ciclos %%
+  i = 20;
+  mientras (i > 10) {
+    escribe(i);
+    i = i - 1;
+  }
+
+  desde i = 10 hasta 20 {
+    escribe(i);
+  }
+}

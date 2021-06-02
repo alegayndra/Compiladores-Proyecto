@@ -1,0 +1,23 @@
+programa factorial;
+
+entero funcion fact_iterativo(entero var){
+  entero acum;
+  acum = var;
+  mientras ( var > 1) {
+    var = var - 1;
+    acum = acum * (var);
+  }
+  regresa acum;
+}
+
+entero funcion fact_recursivo(entero var) {
+  si (var > 1) {
+    regresa var * fact_recursivo(ver - 1);
+  }
+  regresa 1;
+}
+
+principal(){
+  escribe(fact_iterativo(6));
+  escribe(fact_recursivo(6));
+}

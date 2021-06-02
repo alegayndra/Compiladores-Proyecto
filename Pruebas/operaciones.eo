@@ -1,0 +1,25 @@
+programa operaciones;
+
+entero a, b;
+
+principal() {
+  a = 10;
+  b = 5;
+  escribe(a + b);
+  escribe(a - b);
+  escribe(a * b);
+  escribe(a / b);
+
+  b = 0;
+
+  escribe(a & b);
+  escribe(a | b);
+
+  b = 10;
+  escribe(a > b);
+  escribe(a >= b);
+  escribe(a < b);
+  escribe(a <= b);
+  escribe(a == b);
+  escribe(a != b);
+}

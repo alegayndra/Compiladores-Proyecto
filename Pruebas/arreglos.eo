@@ -1,0 +1,52 @@
+programa arreglos;
+
+entero arr[10];
+
+void funcion llenar_arreglo() {
+  arr[0] = 2;
+  arr[1] = 1;
+  arr[2] = 0;
+  arr[3] = 8;
+  arr[4] = 9;
+  arr[5] = 6;
+  arr[6] = 5;
+  arr[7] = 7;
+  arr[8] = 3;
+  arr[9] = 4;
+}
+
+void funcion buscar() {
+  entero seEncontro, i;
+  seEncontro = 0;
+  desde i = 0 hasta 9 {
+    si (var == arreglo[i]) {
+      seEncontro = 1;
+      escribe("valor");
+      escribe(i);
+    }
+  }
+
+  si (seEncontro == 0) {
+    escribe("ay");
+  }
+}
+
+void funcion sort(entero var) {
+  
+}
+
+void imprimir_arreglo() {
+  entero i;
+  escribe("arreglo");
+  desde i = 0 hasta 9 {
+    escribe(arreglo[i]);
+  }
+  escribe("finarreglo");
+}
+
+principal() {
+  llenar_arreglo();
+  imprimir_arreglo();
+  sort();
+  imprimir_arreglo()
+}

@@ -1,0 +1,10 @@
+programa escribe;
+
+entero i;
+
+principal() {
+  i = 10;
+  escribe(i);
+  escribe("i");
+  escribe("hola");
+}
