@@ -225,7 +225,7 @@ fn valor_id(input: &str) -> IResult<&str, &str> {
     },
     Err(_) => {
       // Determina que estamos accediendo a un elemento
-      con_dim(id_valor)(next)
+      con_dim(id_valor, false)(next)
       .map(|(next_input, _)| {
         (next_input, "valor_id")
       })

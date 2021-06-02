@@ -104,7 +104,7 @@ pub fn programa(input: &str) -> IResult<&str, &str> {
   }
 
   // Lee el bloque de la función principal
-  match tuple((bloque, ws))(next) {
+  match tuple((bloque_funcion, ws))(next) {
     Ok((_, _)) => Ok(("", "programa")),
     Err(err) => Err(err),
   }

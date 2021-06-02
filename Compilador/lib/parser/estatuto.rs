@@ -12,6 +12,7 @@ use crate::parser::repeticion::*;
 use crate::parser::decision::*;
 use crate::parser::comentario::*;
 use crate::parser::regresa::*;
+use crate::parser::declaraciones::variables::*;
 
 /// No terminal de los diferentes estatutos.  
 /// Regresa un IResult, un Result nativo modificado de la libreria de Nom que incluye el input restante.
@@ -35,7 +36,7 @@ use crate::parser::regresa::*;
 /// };
 /// ```
 pub fn estatuto(input: &str) -> IResult<&str, &str> {
-  alt((comentario, regresa, funcion_esp, repeticion, decision, asignacion, llama_func))(input)
+  alt((comentario, regresa, funcion_esp, variables, repeticion, decision, asignacion, llama_func))(input)
 }
 
 #[cfg(test)]
