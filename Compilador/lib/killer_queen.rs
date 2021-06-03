@@ -235,7 +235,7 @@
 //! ```
 //! 
 //! #### Comentarios
-//! La estructura para mostrar un comentario es esta de una función en el lenguaje es la siguiente.
+//! La estructura para mostrar un comentario en el lenguaje es la siguiente.
 //! ```
 //! %% < texto > %%
 //! ```
