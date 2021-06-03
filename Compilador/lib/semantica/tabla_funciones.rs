@@ -81,14 +81,20 @@ impl TipoFunc {
   /// 
   /// match funcion.modificar_era("entero".to_owned(), 1); // Se está agregando un temporal entero
   /// ```
-  pub fn modificar_era(&mut self, tipo_var: String, temporal: i8) {
+  pub fn modificar_era(&mut self, tipo_var: String, temporal: i8, dims: Vec<i64>) {
+    // Calcula cuantas direcciones de memoria se van a separar dependiendo de las dimensiones de la variable
+    let cant_direcciones: i64 = match dims.len() {
+      2 => dims[0] * dims[1],
+      1 => dims[0],
+      _ => 1
+    };
     let posicion = conseguir_num_tipo(tipo_var.as_str());
     match temporal {
       1 => {
-        self.era[posicion as usize].1 += 1;
+        self.era[posicion as usize].1 += cant_direcciones;
       },
       _ => {
-        self.era[posicion as usize].0 += 1;
+        self.era[posicion as usize].0 += cant_direcciones;
       }
     };
   }
@@ -189,9 +195,9 @@ impl TablaFunciones {
   pub fn agregar_variable(&mut self, nombre_func: String, nombre_var: String, tipo_var: String, dims: Vec<i64>, dir: i64, temporal: i8) -> Result<(&str, String, TipoVar), (&str, String, String)> {
     // Busca la función y luego agrega la variable
     match self.tabla.get_mut(&nombre_func) {  
-      Some(funcion) => match funcion.variables.agregar_variable(nombre_var.clone(), tipo_var.clone(), dims, dir) {
+      Some(funcion) => match funcion.variables.agregar_variable(nombre_var.clone(), tipo_var.clone(), dims.clone(), dir) {
         Ok((_, var)) => {
-          funcion.modificar_era(tipo_var.clone(), temporal);
+          funcion.modificar_era(tipo_var.clone(), temporal, dims);
           Ok(("Variable agregada a funcion", nombre_func.clone(), var))
         },
         Err((_, nombre_var)) => Err(("Nombre de variable ocupado en funcion", nombre_func.clone(), nombre_var))
@@ -258,7 +264,7 @@ impl TablaFunciones {
           Ok((_, var)) => {
             // Agrega el parámetro a la lista de parametros al igual que a la tabla de variables
             funcion.parametros.push(var.clone());
-            funcion.modificar_era(tipo_var.clone(), 0);
+            funcion.modificar_era(tipo_var.clone(), 0, vec![]);
             Ok(("Parametro agregado a funcion", nombre_func.clone(), var))
           },
           Err((_, nom_var)) => Err(("Nombre de variable ocupado en funcion", nombre_func.clone(), nom_var))

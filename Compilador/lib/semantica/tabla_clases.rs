@@ -80,7 +80,7 @@ impl TablaClases {
       Some(clase) => match clase.metodos.tabla.get_mut(&nombre_func) {
         Some(metodo) => match metodo.variables.agregar_variable(nombre_var.clone(), tipo_var.clone(), dims.clone(), dir) {
           Ok((_, var)) => {
-            metodo.modificar_era(tipo_var.clone(), temporal);
+            metodo.modificar_era(tipo_var.clone(), temporal, dims);
             Ok(("Variable agregada a metodo", nombre_clase.clone(), nombre_func.clone(), var))
           },
           Err((_, nom_var)) => Err(("Nombre de variable ocupado en metodo", nombre_clase.clone(), nombre_func.clone(), nom_var))

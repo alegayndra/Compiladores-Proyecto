@@ -1,7 +1,6 @@
 programa arreglos;
 
 entero arr[10];
-entero a;
 
 void funcion llenar_arreglo() {
   arr[0] = 2;

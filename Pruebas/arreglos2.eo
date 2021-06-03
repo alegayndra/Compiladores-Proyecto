@@ -1,0 +1,8 @@
+programa arreglos2;
+
+entero arreglo[4], matriz[2][3];
+
+principal() {
+  matriz[0][0] = 0;
+  escribe(matriz[0][0]);
+}
