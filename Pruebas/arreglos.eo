@@ -15,49 +15,48 @@ void funcion llenar_arreglo() {
   arr[9] = 4;
 }
 
-void funcion buscar(entero var) {
-  entero seEncontro, i;
-  seEncontro = 0;
-  desde i = 0 hasta 9 {
-    si (var == arr[i]) {
-      seEncontro = 1;
-      escribe("valor");
-      escribe(i);
-    }
-  }
+entero tam;
 
-  si (seEncontro == 0) {
-    escribe("ay");
+entero funcion buscar(entero var) {
+  entero i;
+  desde i = 0 hasta tam {
+    si (var == arr[i]) {
+      regresa i;
+    }
   }
 }
 
 void funcion imprimir_arreglo() {
   entero i;
   escribe("arreglo");
-  desde i = 0 hasta 9 {
+  desde i = 0 hasta tam {
     escribe(arr[i]);
   }
   escribe("finarreglo");
 }
 
 void funcion sort() {
+  escribe("iniciosort");
   entero i, j, n, temp1, temp2;
-  n = 9;
+  n = tam;
   desde i = 0 hasta n {
     temp2 = n - i - 1;
     desde j = 0 hasta temp2 {
-      si (arr[i] > arr[j + 1]){
+      si (arr[j] > arr[j + 1]){
         temp1 = arr[j];
         arr[j] = arr[j + 1];
         arr[j + 1] = temp1;
       }
     }
   }
-  escribe("i");
+  escribe("finsort");
 }
+
 principal() {
+  tam = 9;
   llenar_arreglo();
   imprimir_arreglo();
+  escribe(buscar(3));
   sort();
   imprimir_arreglo();
 }

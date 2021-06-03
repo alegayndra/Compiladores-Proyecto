@@ -34,7 +34,6 @@ fn generar_cuadruplo_asignacion(variable: TipoVar) {
   let mut pila_valores = PILA_VALORES.lock().unwrap();
   let mut cuadruplos = CUADRUPLOS.lock().unwrap();
 
-  println!("asignacion: \n{:?}\n", pila_valores);
   // Consigue el último valor dentro de la pila de valores
   let valor = match pila_valores.pop() {
     Some(valor) => valor,
@@ -110,7 +109,6 @@ pub fn asignacion_interna(input: &str) -> IResult<&str, &str> {
   next = match tuple((ws, tag("="), ws, exp))(next) {
     Ok((next_input, _)) => {
       let mut pila_valores = PILA_VALORES.lock().unwrap();
-      println!("= \n{:?}\n", pila_valores);
       let var = pila_valores.pop().unwrap();
       drop(pila_valores);
 

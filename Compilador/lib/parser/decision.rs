@@ -94,7 +94,6 @@ fn sino(input: &str) -> IResult<&str, &str> {
 fn generar_gotof() {
   let mut cuadruplos = CUADRUPLOS.lock().unwrap();
   let mut lista_valores = PILA_VALORES.lock().unwrap();
-  println!("decision gotof: \n{:?}\n", lista_valores);
 
   let mut saltos = PILA_SALTOS.lock().unwrap();
   match lista_valores.pop() {

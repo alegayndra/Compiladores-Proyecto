@@ -44,23 +44,23 @@ pub fn buscar_variable(id_valor: &str) -> TipoVar {
     if contexto_funcion.clone() != "".to_owned() {
       match tabla_clases.buscar_variable_metodo(contexto_clase.clone(), contexto_funcion.clone(), id_valor.to_owned()) {
         Ok((_, _, _, var)) => return var,
-        Err(err) => {
-          // println!("{:?}", err);
+        Err(_err) => {
+          // println!("{:?}", e_errrr);
         }
       };
     } else {
       match tabla_clases.buscar_atributo(contexto_clase.clone(), id_valor.to_owned()) {
         Ok((_, _, var)) => return var,
-        Err(err) => {
-          // println!("{:?}", err);
+        Err(_err) => {
+          // println!("{:?}", _err);
         }
       };
     }
   } else {
     match tabla_funciones.buscar_variable(contexto_funcion.clone(), id_valor.to_owned()) {
       Ok((_, _, var)) => return var,
-      Err(err) => {
-        // println!("{:?}", err);
+      Err(_err) => {
+        // println!("{:?}", _err);
       }
     };
   }
@@ -181,7 +181,6 @@ fn popear_dimension() {
 /// ```
 fn generar_cuadruplo_verificar(variable: TipoVar, dim: usize) -> TipoVar {
   let mut pila_valores = PILA_VALORES.lock().unwrap();
-  println!("dim ver: \n{:?}\n", pila_valores);
   let mut cuadruplos = CUADRUPLOS.lock().unwrap();
   let valor = pila_valores.pop().unwrap();
   drop(pila_valores);
@@ -234,7 +233,6 @@ fn generar_cuadruplo_acceder(variable: TipoVar, valor: TipoVar, asignacion: bool
   
   if dimension == 2 {
     let mut pila_valores = PILA_VALORES.lock().unwrap();
-    println!("dim acceder: \n{:?}\n", pila_valores);
     let val = pila_valores.pop().unwrap();
     let offset = pila_valores.pop().unwrap();
     drop(pila_valores);
@@ -246,7 +244,6 @@ fn generar_cuadruplo_acceder(variable: TipoVar, valor: TipoVar, asignacion: bool
     };
     
     let mut pila_valores = PILA_VALORES.lock().unwrap();
-    println!("dim acceder 2: \n{:?}\n", pila_valores);
     let val = pila_valores.pop().unwrap();
     drop(pila_valores);
     match cuadruplos.agregar_cuadruplo_suma_arreglo("+", dir.clone(), val.clone()) {
@@ -258,7 +255,6 @@ fn generar_cuadruplo_acceder(variable: TipoVar, valor: TipoVar, asignacion: bool
   }
   if !asignacion {
     let mut pila_valores = PILA_VALORES.lock().unwrap();
-    println!("dim asignacion: \n{:?}\n", pila_valores);
     let apuntador = pila_valores.pop().unwrap();
     drop(pila_valores);
     match cuadruplos.agregar_cuadruplo_acceder(apuntador) {
@@ -403,7 +399,6 @@ pub fn con_dim(id_valor: &str, asignacion: bool) -> impl FnMut(&str)  -> IResult
       {
         let mut pila_val = PILA_VALORES.lock().unwrap();
         pila_val.push(variable.clone());
-        println!("dim al final: \n{:?}\n", pila_val);
       }
     }
     Ok((next, "con_dim"))
