@@ -1,10 +1,8 @@
 programa arreglos;
 
 entero arr[10];
-entero a;
 
 void funcion llenar_arreglo() {
-  a = 10;
   arr[0] = 2;
   arr[1] = 1;
   arr[2] = 0;
@@ -17,11 +15,11 @@ void funcion llenar_arreglo() {
   arr[9] = 4;
 }
 
-void funcion buscar() {
+void funcion buscar(entero var) {
   entero seEncontro, i;
   seEncontro = 0;
   desde i = 0 hasta 9 {
-    si (var == arreglo[i]) {
+    si (var == arr[i]) {
       seEncontro = 1;
       escribe("valor");
       escribe(i);
@@ -33,22 +31,34 @@ void funcion buscar() {
   }
 }
 
-void funcion sort() {
-  escribe("i");
-}
-
-void imprimir_arreglo() {
+void funcion imprimir_arreglo() {
   entero i;
   escribe("arreglo");
   desde i = 0 hasta 9 {
-    escribe(arreglo[i]);
+    escribe(arr[i]);
   }
   escribe("finarreglo");
+}
+
+void funcion sort() {
+  entero i, j, n, temp1, temp2;
+  n = 9;
+  desde i = 0 hasta n {
+    temp2 = n - i - 1;
+    desde j = 0 hasta temp2 {
+      si (arr[i] > arr[j + 1]){
+        temp1 = arr[j];
+        arr[j] = arr[j + 1];
+        arr[j + 1] = temp1;
+      }
+    }
+  }
+  escribe("i");
 }
 
 principal() {
   llenar_arreglo();
   imprimir_arreglo();
   sort();
-  imprimir_arreglo()
+  imprimir_arreglo();
 }

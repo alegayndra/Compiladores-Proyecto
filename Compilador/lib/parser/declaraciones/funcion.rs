@@ -123,7 +123,7 @@ fn agregar_funcion(id_f: &str, tipo_func: &str) {
         if id_programa != "".to_owned() && id_programa != id_f {
           match funciones.tabla.get_mut(&id_programa) {  
             Some(funcion) => {
-              funcion.modificar_era(tipo_func.to_owned(), 0);
+              funcion.modificar_era(tipo_func.to_owned(), 0, vec![]);
             },
             None => {
               println!("Funcion global no existente")
