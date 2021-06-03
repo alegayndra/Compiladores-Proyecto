@@ -1,8 +1,10 @@
 programa arreglos2;
 
-entero arreglo[4], matriz[2][3];
+entero arr[10], mat[4][6];
 
 principal() {
-  matriz[0][0] = 0;
-  escribe(matriz[0][0]);
+  mat[0][0] = 5;
+  mat[0][1] = 6;
+  escribe(mat[0][0]);
+  escribe(mat[0][1]);
 }
