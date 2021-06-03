@@ -46,7 +46,7 @@ void funcion sort() {
   desde i = 0 hasta n {
     temp2 = n - i - 1;
     desde j = 0 hasta temp2 {
-      si (arr[i] > arr[j + 1]){
+      si (arr[j] > arr[j + 1]){
         temp1 = arr[j];
         arr[j] = arr[j + 1];
         arr[j + 1] = temp1;

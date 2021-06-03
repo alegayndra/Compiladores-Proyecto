@@ -30,13 +30,39 @@ Los tipos de datos existentes en el lenguaje son:
 - flotante
 - char
 
+Y se pueden crear arreglos de estos también.
+
 Un ejemplo de como se verían la declaración de variables es
 ```
 entero < variable >;
+entero < variable >[< tamaño_arreglo >];
 flotante < variable >;
 char < variable >;
 ```
 
+Si se quiere crear funciones además de la función _principal()_ eso es lo siguiente.  
+Primero se indica el tipo de retorno de la función si es que tiene usando las palabras reservadas _entero_, _flotante_, _char_, _void_.  
+Luego se coloca la palabra reservada _funcion_, después un < nombre > y por último los _()_.
+
+Lo anterior visto en código daría un ejemplo como este:
+```
+void funcion < nombre >()
+```
+
+Si se desean agregar parámetros a la función se tiene que indicar el tipo de dato y luego el nombre de la misma.  
+Un ejemplo se puede ver así:
+```
+char funcion < nombre >(flotante < variable_1 >, entero < variable_2 >)
+```
+
+Por último todo el segmento de código de una función se tiene que encontrar rodeando entre **{ }**
+
+Un ejemplo con todas las especificaciones de funciones se vería así:
+```
+void funcion buscar(entero var){
+    
+}
+```
 
 Para correr el compilador y la máquina virtual, se necesita tener instalado el ambiente de desarrollo rust y de python. Una vez instalados, se siguen las siguientes instrucciones dentro de la carpeta principal.
 

@@ -276,7 +276,7 @@ def param(valor, parametro):
   while tipo >= 0:
     if parametro >= dir_memoria[1][tipo][0]:
       memoriaFuncionEnProgreso[len(memoriaFuncionEnProgreso) - 1][tipo][0][parametro - dir_memoria[1][tipo][0]] = val
-      print('params', memoriaFuncionEnProgreso[len(memoriaFuncionEnProgreso) - 1][tipo][0][parametro - dir_memoria[1][tipo][0]])
+      # print('params', memoriaFuncionEnProgreso[len(memoriaFuncionEnProgreso) - 1][tipo][0][parametro - dir_memoria[1][tipo][0]])
     tipo -= 1
   
 # Cambio de contexto y salto al cuádruplo de la función a procesar
@@ -357,10 +357,10 @@ def switchCubo(cuadruplo):
 
 def ejecutar_programa():
   while num_cuadruplo[0] < len(lista_cuadruplos):
-    print("Ejecutamos el cuadruplo #", num_cuadruplo[0])
-    print(lista_cuadruplos[num_cuadruplo[0]])
+    # print("Ejecutamos el cuadruplo #", num_cuadruplo[0])
+    # print(lista_cuadruplos[num_cuadruplo[0]])
     switchCubo(lista_cuadruplos[num_cuadruplo[0]]) 
-    print("Ahorita vamos en el cuadruplo --> ",num_cuadruplo)
+    # print("Ahorita vamos en el cuadruplo --> ",num_cuadruplo)
     num_cuadruplo[0] += 1
 
 '''

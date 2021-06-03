@@ -2,9 +2,20 @@ programa arreglos2;
 
 entero arr[10], mat[4][6];
 
+void funcion mult(){
+
+}
 principal() {
+  entero aux;
   mat[0][0] = 5;
   mat[0][1] = 6;
   escribe(mat[0][0]);
   escribe(mat[0][1]);
+  aux = mat[0][0];
+  escribe(aux);
+  mat[0][0] = mat[0][1];
+  mat[0][1] = aux;
+  escribe(mat[0][0]);
+  escribe(mat[0][1]);
+  mult();
 }
