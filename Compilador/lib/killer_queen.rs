@@ -2,107 +2,249 @@
 //! 
 //! Utilizamos las librerias de _nom_ y _lazy static_, para parsear y crear variables estáticas en ejecución respectivamente.
 //!
-//! # Manual de usuario
-//! Instrucciones sobre la creación de datos para el lenguaje de compilación _Killer Queen_
+//! # Manual de usuario - Killer Queen
+//! Manual de usuario sobre el lenguaje de programación _Killer Queen_
 //! 
 //! Todo el código que se genere tiene que pertenecer a un archivo de terminación `.eo`.
 //! 
-//! Cuando se haga alusión a una variable (nombre personalizable) mientras se explica, se encontrará dicho texto rodeado de `<` `>`, dichos caracteres *NO* forman parte del código  
+//! Nota: Cuando se haga alusión a una variable (nombre personalizable) en las explicaciones, se encontrará dicho texto rodeado de `<` `>`, dichos caracteres *NO* forman parte del código  
 //! Por ejemplo: 
 //! ```
 //! entero < variable > ;
 //! ```
 //! 
-//! 
 //! Ya con la variable seleccionada la misma línea de código se vería así:  
 //! ```
 //! entero var1;
 //! ```
-//! ## Instrucciones
 //! 
-//! ### Estructura
+//! ## Estructura básica
 //! 
-//! La primera línea de código debe ser
+//! La estructura básica de un código del lenguaje es la siguiente:
+//! 
 //! ```
-//! programa < nombre > ;
-//! ```
-//! Para indicar el nombre del programa.
+//! programa < id > ;
 //! 
-//! Si se quieren declarar variables globales eso es lo siguiente a declarar, primero se indica el tipo y luego se indica el nombre.  
-//! Los tipos de datos existentes en el lenguaje son:
+//! < declaraciones >
+//! 
+//! principal() {
+//!   < estatutos >
+//! }
+//! ```
+//! 
+//! ### ID Programa
+//! La parte inicial del código sirve para indiciar el nombre del programa.
+//! 
+//! ### Declaraciones
+//! 
+//! Dentro de la sección de `declaraciones` se pueden declarar variables globales y/o funciones.
+//! 
+//! #### Variables
+//! 
+//! La variables se declaran de la siguiente manera:
+//! 
+//! ```
+//! < tipo > < id > < dimensiones > ;
+//! ```
+//! 
+//! Donde el `tipo` y el `id` son requisitos, mientras que las `dimensiones` son opcionales.
+//! 
+//! Los tipos de variables existentes en el lenguaje son:
 //! - entero
 //! - flotante
 //! - char
 //! 
-//! Y se pueden crear arreglos de estos también.
+//! La estructura de las dimensiones es la siguiente
 //! 
-//! Un ejemplo de como se verían la declaración de variables es
 //! ```
-//! entero < variable >;
-//! entero < variable >[< tamaño_arreglo >];
-//! flotante < variable >;
-//! char < variable >;
+//! [ < num entero > ] [ < num entero > ]
 //! ```
 //! 
-//! Si se quiere crear funciones además de la función _principal()_ eso es lo siguiente.  
-//! Primero se indica el tipo de retorno de la función si es que tiene usando las palabras reservadas _entero_, _flotante_, _char_, _void_.  
-//! Luego se coloca la palabra reservada _funcion_, después un < nombre > y por último los _()_.
+//! También se pueden declarar varias variables en la misma linea de la siguiente manera: 
 //! 
-//! Lo anterior visto en código daría un ejemplo como este:
 //! ```
-//! void funcion < nombre >()
+//! < tipo > < id > < dimensiones > , < id > < dimensiones > , < id > < dimensiones > , ... < id > < dimensiones > ;
 //! ```
 //! 
-//! Si se desean agregar parámetros a la función se tiene que indicar el tipo de dato y luego el nombre de la misma.  
-//! Un ejemplo se puede ver así:
+//! ##### Ejemplos
 //! ```
-//! char funcion < nombre >(flotante < variable_1 >, entero < variable_2 >)
-//! ```
-//! 
-//! Por último todo el segmento de código de una función se tiene que encontrar rodeando entre **{ }**
-//! 
-//! Un ejemplo con todas las especificaciones de funciones se vería así:
-//! ```
-//! void funcion buscar(entero var){}
+//! entero num;
+//! flotante promedio;
+//! char letra;
+//! entero a, b, c, d;
+//! char nombre[10];
 //! ```
 //! 
-//! Para correr el compilador y la máquina virtual, se necesita tener instalado el ambiente de desarrollo rust y de python. Una vez instalados, se siguen las siguientes instrucciones dentro de la carpeta principal.
+//! #### Funciones
 //! 
-//! Para correr el compilador se corre el siguiente comando:
+//! Las funciones se declaran de la siguiente manera:
 //! 
-//! ```bash
-//! $ cargo run nombre_archivo
+//! ```
+//! < tipo > funcion < id > ( < parametros > ) { < estatutos > }
 //! ```
 //! 
-//! Donde `nombre_archivo` es el nombre del archivo con el código a compilar sin la terminación de `.eo`. Por ejemplo, para compilar el acrhivo `sumas_y_restas.eo`, se debe correr `cargo run sumas_y_restas`.
+//! Los tipos de variables existentes en el lenguaje son:
+//! - entero
+//! - flotante
+//! - char
+//! - void
 //! 
-//! También se tiene que crear un directorio llamado `cuadruplos` para que se pueda generar el archivo de sálida.
+//! Los parametros son atómicos y siguen la siguiente estructura:
 //! 
-//! Una vez generado el archivo de sálida con el código intermedio, para poder ejectutarlo, se corre el siguiente comando para correr la máquina virtual:
-//! 
-//! ```bash
-//! linux: 
-//! $ python3 Maquina_Virtual/main.py
-//! 
-//! windows:
-//! $ python Maquina_Virtual/main.py
+//! ```
+//! < tipo > < id > , < tipo > < id >, < tipo > < id > ... , < tipo > < id >
 //! ```
 //! 
-//! ### Pruebas
+//! Puede que una función no tenga parámetros.
 //! 
-//! #### Pruebas unitarias
-//! Para correr las pruebas unitarias dentro de Rust, se corre el siguiente comando:
+//! ##### Ejemplos
+//! ```
+//! entero funcion suma(entero a, entero b) { < estatutos > }
+//! flotante funcion multiplicacion(flotante a, flotante b) { < estatutos > }
+//! void funcion imprimir() { < estatutos > }
+//! ```
+//! ### Expresiones
 //! 
-//! ```bash
-//! cargo test -- --test-threads=1
+//! Cada expresión _< exp >_, _< expresion >_ genera derivaciones para ejecutar operaciones aritméticas, lógicas y relacionales. 
+//! 
+//! ### Estatutos
+//! 
+//! Los estatutos son las acciones de código que pertenecen dentro de una función y son las siguientes:
+//! - Asignaciones
+//! - Lectura
+//! - Escritura
+//! - Llamada de función
+//! - Ciclos
+//! - Condicionales
+//! - Retornos
+//! - Comentarios
+//! 
+//! Representa la "columna vertebral" del lenguaje, casi todas las acciones por ejecutar derivan de _estatuto_.
+//! 
+//! #### Asignaciones
+//! 
+//! Todas las asginaciones tienen la siguiente estructura:
+//! ```
+//! < id > = < exp >;
+//! ```
+//! Cada expresión _< exp >_ permite asignar el resultado obtenido a < id >. 
+//! 
+//! ##### Ejemplos
+//! ```
+//! num = 10;
+//! promedio = 9.7;
+//! letra = 'J';
+//! a = b - d / c * 3;
+//! nombre[1] = 'M';
+//! ```
+//! #### Lectura
+//! La estructura para mostrar un mensaje en la consola es la siguiente.
+//! 
+//! ```
+//!  lee ( < id >, < id >, < id > ... , < id > );
+//! ```
+//! ##### Ejemplo
+//! ```
+//! lee(num, promedio);
+//! ```
+//! #### Escritura
+//! La estructura para escribir un mensaje en la consola es la siguiente.
+//! 
+//! ```
+//!  escribe ( < texto >, < texto >, < texto > ... , < texto > );
+//! ```
+//! También se permiten que se escriba el resultado de una expresión siguiendo la estructura de
+//! ```
+//!  escribe ( < expresion > );
 //! ```
 //! 
-//! #### Pruebas de compilador
-//! Para correr los diferentes archivos de prueba, se corre `cargo run Pruebas/archivo`, donde `archivo` es el nombre del archivo deseado a correr. Luego, para correr la maquina virtual, se corre `python3 Maquina_Virtual/main.py`.
+//! ##### Ejemplos
+//! ```
+//! escribe(suma(2, 3, 4));
+//! escribe("Hola mundo");
+//! escribe(num);
+//! ```
+//! #### Llamada de función
+//! La estructura para llamar una función es la siguiente.
 //! 
-//! ### Generar documentación
+//! ```
+//! < id > ( < expresion >, < expresion > );
+//! ```
+//! Cada expresión va a representar el parámetro a enviar de dicha función.
+//! También se permiten que se escriba el resultado de una expresión siguiendo la estructura de
 //! 
-//! Para generar y abrir la documentación corre `cargo doc --lib --open`.
+//! ##### Ejemplos
+//! ```
+//! suma(2, 3, 4);
+//! llenar_arreglo();
+//! resta(9 - 4);
+//! ```
+//! #### Repetición
+//! Hay dos estructura para hacer un ciclo, depende de si sigues un formato de _while loop_ o un formato de _for loop_. 
+//! 
+//! ##### While loop
+//! ```
+//! mientras ( < expresion > ){ < estatuto > }
+//! ```
+//! 
+//! ##### For loop
+//! ```
+//! desde < id > = < exp > hasta < exp > { < estatuto > }
+//! ```
+//! Cada expresión va a representar el parámetro a enviar de dicha función.
+//! También se permiten que se escriba el resultado de una expresión siguiendo la estructura de
+//! 
+//! ##### Ejemplos
+//! ```
+//! desde i = 10 hasta 20 {
+//!     escribe(i);
+//! }
+//! mientras ( var > 1) {
+//!     var = var - 1;
+//!     acum = acum * (var);
+//!   }
+//! ```
+//! #### Condicionales
+//! La estructura para realizar una decisión en el lenguaje es la siguiente.
+//! 
+//! ```
+//! si ( < expresion >) { 
+//!   < estatuto > 
+//! }
+//! sino { < estatuto > }
+//! ```
+//! 
+//! ##### Ejemplos
+//! ```
+//! si (var > 0) {
+//!     regresa 1;
+//! }
+//! sino{
+//!   regresa i;
+//! }
+//! ```
+//! #### Retornos
+//! La estructura para ejecutar un retorno de una función en el lenguaje es la siguiente.
+//! ```
+//! regresa < exp >;
+//! ```
+//! 
+//! ##### Ejemplo
+//! ```
+//! regresa i;
+//! ```
+//! 
+//! #### Comentarios
+//! La estructura para mostrar un comentario es esta de una función en el lenguaje es la siguiente.
+//! ```
+//! %% < texto > %%
+//! ```
+//! Solo se permite hacer comentarios dentro de las funciones.
+//! 
+//! ##### Ejemplos
+//! ```
+//! %% entero i; %%
+//! ```
 
 use std::fs::File;
 use std::io::prelude::*;
