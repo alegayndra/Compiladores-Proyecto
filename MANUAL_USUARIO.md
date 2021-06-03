@@ -99,6 +99,9 @@ entero funcion suma(entero a, entero b) { < estatutos > }
 flotante funcion multiplicacion(flotante a, flotante b) { < estatutos > }
 void funcion imprimir() { < estatutos > }
 ```
+### Expresiones
+
+Cada expresión _< exp >_, _< expresion >_ genera derivaciones para ejecutar operaciones aritméticas, lógicas y relacionales. 
 
 ### Estatutos
 
@@ -112,13 +115,15 @@ Los estatutos son las acciones de código que pertenecen dentro de una función 
 - Retornos
 - Comentarios
 
+Representa la "columna vertebral" del lenguaje, casi todas las acciones por ejecutar derivan de _estatuto_.
+
 #### Asignaciones
 
 Todas las asginaciones tienen la siguiente estructura:
 ```
 < id > = < exp >;
 ```
-Cada expresión _< exp >_ genera derivaciones para ejecutar operaciones aritméticas, lógicas y relacionales, que permite asignar el resultado obtenido a < id >. 
+Cada expresión _< exp >_ permite asignar el resultado obtenido a < id >. 
 
 ##### Ejemplos
 ```
@@ -215,7 +220,24 @@ sino{
 }
 ```
 #### Retornos
-La estructura para ejeecutar un retorno de una función en el lenguaje es la siguiente.
+La estructura para ejecutar un retorno de una función en el lenguaje es la siguiente.
 ```
 regresa < exp >;
+```
+
+##### Ejemplo
+```
+regresa i;
+```
+
+#### Comentarios
+La estructura para mostrar un comentario es esta de una función en el lenguaje es la siguiente.
+```
+%% < texto > %%
+```
+Solo se permite hacer comentarios dentro de las funciones.
+
+##### Ejemplos
+```
+%% entero i; %%
 ```
