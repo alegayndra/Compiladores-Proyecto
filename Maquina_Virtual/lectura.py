@@ -74,7 +74,7 @@ def guardarFunciones(direcciones_funcs):
 
     # Registro de valores para los parámetros de la función en lectura
     guardarParams(direcciones_funcs[direcciones_funcs.find("PARAMS") + 7:direcciones_funcs.find("FIN_PARAMS")], i)
-    direcciones_funcs = direcciones_funcs[direcciones_funcs.find("FIN_PARAMS", readStr) + 11:direcciones_funcs.find("FIN_FUNCIONES", readStr)]
+    direcciones_funcs = direcciones_funcs[direcciones_funcs.find("FIN_PARAMS", readStr) + 11:]
     readStr = 0
     i += 1
 

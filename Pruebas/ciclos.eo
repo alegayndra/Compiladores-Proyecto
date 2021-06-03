@@ -1,74 +1,9 @@
 programa ciclos;
 
-entero arr[10];
-
-void funcion llenar_arreglo() {
-  arr[0] = 2;
-  arr[1] = 1;
-  arr[2] = 0;
-  arr[3] = 8;
-  arr[4] = 9;
-  arr[5] = 6;
-  arr[6] = 5;
-  arr[7] = 7;
-  arr[8] = 3;
-  arr[9] = 4;
-}
-
-void funcion buscar(entero var) {
-  entero seEncontro, i;
-  seEncontro = 0;
-  desde i = 0 hasta 9 {
-    si (var == arr[i]) {
-      seEncontro = 1;
-      escribe("valor");
-      escribe(i);
-    }
-  }
-
-  si (seEncontro == 0) {
-    escribe("ay");
-  }
-}
-
-void funcion imprimir_arreglo() {
-  entero i;
-  escribe("arreglo");
-  desde i = 0 hasta 9 {
-    escribe(arr[i]);
-  }
-  escribe("finarreglo");
-}
-
-void funcion sort() {
-  entero i, j, n, temp1, temp2;
-  n = 9;
-  desde i = 0 hasta n {
-    temp2 = n - i - 1;
-    desde j = 0 hasta temp2 {
-      si (arr[i] > arr[j + 1]){
-        temp1 = arr[j];
-        arr[j] = arr[j + 1];
-        arr[j + 1] = temp1;
-      }
-    }
-  }
-  escribe("i");
-}
 
 principal() {
   entero i;
-  i = 10;
-
-  si (i > 2) {
-    escribe(i);
-  }
-
-  mientras(i > 2) {
-    escribe(i);
-    i = i - 2;
-  }
-
+ 
   desde i = 10 hasta 20 {
     escribe(i);
   }
