@@ -1,23 +1,53 @@
 programa prueba_general;
 
-entero i;
+entero num;
 char letra;
 flotante promedio;
 
+void funcion imprimir() {
+  escribe("hola");
+}
+
+entero arr[10];
+
+void funcion llenar_arreglo() {
+  arr[0] = 2;
+  arr[1] = 1;
+  arr[2] = 0;
+  arr[3] = 8;
+}
+
+entero funcion buscar(entero var) {
+  entero i;
+  desde i = 0 hasta 13 {
+    si (var == arr[i]) {
+      regresa i;
+    }
+  }
+}
+
+entero funcion suma(entero a, entero b, entero c) {
+  escribe(a);
+  escribe(b);
+  escribe(c);
+  regresa b + c;
+}
+
 principal() {
+  entero i;
   %% asignaciones %%
-  i = 20;
+  num = 20;
   promedio = 10.1;
   letra = "2";
 
   %% imprimir valores a consola %%
-  escribe("i", i);
+  escribe("num", num);
   escribe("promedio", promedio);
   escribe("letra", letra);
 
   %% lectura de valores %%
-  escribe("i");
-  lee(i);
+  escribe("num");
+  lee(num);
 
   escribe("promedio");
   lee(promedio);
@@ -25,6 +55,8 @@ principal() {
   escribe("letra");
   lee(letra);
 
+  
+  i = 10;
   %% deciciones %%
   si (i > 10) {
     escribe("hola");
@@ -33,13 +65,26 @@ principal() {
   }
 
   %% ciclos %%
+  escribe("mientras");
   i = 20;
   mientras (i > 10) {
     escribe(i);
     i = i - 1;
   }
+  escribe("finMientras");
 
+  escribe("desde");
   desde i = 10 hasta 20 {
     escribe(i);
   }
+  escribe("finDesde");
+
+  %% Llamadas a función %%
+  escribe("suma");
+  escribe(suma(2, 3, 4));
+
+  imprimir();
+
+  llenar_arreglo();
+  escribe(buscar(8));
 }

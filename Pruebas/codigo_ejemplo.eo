@@ -1,0 +1,21 @@
+programa ejemplo;
+
+entero num;
+
+entero funcion suma(entero a, entero b) {
+  escribe(a);
+  escribe(b);
+  regresa a + b;
+}
+
+principal() {
+  num = 10;
+  escribe(num);
+  
+  entero i;
+  i = num + 1;
+
+  escribe(i);
+
+  escribe(suma(2, 3));
+}
