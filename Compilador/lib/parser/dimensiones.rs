@@ -382,21 +382,23 @@ pub fn con_dim(id_valor: &str, asignacion: bool) -> impl FnMut(&str)  -> IResult
           }
         }
       };
-      match corchete(next) {
-        Ok((next_input, _)) => {
-          pushear_dimension(variable.clone(), 2);
-          match tuple((delimited(ws, exp, ws), tag("]")))(next_input) {
-            Ok((next_i, _)) => {
-              let valor = generar_cuadruplo_verificar(variable.clone(), 1);
-              generar_cuadruplo_acceder(variable.clone(), valor.clone(), asignacion, 2);
-              popear_dimension();
-              return Ok((next_i, "con_dim"));
-            },
-            Err(err) => return Err(err)
-          }
-        },
-        Err(err) => return Err(err)
-      };
+      if variable.dimensiones.len() > 1 {
+        match corchete(next) {
+          Ok((next_input, _)) => {
+            pushear_dimension(variable.clone(), 2);
+            match tuple((delimited(ws, exp, ws), tag("]")))(next_input) {
+              Ok((next_i, _)) => {
+                let valor = generar_cuadruplo_verificar(variable.clone(), 1);
+                generar_cuadruplo_acceder(variable.clone(), valor.clone(), asignacion, 2);
+                popear_dimension();
+                return Ok((next_i, "con_dim"));
+              },
+              Err(err) => return Err(err)
+            }
+          },
+          Err(err) => return Err(err)
+        };
+      }
     } else {
       {
         let mut pila_val = PILA_VALORES.lock().unwrap();
