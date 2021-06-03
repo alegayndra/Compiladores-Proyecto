@@ -234,18 +234,19 @@ fn generar_cuadruplo_acceder(variable: TipoVar, valor: TipoVar, asignacion: bool
   
   if dimension == 2 {
     let mut pila_valores = PILA_VALORES.lock().unwrap();
-    println!("dim acceder: {:?}", pila_valores);
-    let apuntador = pila_valores.pop().unwrap();
+    println!("dim acceder: \n{:?}\n", pila_valores);
+    let val = pila_valores.pop().unwrap();
+    let offset = pila_valores.pop().unwrap();
     drop(pila_valores);
-    // Agrega cuadruplo de acceder a valor dentro de un temporal
-    match cuadruplos.agregar_cuadruplo_acceder(apuntador) {
+    match cuadruplos.agregar_cuadruplo("+", offset, val) {
       Ok(_) => (),
       Err(err) => {
         println!("{:?}", err);
       }
     };
+    
     let mut pila_valores = PILA_VALORES.lock().unwrap();
-    println!("dim acceder 2: {:?}", pila_valores);
+    println!("dim acceder 2: \n{:?}\n", pila_valores);
     let val = pila_valores.pop().unwrap();
     drop(pila_valores);
     match cuadruplos.agregar_cuadruplo_suma_arreglo("+", dir.clone(), val.clone()) {
@@ -257,7 +258,7 @@ fn generar_cuadruplo_acceder(variable: TipoVar, valor: TipoVar, asignacion: bool
   }
   if !asignacion {
     let mut pila_valores = PILA_VALORES.lock().unwrap();
-    println!("dim asignacion: {:?}", pila_valores);
+    println!("dim asignacion: \n{:?}\n", pila_valores);
     let apuntador = pila_valores.pop().unwrap();
     drop(pila_valores);
     match cuadruplos.agregar_cuadruplo_acceder(apuntador) {
@@ -295,7 +296,7 @@ fn generar_cuadruplo_offset(variable: TipoVar, valor: TipoVar) {
   let mut constantes = CONSTANTES.lock().unwrap();
   let mut cuadruplos = CUADRUPLOS.lock().unwrap();
   // Consigue la dirección base de la variable atómica como variable constante
-  let dim_constante = constantes.agregar_constante(variable.dimensiones[1].to_string(), variable.tipo.clone());
+  let dim_constante = constantes.agregar_constante(variable.dimensiones[0].to_string(), variable.tipo.clone());
 
   // Genera cuadruplo de offset
   match cuadruplos.agregar_cuadruplo("*", valor.clone(), dim_constante.clone()) {
@@ -338,11 +339,9 @@ pub fn con_dim(id_valor: &str, asignacion: bool) -> impl FnMut(&str)  -> IResult
     let variable = buscar_variable(id_valor);
 
     // Primera dimensión
-    if variable.dimensiones.len() >= 0 {
-      // let mut hubo_dimensiones: bool = false;
+    if variable.dimensiones.len() > 0 {
       next = match corchete(next) {
         Ok((next_input, _)) => {
-          // hubo_dimensiones = true;
           match variable.dimensiones.len() {
             0 => {
               // Marca error cuando se intenta indexar una variable atómica
@@ -352,41 +351,23 @@ pub fn con_dim(id_valor: &str, asignacion: bool) -> impl FnMut(&str)  -> IResult
                 code: nom::error::ErrorKind::Tag
               }));
             },
-            _ => {
-              // Genera cuadruplos de indexación de variable no atómica
-              pushear_dimension(variable.clone(), 1);
-              match tuple((delimited(ws, exp, ws), tag("]")))(next_input) {
-                Ok((next_i, _)) => {
-                  popear_dimension();
-                  let valor = generar_cuadruplo_verificar(variable.clone(), 0);
-                  // Checa que haya otra dimensión para saber si generar el cuadruplo de offset o de acceso
-                  match variable.dimensiones.len() {
-                    1 => { generar_cuadruplo_acceder(variable.clone(), valor.clone(), asignacion, 1); },
-                    2 => {
-                      generar_cuadruplo_offset(variable.clone(), valor.clone());
-                      match corchete(next_i) {
-                        Ok((next_input, _)) => {
-                          pushear_dimension(variable.clone(), 2);
-                          match tuple((delimited(ws, exp, ws), tag("]")))(next_input) {
-                            Ok((next_i, _)) => {
-                              let valor = generar_cuadruplo_verificar(variable.clone(), 1);
-                              generar_cuadruplo_acceder(variable.clone(), valor.clone(), asignacion, 2);
-                              popear_dimension();
-                              return Ok((next_i, "con_dim"));
-                            },
-                            Err(err) => return Err(err)
-                          }
-                        },
-                        Err(err) => return Err(err)
-                      };
-                    },
-                    _ => ()
-                  };
-                  next_i
-                },
-                Err(err) => return Err(err)
-              }
-            }
+            _ => {}
+          };
+          // Genera cuadruplos de indexación de variable no atómica
+          pushear_dimension(variable.clone(), 1);
+          match tuple((delimited(ws, exp, ws), tag("]")))(next_input) {
+            Ok((next_i, _)) => {
+              popear_dimension();
+              let valor = generar_cuadruplo_verificar(variable.clone(), 0);
+              // Checa que haya otra dimensión para saber si generar el cuadruplo de offset o de acceso
+              match variable.dimensiones.len() {
+                1 => { generar_cuadruplo_acceder(variable.clone(), valor.clone(), asignacion, 1); },
+                2 => { generar_cuadruplo_offset(variable.clone(), valor.clone()); },
+                _ => ()
+              };
+              next_i
+            },
+            Err(err) => return Err(err)
           }
         },
         Err(_) => {
@@ -401,9 +382,23 @@ pub fn con_dim(id_valor: &str, asignacion: bool) -> impl FnMut(&str)  -> IResult
           }
         }
       };
+      match corchete(next) {
+        Ok((next_input, _)) => {
+          pushear_dimension(variable.clone(), 2);
+          match tuple((delimited(ws, exp, ws), tag("]")))(next_input) {
+            Ok((next_i, _)) => {
+              let valor = generar_cuadruplo_verificar(variable.clone(), 1);
+              generar_cuadruplo_acceder(variable.clone(), valor.clone(), asignacion, 2);
+              popear_dimension();
+              return Ok((next_i, "con_dim"));
+            },
+            Err(err) => return Err(err)
+          }
+        },
+        Err(err) => return Err(err)
+      };
     } else {
       {
-  
         let mut pila_val = PILA_VALORES.lock().unwrap();
         pila_val.push(variable.clone());
         println!("dim al final: \n{:?}\n", pila_val);

@@ -648,7 +648,7 @@ impl ListaCuadruplos {
           Ok((_, var)) => {
             let mut pila_valores = PILA_VALORES.lock().unwrap();
             pila_valores.push(var);
-            println!("{:?}", pila_valores);
+            println!("agregar_cuadruplo_acceder \n{:?}\n", pila_valores);
             agregar_temporal_a_tabla(nombre_temporal.clone(), apuntador.tipo.clone(), dir);
             break;
           },

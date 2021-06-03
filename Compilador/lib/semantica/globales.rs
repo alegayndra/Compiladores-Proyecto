@@ -215,7 +215,6 @@ fn conseguir_contexto(contexto_num: usize) -> String {
 /// };
 /// ```
 pub fn conseguir_direccion(tipo_var: &str, contexto: &str, temporal: usize, dims: Vec<i64>) -> Result<i64, String> {
-  println!("{:?}", dims.clone());
   let contexto_num: usize;
   let tipo_num: usize;
   // Busca si el contexto es constante, local o global
@@ -233,7 +232,6 @@ pub fn conseguir_direccion(tipo_var: &str, contexto: &str, temporal: usize, dims
     1 => dims[0],
     _ => 1
   };
-  println!("{:?}", cant_direcciones);
 
   // Consigue el tipo de la variable en número
   tipo_num = match conseguir_num_tipo(tipo_var) {
