@@ -18,6 +18,8 @@ entero funcion fact_recursivo(entero var) {
 }
 
 principal(){
-  escribe(fact_iterativo(6));
-  escribe(fact_recursivo(6));
+  entero fact;
+  fact = 6;
+  escribe("iterativo", fact_iterativo(fact));
+  escribe("recursivo", fact_recursivo(fact));
 }

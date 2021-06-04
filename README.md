@@ -5,6 +5,8 @@ Compilador desarrollado en _rust_, con las librerías de _nom_ y _lazy static_.
 
 Máquina virtual desarrollada en _python_.
 
+[Link al repo](https://github.com/alegayndra/KillerQueen)
+
 ## Instrucciones
 
 ### Correr programa

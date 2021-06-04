@@ -1,6 +1,6 @@
 programa operaciones;
 
-entero a, b;
+flotante a, b;
 
 principal() {
   a = 10;
@@ -9,17 +9,4 @@ principal() {
   escribe(a - b);
   escribe(a * b);
   escribe(a / b);
-
-  b = 0;
-
-  escribe(a & b);
-  escribe(a | b);
-
-  b = 10;
-  escribe(a > b);
-  escribe(a >= b);
-  escribe(a < b);
-  escribe(a <= b);
-  escribe(a == b);
-  escribe(a != b);
 }

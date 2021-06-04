@@ -164,29 +164,3 @@ def leer_obj():
   
   #
   leerCuadruplos(stringTxt[stringTxt.find("CUADRUPLOS") + 11:stringTxt.find("FIN_CUADRUPLOS")])
-  '''
-  print("Aqui estan las variables globales")
-  print(mapa_memoria[0])
-  print("")
-  print("Aqui estan las variables normales globales")
-  print(mapa_memoria[0][0][0], mapa_memoria[0][1][0], mapa_memoria[0][2][0])
-  print("")
-  print("Aqui estan las variables temporales globales")
-  print(mapa_memoria[0][0][1], mapa_memoria[0][1][1], mapa_memoria[0][2][1])
-  print("")
-
-  print("Aqui estan las variables locales")
-  print(mapa_memoria[1])
-  
-  print("Aqui estan las variables constantes")
-  print(mapa_memoria[2])
-  print("")
-  print("Aqui estan las variables INT constantes")
-  print(mapa_memoria[2][0])
-  print("")
-  print("Aqui estan las variables FLOAT globales")
-  print(mapa_memoria[2][1])
-  print("")
-  print("Aqui estan las variables CHAR globales")
-  print(mapa_memoria[2][2])
-  '''

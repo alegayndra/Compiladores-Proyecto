@@ -149,7 +149,7 @@ def asignacion(valor, destino):
       mapa_memoria[dirDestino[0]][len(mapa_memoria[dirDestino[0]]) - 1][dirDestino[1]][dirDestino[2]][destino - base_destino] = mapa_memoria[dirValor[0]][len(mapa_memoria[dirValor[0]]) - 1][dirValor[1]][dirValor[2]][valor - base_valor]
     elif dirDestino[0] == 1: # Destino es local
       mapa_memoria[dirDestino[0]][len(mapa_memoria[dirDestino[0]]) - 1][dirDestino[1]][dirDestino[2]][destino - base_destino] = mapa_memoria[dirValor[0]][dirValor[1]][dirValor[2]][valor - base_valor]
-    elif dirValor[0] == 1: # Valor a asignas es local
+    elif dirValor[0] == 1: # Valor a asignar es local
       mapa_memoria[dirDestino[0]][dirDestino[1]][dirDestino[2]][destino - base_destino] = mapa_memoria[dirValor[0]][len(mapa_memoria[dirValor[0]]) - 1][dirValor[1]][dirValor[2]][valor - base_valor]
     else: # Ninguna es local
       mapa_memoria[dirDestino[0]][dirDestino[1]][dirDestino[2]][destino - base_destino] = mapa_memoria[dirValor[0]][dirValor[1]][dirValor[2]][valor - base_valor]
@@ -276,7 +276,6 @@ def param(valor, parametro):
   while tipo >= 0:
     if parametro >= dir_memoria[1][tipo][0]:
       memoriaFuncionEnProgreso[len(memoriaFuncionEnProgreso) - 1][tipo][0][parametro - dir_memoria[1][tipo][0]] = val
-      # print('params', memoriaFuncionEnProgreso[len(memoriaFuncionEnProgreso) - 1][tipo][0][parametro - dir_memoria[1][tipo][0]])
     tipo -= 1
   
 # Cambio de contexto y salto al cuádruplo de la función a procesar
@@ -311,7 +310,6 @@ def switchCubo(cuadruplo):
     guardarValor(operacionNormal(cuadruplo[1], cuadruplo[2], cuadruplo[0]), cuadruplo[3])
     return
   elif cuadruplo[0] == 12: # Asignacion
-    # print("Vamos a asignar")
     asignacion(cuadruplo[1], cuadruplo[3])
     return
   elif cuadruplo[0] == 13: # Print
@@ -357,10 +355,7 @@ def switchCubo(cuadruplo):
 
 def ejecutar_programa():
   while num_cuadruplo[0] < len(lista_cuadruplos):
-    # print("Ejecutamos el cuadruplo #", num_cuadruplo[0])
-    # print(lista_cuadruplos[num_cuadruplo[0]])
     switchCubo(lista_cuadruplos[num_cuadruplo[0]]) 
-    # print("Ahorita vamos en el cuadruplo --> ",num_cuadruplo)
     num_cuadruplo[0] += 1
 
 '''
