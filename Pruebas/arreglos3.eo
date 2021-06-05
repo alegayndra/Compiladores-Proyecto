@@ -1,0 +1,26 @@
+programa arreglos;
+
+entero arr[4];
+
+void funcion llenar_arreglo() {
+  arr[0] = 2;
+  arr[1] = 1;
+  arr[2] = 0;
+  arr[3] = 8;
+}
+
+void funcion imprimir_arreglo() {
+  entero i;
+  escribe("arreglo");
+  desde i = 0 hasta 3 {
+    escribe(arr[i]);
+  }
+  escribe("finarreglo");
+}
+
+principal() {
+  llenar_arreglo();
+  imprimir_arreglo();
+  arr[arr[2]] = 1;
+  escribe(arr[0]);
+}

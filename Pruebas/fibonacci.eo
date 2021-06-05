@@ -9,7 +9,7 @@ entero funcion fibo_recursivo(entero var) {
 }
 
 entero funcion fibo_iterativo(entero var) {
-  entero f[10], i;
+  entero f[30], i;
 
   f[0] = 0;
   f[1] = 1;
@@ -23,7 +23,7 @@ entero funcion fibo_iterativo(entero var) {
 
 principal() {
   entero fact;
-  fact = 9;
+  lee(fact);
   escribe("iterativo", fibo_iterativo(fact));
   escribe("recursivo", fibo_recursivo(fact));
 }

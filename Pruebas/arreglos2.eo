@@ -63,8 +63,6 @@ void funcion mult(){
 principal() {
 
   llenar_matriz();
-
-  imprimir_matrices();
   
   mult();
 
