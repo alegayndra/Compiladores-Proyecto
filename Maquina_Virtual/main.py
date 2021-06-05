@@ -202,6 +202,19 @@ def gotof(valor, cuadruplo):
 
 # Libera memoria de función procesada
 def endfunc():
+  cntIntNormal   =  len(mapa_memoria[1][len(mapa_memoria[1]) - 1][0][0])
+  cntIntTemp     =  len(mapa_memoria[1][len(mapa_memoria[1]) - 1][0][1])
+  cntFloatNormal =  len(mapa_memoria[1][len(mapa_memoria[1]) - 1][1][0])
+  cntFloatTemp   =  len(mapa_memoria[1][len(mapa_memoria[1]) - 1][1][1])
+  cntCharNormal  =  len(mapa_memoria[1][len(mapa_memoria[1]) - 1][2][0])
+  cntCharTemp    =  len(mapa_memoria[1][len(mapa_memoria[1]) - 1][2][1])
+
+  cantVarsLocales[0][0] -= cntIntNormal
+  cantVarsLocales[0][1] -= cntIntTemp
+  cantVarsLocales[1][0] -= cntFloatNormal
+  cantVarsLocales[1][1] -= cntFloatTemp
+  cantVarsLocales[2][0] -= cntCharNormal
+  cantVarsLocales[2][1] -= cntCharTemp
   mapa_memoria[1].pop()
   goto(pila_cuadruplos[len(pila_cuadruplos) - 1] + 1)
   pila_cuadruplos.pop()
@@ -239,22 +252,22 @@ def era(funcion):
       cantVarsLocales[2][1] += cntCharTemp
 
       # Checan que cada segmento no exceda el límite de memoria definido
-      if cantVarsLocales[0][0] >= limitesVarsLocales[0][0] + dir_memoria[1][0][0]:
+      if cantVarsLocales[0][0] >= limitesVarsLocales[0][0] - dir_memoria[1][0][0]:
         print("Se excedió la memoria disponibles para enteros dentro del contexto local")
         sys.exit()
-      if cantVarsLocales[0][1] >= limitesVarsLocales[0][1] + dir_memoria[1][0][1]:
+      if cantVarsLocales[0][1] >= limitesVarsLocales[0][1] - dir_memoria[1][0][1]:
         print("Se excedió la memoria disponibles para enteros termporales dentro del contexto local")
         sys.exit()
-      if cantVarsLocales[1][0] >= limitesVarsLocales[1][0] + dir_memoria[1][1][0]:
+      if cantVarsLocales[1][0] >= limitesVarsLocales[1][0] - dir_memoria[1][1][0]:
         print("Se excedió la memoria disponibles para flotantes dentro del contexto local")
         sys.exit()
-      if cantVarsLocales[1][1] >= limitesVarsLocales[1][1] + dir_memoria[1][1][1]:
+      if cantVarsLocales[1][1] >= limitesVarsLocales[1][1] - dir_memoria[1][1][1]:
         print("Se excedió la memoria disponibles para flotantes termporales dentro del contexto local")
         sys.exit()
-      if cantVarsLocales[2][0] >= limitesVarsLocales[2][0] + dir_memoria[1][2][0]:
+      if cantVarsLocales[2][0] >= limitesVarsLocales[2][0] - dir_memoria[1][2][0]:
         print("Se excedió la memoria disponibles para caracter dentro del contexto local")
         sys.exit()
-      if cantVarsLocales[2][1] >= limitesVarsLocales[2][1] + dir_memoria[1][2][1]:
+      if cantVarsLocales[2][1] >= limitesVarsLocales[2][1] - dir_memoria[1][2][1]:
         print("Se excedió la memoria disponibles para caracter termporales dentro del contexto local")
         sys.exit()
 
