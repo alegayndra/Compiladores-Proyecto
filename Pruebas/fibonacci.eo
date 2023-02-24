@@ -1,33 +1,29 @@
 programa fibonacci;
 
 entero funcion fibo_recursivo(entero var) {
-  si (var > 1) {
-    regresa fibo_recursivo(var - 1) + fibo_recursivo(var - 2);
+  si (var <= 1) {
+    regresa var;
   }
 
-  si (var > 0) {
-    regresa 1;
-  }
-
-  regresa 0;
+  regresa fibo_recursivo(var - 1) + fibo_recursivo(var - 2);
 }
 
 entero funcion fibo_iterativo(entero var) {
-  entero acum, izq, der, valor;
+  entero f[30], i;
 
-  izq = 0;
-  der = 1;
-  valor = 0;
+  f[0] = 0;
+  f[1] = 1;
 
-  desde acum = 1 hasta var {
-    valor = izq + der;
-    der = valor;
-    izq = der;
+  desde i = 2 hasta var {
+    f[i] = f[i - 1] + f[i - 2];
   }
-  regresa valor;
+
+  regresa f[var];
 }
 
 principal() {
-  escribe(fibo_iterativo(6));
-  escribe(fibo_recursivo(6));
+  entero fact;
+  lee(fact);
+  escribe("iterativo", fibo_iterativo(fact));
+  escribe("recursivo", fibo_recursivo(fact));
 }

@@ -1,0 +1,9 @@
+programa funciones;
+
+entero funcion suma(entero a, entero b) {
+  regresa a + b;
+}
+
+principal() {
+  escribe(suma(suma(1, 2), suma(1, 2)));
+}

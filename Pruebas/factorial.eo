@@ -10,6 +10,14 @@ entero funcion fact_iterativo(entero var){
   regresa acum;
 }
 
+entero funcion patito(entero num) {
+  regresa num * 3;
+}
+
+entero funcion pelos(entero num) {
+  regresa patito(num * 2);
+}
+
 entero funcion fact_recursivo(entero var) {
   si (var > 1) {
     regresa var * fact_recursivo(var - 1);
@@ -18,6 +26,10 @@ entero funcion fact_recursivo(entero var) {
 }
 
 principal(){
-  escribe(fact_iterativo(6));
-  escribe(fact_recursivo(6));
+  entero fact;
+  fact = 8;
+  escribe("iterativo", fact_iterativo(fact));
+  escribe("recursivo", fact_recursivo(fact));
+  escribe("pelos", pelos(2));
+  escribe("factpelos", fact_recursivo(pelos(1)) * 2);
 }

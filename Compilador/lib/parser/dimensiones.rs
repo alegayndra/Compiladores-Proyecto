@@ -236,17 +236,7 @@ fn generar_cuadruplo_acceder(variable: TipoVar, valor: TipoVar, asignacion: bool
     let val = pila_valores.pop().unwrap();
     let offset = pila_valores.pop().unwrap();
     drop(pila_valores);
-    match cuadruplos.agregar_cuadruplo("+", offset, val) {
-      Ok(_) => (),
-      Err(err) => {
-        println!("{:?}", err);
-      }
-    };
-    
-    let mut pila_valores = PILA_VALORES.lock().unwrap();
-    let val = pila_valores.pop().unwrap();
-    drop(pila_valores);
-    match cuadruplos.agregar_cuadruplo_suma_arreglo("+", dir.clone(), val.clone()) {
+    match cuadruplos.agregar_cuadruplo_suma_arreglo("+", offset, val) {
       Ok(_) => (),
       Err(err) => {
         println!("{:?}", err);
@@ -292,7 +282,7 @@ fn generar_cuadruplo_offset(variable: TipoVar, valor: TipoVar) {
   let mut constantes = CONSTANTES.lock().unwrap();
   let mut cuadruplos = CUADRUPLOS.lock().unwrap();
   // Consigue la dirección base de la variable atómica como variable constante
-  let dim_constante = constantes.agregar_constante(variable.dimensiones[0].to_string(), variable.tipo.clone());
+  let dim_constante = constantes.agregar_constante((variable.dimensiones[1]).to_string(), variable.tipo.clone());
 
   // Genera cuadruplo de offset
   match cuadruplos.agregar_cuadruplo("*", valor.clone(), dim_constante.clone()) {
