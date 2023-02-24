@@ -29,5 +29,5 @@ name = "killer_queen_exe"
 path = "Compilador/src/main.rs"
 
 [dependencies]
-nom = "6.1.2"
+nom = "7"
 lazy_static = "1.4.0"
