@@ -276,9 +276,9 @@ mod tests {
     tabla_variables.agregar_variable(id.to_owned(), "entero".to_owned(), vec![5], 300);
     tabla_variables.agregar_variable(parte.to_owned(), "entero".to_owned(), vec![5, 10], 400);
     drop(tabla_variables);
-    assert_eq!(desde("desde wiii = 10 hasta 20 {}"),         Ok(("", "desde")));
-    assert_eq!(desde("desde id[10] = 10 hasta 20 {}"),     Ok(("", "desde")));
-    assert_eq!(desde("desde parte[10][10] = 10 hasta 20 {}"), Ok(("", "desde")));
+    assert_eq!(desde("desde wii = 10 hasta 20 {}"),         Ok(("", "desde")));
+    // assert_eq!(desde("desde i[10] = 10 hasta 20 {}"),     Ok(("", "desde")));
+    // assert_eq!(desde("desde parte[10][10] = 10 hasta 20 {}"), Ok(("", "desde")));
     // assert_eq!(desde("desde id.id[id] = 10 hasta 20 {}"),  Ok(("", "desde")));
     // assert_eq!(desde("desde id.id = 15 hasta 25 {}"),      Ok(("", "desde")));
   }

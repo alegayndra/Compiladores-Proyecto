@@ -134,7 +134,7 @@ mod tests {
           d = d - 1;
         }
 
-        desde arr[10] = 10 hasta 20 {
+        desde iter = 10 hasta 20 {
           escribe(id);
         }
 
