@@ -9,12 +9,12 @@
 //! 
 //! Nota: Cuando se haga alusión a una variable (nombre personalizable) en las explicaciones, se encontrará dicho texto rodeado de `<` `>`, dichos caracteres *NO* forman parte del código  
 //! Por ejemplo: 
-//! ```
+//! ```ignore
 //! entero < variable > ;
 //! ```
 //! 
 //! Ya con la variable seleccionada la misma línea de código se vería así:  
-//! ```
+//! ```ignore
 //! entero var1;
 //! ```
 //! 
@@ -22,7 +22,7 @@
 //! 
 //! La estructura básica de un código del lenguaje es la siguiente:
 //! 
-//! ```
+//! ```ignore
 //! programa < id > ;
 //! 
 //! < declaraciones >
@@ -43,7 +43,7 @@
 //! 
 //! La variables se declaran de la siguiente manera:
 //! 
-//! ```
+//! ```ignore
 //! < tipo > < id > < dimensiones > ;
 //! ```
 //! 
@@ -56,18 +56,18 @@
 //! 
 //! La estructura de las dimensiones es la siguiente
 //! 
-//! ```
+//! ```ignore
 //! [ < num entero > ] [ < num entero > ]
 //! ```
 //! 
 //! También se pueden declarar varias variables en la misma linea de la siguiente manera: 
 //! 
-//! ```
+//! ```ignore
 //! < tipo > < id > < dimensiones > , < id > < dimensiones > , < id > < dimensiones > , ... < id > < dimensiones > ;
 //! ```
 //! 
 //! ##### Ejemplos
-//! ```
+//! ```ignore
 //! entero num;
 //! flotante promedio;
 //! char letra;
@@ -79,7 +79,7 @@
 //! 
 //! Las funciones se declaran de la siguiente manera:
 //! 
-//! ```
+//! ```ignore
 //! < tipo > funcion < id > ( < parametros > ) { < estatutos > }
 //! ```
 //! 
@@ -91,14 +91,14 @@
 //! 
 //! Los parametros son atómicos y siguen la siguiente estructura:
 //! 
-//! ```
+//! ```ignore
 //! < tipo > < id > , < tipo > < id >, < tipo > < id > ... , < tipo > < id >
 //! ```
 //! 
 //! Puede que una función no tenga parámetros.
 //! 
 //! ##### Ejemplos
-//! ```
+//! ```ignore
 //! entero funcion suma(entero a, entero b) { < estatutos > }
 //! flotante funcion multiplicacion(flotante a, flotante b) { < estatutos > }
 //! void funcion imprimir() { < estatutos > }
@@ -124,13 +124,13 @@
 //! #### Asignaciones
 //! 
 //! Todas las asginaciones tienen la siguiente estructura:
-//! ```
+//! ```ignore
 //! < id > = < exp >;
 //! ```
 //! Cada expresión _< exp >_ permite asignar el resultado obtenido a < id >. 
 //! 
 //! ##### Ejemplos
-//! ```
+//! ```ignore
 //! num = 10;
 //! promedio = 9.7;
 //! letra = 'J';
@@ -140,26 +140,26 @@
 //! #### Lectura
 //! La estructura para mostrar un mensaje en la consola es la siguiente.
 //! 
-//! ```
+//! ```ignore
 //!  lee ( < id >, < id >, < id > ... , < id > );
 //! ```
 //! ##### Ejemplo
-//! ```
+//! ```ignore
 //! lee(num, promedio);
 //! ```
 //! #### Escritura
 //! La estructura para escribir un mensaje en la consola es la siguiente.
 //! 
-//! ```
+//! ```ignore
 //!  escribe ( < texto >, < texto >, < texto > ... , < texto > );
 //! ```
 //! También se permiten que se escriba el resultado de una expresión siguiendo la estructura de
-//! ```
+//! ```ignore
 //!  escribe ( < expresion > );
 //! ```
 //! 
 //! ##### Ejemplos
-//! ```
+//! ```ignore
 //! escribe(suma(2, 3, 4));
 //! escribe("Hola mundo");
 //! escribe(num);
@@ -167,14 +167,14 @@
 //! #### Llamada de función
 //! La estructura para llamar una función es la siguiente.
 //! 
-//! ```
+//! ```ignore
 //! < id > ( < expresion >, < expresion > );
 //! ```
 //! Cada expresión va a representar el parámetro a enviar de dicha función.
 //! También se permiten que se escriba el resultado de una expresión siguiendo la estructura de
 //! 
 //! ##### Ejemplos
-//! ```
+//! ```ignore
 //! suma(2, 3, 4);
 //! llenar_arreglo();
 //! resta(9 - 4);
@@ -183,19 +183,19 @@
 //! Hay dos estructura para hacer un ciclo, depende de si sigues un formato de _while loop_ o un formato de _for loop_. 
 //! 
 //! ##### While loop
-//! ```
+//! ```ignore
 //! mientras ( < expresion > ){ < estatuto > }
 //! ```
 //! 
 //! ##### For loop
-//! ```
+//! ```ignore
 //! desde < id > = < exp > hasta < exp > { < estatuto > }
 //! ```
 //! Cada expresión va a representar el parámetro a enviar de dicha función.
 //! También se permiten que se escriba el resultado de una expresión siguiendo la estructura de
 //! 
 //! ##### Ejemplos
-//! ```
+//! ```ignore
 //! desde i = 10 hasta 20 {
 //!     escribe(i);
 //! }
@@ -207,7 +207,7 @@
 //! #### Condicionales
 //! La estructura para realizar una decisión en el lenguaje es la siguiente.
 //! 
-//! ```
+//! ```ignore
 //! si ( < expresion >) { 
 //!   < estatuto > 
 //! }
@@ -215,7 +215,7 @@
 //! ```
 //! 
 //! ##### Ejemplos
-//! ```
+//! ```ignore
 //! si (var > 0) {
 //!     regresa 1;
 //! }
@@ -225,24 +225,24 @@
 //! ```
 //! #### Retornos
 //! La estructura para ejecutar un retorno de una función en el lenguaje es la siguiente.
-//! ```
+//! ```ignore
 //! regresa < exp >;
 //! ```
 //! 
 //! ##### Ejemplo
-//! ```
+//! ```ignore
 //! regresa i;
 //! ```
 //! 
 //! #### Comentarios
 //! La estructura para mostrar un comentario en el lenguaje es la siguiente.
-//! ```
+//! ```ignore
 //! %% < texto > %%
 //! ```
 //! Solo se permite hacer comentarios dentro de las funciones.
 //! 
 //! ##### Ejemplos
-//! ```
+//! ```ignore
 //! %% entero i; %%
 //! ```
 
