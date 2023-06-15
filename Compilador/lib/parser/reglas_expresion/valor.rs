@@ -27,8 +27,14 @@ use crate::semantica::globales::*;
 /// ```ignore
 /// agregar_constante_a_tabla("10", "entero");
 fn agregar_constante_a_tabla(valor: &str, tipo: &str) {
+  // println!("-- agregar_constante_a_tabla {} {}", valor, tipo);
   let mut pila_valores = PILA_VALORES.lock().unwrap();
-  pila_valores.push(CONSTANTES.lock().unwrap().agregar_constante(valor.to_owned(), tipo.to_owned()));
+  let valor_name = if tipo == "char" { 
+    valor.to_owned()
+  } else {
+    format!("\"{}\"", valor).to_owned()
+  };
+  pila_valores.push(CONSTANTES.lock().unwrap().agregar_constante(valor_name, tipo.to_owned()));
   drop(pila_valores);
 }
 
